@@ -18,6 +18,6 @@ source("SOGI_00_packages.R") # call in packages; you may have to open this file 
 #source("SOGI_05_merge_YRBS.R") # run this file to prepare a single file `yrbs_final.rds`
 
 # SSP Analyses
-source("SOGI_SSP_prepare.R") # prepare objects for SSP analyses
+source("SOGI_SSP_prepare_NEW.R") # prepare objects for SSP analyses
 source("SOGI_32_SSP_analyses.R") # SSP analyses 
 
