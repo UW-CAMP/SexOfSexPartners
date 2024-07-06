@@ -56,7 +56,7 @@ yrbs_2021 <- yrbs_final[yrbs_final$year == "2021",]
 
 ##Variable conditional on EHHS
 
-ALREADY CREATED IN PREPARE FILE
+#ALREADY CREATED IN PREPARE FILE
 # Create ever_sex_sps using ifelse statement
 #yrbs_2015$ever_sex_sps <- ifelse(yrbs_2015$sex_of_sps == "1_never", NA, yrbs_2015$sex_of_sps)
 #yrbs_2017$ever_sex_sps <- ifelse(yrbs_2017$sex_of_sps == "1_never", NA, yrbs_2017$sex_of_sps)
@@ -869,12 +869,61 @@ if (!is.na(p_value)) {
   cat("The p-value is NA. Check the model and data.\n")
 }
 
+##############################################################################################
+##################################################################
+##DIFFERENT METHOD 
+
+# Fit the multinomial logistic regression model
+fem_model1 <- multinom(sex_of_sps ~ so_new + age, data = yrbs_female)
+
+# Summarize the model to see the coefficients and their standard errors
+summary(fem_model1)
+
+
+# Fit the multinomial logistic regression model
+fem_model2 <- multinom(sex_of_sps ~ so_new + depression, data = yrbs_female)
+
+# Summarize the model to see the coefficients and their standard errors
+summary(fem_model2)
+
+# If p-values are not directly provided, you can compute them
+z_values <- summary(fem_model2)$coefficients / summary(fem_model2)$standard.errors
+p_values <- 2 * (1 - pnorm(abs(z_values)))
+
+# Print z-values and p-values
+print(z_values)
+print(p_values)
+##############################################################################################
+
+## WEIGHTED CHI SQUARE TESTS 
+###########
+
+##Lesbian females 
+yrbs_les_sex <- yrbs_lesfem %>%
+  filter(sex_of_sps != "1_never")
+
+table(yrbs_les_sex$discord_1)
+table(yrbs_les_sex$discord_2)
+
+les_fem_tbl1 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$depression)
+print(les_fem_tbl1)
+
+#discord_1
+les_fem_chi1 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$depression, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(les_fem_chi1)
+
+#discord_2
+les_fem_chi2 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$depression, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(les_fem_chi2)
+
 
 ##############################################################################################
 #######################################
 ########  PLOTS #######################
 #######################################
-##################################################################################
+##############################################################################################
 
 # FIGURE 1: PLOTS BY SEX AND YEAR (CONDITIONED AND NOT CONDITIOND ON EHHS)
 # (tables 1-4)
