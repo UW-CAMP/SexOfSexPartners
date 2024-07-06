@@ -16,7 +16,15 @@ tableNA <- function(x, ...){
 }
 
 # call in data
-yrbs_merge <- readRDS("data - clean/yrbs_clean.rds")
+yrbs_final <- readRDS("data - clean/yrbs_final_new.rds")
+
+#If packages listed below are not already installed
+#install.packages("coin")
+#install.packages("multiCA")
+#install.packages("nnet")
+#install.packages("mlogit")
+#install.packages("lmtest")
+#install.packages("car")
 
 library(coin)
 library(multiCA)
@@ -41,26 +49,28 @@ if(!dir.exists("plots/SSP")){
 #########################################################
 
 #Filter by year 
-yrbs_2015 <- yrbs_merge[yrbs_merge$year == "2015",]
-yrbs_2017 <- yrbs_merge[yrbs_merge$year == "2017",]
-yrbs_2019 <- yrbs_merge[yrbs_merge$year == "2019",]
-yrbs_2021 <- yrbs_merge[yrbs_merge$year == "2021",]
+yrbs_2015 <- yrbs_final[yrbs_final$year == "2015",]
+yrbs_2017 <- yrbs_final[yrbs_final$year == "2017",]
+yrbs_2019 <- yrbs_final[yrbs_final$year == "2019",]
+yrbs_2021 <- yrbs_final[yrbs_final$year == "2021",]
 
 ##Variable conditional on EHHS
 
-# Create ssp_cond using ifelse statement
-yrbs_2015$ssp_cond <- ifelse(yrbs_2015$sex_of_sps == "1_never", NA, yrbs_2015$sex_of_sps)
-yrbs_2017$ssp_cond <- ifelse(yrbs_2017$sex_of_sps == "1_never", NA, yrbs_2017$sex_of_sps)
-yrbs_2019$ssp_cond <- ifelse(yrbs_2019$sex_of_sps == "1_never", NA, yrbs_2019$sex_of_sps)
-yrbs_2021$ssp_cond <- ifelse(yrbs_2021$sex_of_sps == "1_never", NA, yrbs_2021$sex_of_sps)
+ALREADY CREATED IN PREPARE FILE
+# Create ever_sex_sps using ifelse statement
+#yrbs_2015$ever_sex_sps <- ifelse(yrbs_2015$sex_of_sps == "1_never", NA, yrbs_2015$sex_of_sps)
+#yrbs_2017$ever_sex_sps <- ifelse(yrbs_2017$sex_of_sps == "1_never", NA, yrbs_2017$sex_of_sps)
+#yrbs_2019$ever_sex_sps <- ifelse(yrbs_2019$sex_of_sps == "1_never", NA, yrbs_2019$sex_of_sps)
+#yrbs_2021$ever_sex_sps <- ifelse(yrbs_2021$sex_of_sps == "1_never", NA, yrbs_2021$sex_of_sps)
+
 
 ##Subset by sexual orientation
 #Filter by year 
-yrbs_straight <- yrbs_merge[yrbs_merge$so_new == "1_straight",]
-yrbs_lesgay <- yrbs_merge[yrbs_merge$so_new == "2_lesgay",]
-yrbs_bi <- yrbs_merge[yrbs_merge$so_new == "3_bi",]
-yrbs_dko <- yrbs_merge[yrbs_merge$so_new == "4_dko",]
-yrbs_ref <- yrbs_merge[yrbs_merge$so_new == "5_ref",]
+yrbs_straight <- yrbs_final[yrbs_final$so_new == "1_straight",]
+yrbs_lesgay <- yrbs_final[yrbs_final$so_new == "2_lesgay",]
+yrbs_bi <- yrbs_final[yrbs_final$so_new == "3_bi",]
+yrbs_dko <- yrbs_final[yrbs_final$so_new == "4_dko",]
+yrbs_ref <- yrbs_final[yrbs_final$so_new == "5_ref",]
 
 yrbs_strfem <- yrbs_straight[yrbs_straight$sex == "Female", ]
 yrbs_lesfem <- yrbs_lesgay[yrbs_lesgay$sex == "Female", ]
@@ -77,14 +87,14 @@ yrbs_refmal <- yrbs_ref[yrbs_ref$sex == "Male", ]
 
 
 #########################################################
-### SUBSET YRBS_MERGE BY SEX 
+### SUBSET YRBS_FINAL BY SEX 
 #########################################################
 
 # Create a subset for only female participants
-yrbs_female <- yrbs_merge[yrbs_merge$sex == "Female", ]
+yrbs_female <- yrbs_final[yrbs_final$sex == "Female", ]
 
 # Create a subset for only male participants
-yrbs_male <- yrbs_merge[yrbs_merge$sex == "Male", ]
+yrbs_male <- yrbs_final[yrbs_final$sex == "Male", ]
 
 
 yrbs_female15 <- yrbs_2015[yrbs_2015$sex == "Female", ]
@@ -103,11 +113,11 @@ yrbs_male21 <- yrbs_2021[yrbs_2021$sex == "Male", ]
 #########################################################
 
 #Tables examining by age, SSP, sex, and sexual orientation
-round(100* prop.table(table(yrbs_merge$age, yrbs_merge$sex_of_sps, yrbs_merge$sex, yrbs_merge$so_new), c(1,3, 4)),0)
+round(100* prop.table(table(yrbs_final$age, yrbs_final$sex_of_sps, yrbs_final$sex, yrbs_final$so_new), c(1,3, 4)),0)
 
-table(yrbs_merge$sex, yrbs_merge$sex_of_sp)
+table(yrbs_final$sex, yrbs_final$sex_of_sp)
 
-chisq_test <- chisq.test(table(yrbs_merge$sex, yrbs_merge$sex_of_sp))
+chisq_test <- chisq.test(table(yrbs_final$sex, yrbs_final$sex_of_sp))
 chisq_test
 
 #Filter by year 
@@ -121,11 +131,9 @@ round(100* prop.table(table(yrbs_2019$sex, yrbs_2019$sex_of_sp)))
 table(yrbs_2021$sex, yrbs_2021$sex_of_sp)
 round(100* prop.table(table(yrbs_2021$sex, yrbs_2021$sex_of_sp)))
 
-chisq_test <- chisq.test(table(yrbs_merge$sex, yrbs_merge$sex_of_sp))
-chisq_test
 
 #Conditional on ever having had sex 
-yrbs_sex <- yrbs_merge[yrbs_merge$sex_of_sps != "1_never",]
+yrbs_sex <- yrbs_final[yrbs_final$sex_of_sps != "1_never",]
 table(yrbs_sex$sex_of_sps)
 
 table(yrbs_sex$sex, yrbs_sex$sex_of_sp)
@@ -190,12 +198,12 @@ print(df_proportions_mal)
 
 #frequency of each SSP by year, by sex (does not includes 1_never)
 
-szabo_table_F2 <- table(yrbs_female$ssp_cond, yrbs_female$year)
+szabo_table_F2 <- table(yrbs_female$ever_sex_sps, yrbs_female$year)
 prop.table(szabo_table_F2)
 
 ## using formula interface
-multiCA_szabo_tbl_F2 <-multiCA.test(ssp_cond ~ year, data=yrbs_female)
-
+multiCA_szabo_tbl_F2 <-multiCA.test(ever_sex_sps ~ year, data=yrbs_female)
+print(multiCA_szabo_tbl_F2)
 
 #frequency of each SSP by year, by sex (does not includes 1_never)
 
@@ -203,9 +211,9 @@ multiCA_szabo_tbl_F2 <-multiCA.test(ssp_cond ~ year, data=yrbs_female)
 df_proportions_fem2 <- yrbs_female %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 # Print the resulting data frame with proportions
@@ -213,11 +221,11 @@ print(df_proportions_fem2)
 
 
 
-szabo_table_M2 <- table(yrbs_male$ssp_cond, yrbs_male$year)
+szabo_table_M2 <- table(yrbs_male$ever_sex_sps, yrbs_male$year)
 prop.table(szabo_table_M2)
 
 ## using formula interface
-multiCA_szabo_tbl_M2 <- multiCA.test(ssp_cond ~ year, data=yrbs_male)
+multiCA_szabo_tbl_M2 <- multiCA.test(ever_sex_sps ~ year, data=yrbs_male)
 
 
 #frequency of each SSP by year, by sex (does not includes 1_never)
@@ -226,9 +234,9 @@ multiCA_szabo_tbl_M2 <- multiCA.test(ssp_cond ~ year, data=yrbs_male)
 df_proportions_mal2 <- yrbs_male %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 # Print the resulting data frame with proportions
@@ -240,36 +248,36 @@ print(df_proportions_mal2)
 ## Frequency of SSP by age, split by sex
 
 #FEMALE
-szabo_table_F3 <- table(yrbs_female$ssp_cond, yrbs_female$age)
+szabo_table_F3 <- table(yrbs_female$ever_sex_sps, yrbs_female$age)
 prop.table(szabo_table_F3)
 
 ## using formula interface
-multiCA_szabo_tbl_F3 <- multiCA.test(ssp_cond ~ age, data=yrbs_female)
+multiCA_szabo_tbl_F3 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female)
 
 df_proportions_fem3 <- yrbs_female %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_fem3)
 
 
 #MALE
-szabo_table_M3 <- table(yrbs_male$ssp_cond, yrbs_male$age)
+szabo_table_M3 <- table(yrbs_male$ever_sex_sps, yrbs_male$age)
 prop.table(szabo_table_M3)
 
 ## using formula interface
-multiCA_szabo_tbl_M3 <- multiCA.test(ssp_cond ~ age, data=yrbs_male)
+multiCA_szabo_tbl_M3 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male)
 
 df_proportions_mal3 <- yrbs_male %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_mal3)
@@ -280,143 +288,144 @@ print(df_proportions_mal3)
 
 
 #FEMALE 2015
-szabo_table_F4 <- table(yrbs_female15$ssp_cond, yrbs_female15$age)
+szabo_table_F4 <- table(yrbs_female15$ever_sex_sps, yrbs_female15$age)
 prop.table(szabo_table_F4)
 
 ## using formula interface
-multiCA_szabo_tbl_F4 <- multiCA.test(ssp_cond ~ age, data=yrbs_female15)
+multiCA_szabo_tbl_F4 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female15)
 
 df_proportions_fem4 <- yrbs_female15 %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_fem4)
 
 
 #FEMALE 2017
-szabo_table_F5 <- table(yrbs_female17$ssp_cond, yrbs_female17$age)
+szabo_table_F5 <- table(yrbs_female17$ever_sex_sps, yrbs_female17$age)
 prop.table(szabo_table_F5)
 
 ## using formula interface
-multiCA_szabo_tbl_F5 <- multiCA.test(ssp_cond ~ age, data=yrbs_female17)
+multiCA_szabo_tbl_F5 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female17)
 
 df_proportions_fem5 <- yrbs_female17 %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_fem5)
 
 
 #FEMALE 2019
-szabo_table_F6 <- table(yrbs_female19$ssp_cond, yrbs_female19$age)
+szabo_table_F6 <- table(yrbs_female19$ever_sex_sps, yrbs_female19$age)
 prop.table(szabo_table_F6)
 
 ## using formula interface
-multiCA_szabo_tbl_F6 <- multiCA.test(ssp_cond ~ age, data=yrbs_female19)
+multiCA_szabo_tbl_F6 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female19)
 
 df_proportions_fem6 <- yrbs_female19 %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_fem6)
 
 
 #FEMALE 2021
-szabo_table_F7 <- table(yrbs_female21$ssp_cond, yrbs_female21$age)
+szabo_table_F7 <- table(yrbs_female21$ever_sex_sps, yrbs_female21$age)
 prop.table(szabo_table_F7)
 
 ## using formula interface
-multiCA_szabo_tbl_F7 <- multiCA.test(ssp_cond ~ age, data=yrbs_female21)
+multiCA_szabo_tbl_F7 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female21)
 
 df_proportions_fem7 <- yrbs_female21 %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_fem7)
 
 
 #MALE 2015
-szabo_table_M4 <- table(yrbs_male15$ssp_cond, yrbs_male15$age)
+szabo_table_M4 <- table(yrbs_male15$ever_sex_sps, yrbs_male15$age)
 prop.table(szabo_table_M4)
 
 ## using formula interface
-multiCA_szabo_tbl_M4 <- multiCA.test(ssp_cond ~ age, data=yrbs_male15)
+multiCA_szabo_tbl_M4 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male15)
 
 df_proportions_mal4 <- yrbs_male15 %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_mal4)
 
 
 #MALE 2017
-szabo_table_M5 <- table(yrbs_male17$ssp_cond, yrbs_male17$age)
+szabo_table_M5 <- table(yrbs_male17$ever_sex_sps, yrbs_male17$age)
 prop.table(szabo_table_M5)
 
 ## using formula interface
-multiCA_szabo_tbl_M5 <- multiCA.test(ssp_cond ~ age, data=yrbs_male17)
+multiCA_szabo_tbl_M5 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male17)
 
 df_proportions_mal5 <- yrbs_male17 %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_mal5)
 
 
 #MALE 2019
-szabo_table_M6 <- table(yrbs_male19$ssp_cond, yrbs_male19$age)
+szabo_table_M6 <- table(yrbs_male19$ever_sex_sps, yrbs_male19$age)
 prop.table(szabo_table_M6)
 
 ## using formula interface
-multiCA_szabo_tbl_M6 <- multiCA.test(ssp_cond ~ age, data=yrbs_male19)
+multiCA_szabo_tbl_M6 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male19)
+print(multiCA_szabo_tbl_M6)
 
 df_proportions_mal6 <- yrbs_male19 %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_mal6)
 
 #MALE 2021
-szabo_table_M7 <- table(yrbs_male21$ssp_cond, yrbs_male21$age)
+szabo_table_M7 <- table(yrbs_male21$ever_sex_sps, yrbs_male21$age)
 prop.table(szabo_table_M7)
 
 ## using formula interface
-multiCA_szabo_tbl_M7 <- multiCA.test(ssp_cond ~ age, data=yrbs_male21)
+multiCA_szabo_tbl_M7 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male21)
 
 df_proportions_mal7 <- yrbs_male21 %>%
   group_by(age) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_mal7)
@@ -425,54 +434,54 @@ print(df_proportions_mal7)
 ##FREQUENCY BY YEAR BY SEXUAL ORIENTATION
 
 #straight female
-szabo_table_strfem <- table(yrbs_strfem$ssp_cond, yrbs_strfem$year)
+szabo_table_strfem <- table(yrbs_strfem$ever_sex_sps, yrbs_strfem$year)
 prop.table(szabo_table_strfem)
 
 ## using formula interface
-multiCA_szabo_tbl_strfem <- multiCA.test(ssp_cond ~ year, data=yrbs_strfem)
+multiCA_szabo_tbl_strfem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_strfem)
 
 df_proportions_strfem <- yrbs_strfem %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_strfem)
 
 
 #lesbian female
-szabo_table_lesfem <- table(yrbs_lesfem$ssp_cond, yrbs_lesfem$year)
+szabo_table_lesfem <- table(yrbs_lesfem$ever_sex_sps, yrbs_lesfem$year)
 prop.table(szabo_table_lesfem)
 
 ## using formula interface
-multiCA_szabo_tbl_lesfem <- multiCA.test(ssp_cond ~ year, data=yrbs_lesfem)
+multiCA_szabo_tbl_lesfem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_lesfem)
 
 df_proportions_lesfem <- yrbs_lesfem %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_lesfem)
 
 
 #bisexual female
-szabo_table_bifem <- table(yrbs_bifem$ssp_cond, yrbs_bifem$year)
+szabo_table_bifem <- table(yrbs_bifem$ever_sex_sps, yrbs_bifem$year)
 prop.table(szabo_table_bifem)
 
 ## using formula interface
-multiCA_szabo_tbl_bifem <- multiCA.test(ssp_cond ~ year, data=yrbs_bifem)
+multiCA_szabo_tbl_bifem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_bifem)
 
 df_proportions_bifem <- yrbs_bifem %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_bifem)
@@ -480,71 +489,71 @@ print(df_proportions_bifem)
 
 
 #dont know female
-szabo_table_dkofem <- table(yrbs_dkofem$ssp_cond, yrbs_dkofem$year)
+szabo_table_dkofem <- table(yrbs_dkofem$ever_sex_sps, yrbs_dkofem$year)
 prop.table(szabo_table_dkofem)
 
 ## using formula interface
-multiCA_szabo_tbl_dkofem <- multiCA.test(ssp_cond ~ year, data=yrbs_dkofem)
+multiCA_szabo_tbl_dkofem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_dkofem)
 
 df_proportions_dkofem <- yrbs_dkofem %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_dkofem)
 
 
 #declined female
-szabo_table_reffem <- table(yrbs_reffem$ssp_cond, yrbs_reffem$year)
+szabo_table_reffem <- table(yrbs_reffem$ever_sex_sps, yrbs_reffem$year)
 prop.table(szabo_table_reffem)
 
 ## using formula interface
-multiCA_szabo_tbl_reffem <- multiCA.test(ssp_cond ~ year, data=yrbs_reffem)
+multiCA_szabo_tbl_reffem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_reffem)
 
 df_proportions_reffem <- yrbs_reffem %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_reffem)
 
 #straight male
-szabo_table_strmal <- table(yrbs_strmal$ssp_cond, yrbs_strmal$year)
+szabo_table_strmal <- table(yrbs_strmal$ever_sex_sps, yrbs_strmal$year)
 prop.table(szabo_table_strmal)
 
 ## using formula interface
-multiCA_szabo_tbl_strmal <- multiCA.test(ssp_cond ~ year, data=yrbs_strmal)
+multiCA_szabo_tbl_strmal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_strmal)
 
 df_proportions_strmal <- yrbs_strmal %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_strmal)
 
 
 #gay male
-szabo_table_gaymal <- table(yrbs_gaymal$ssp_cond, yrbs_gaymal$year)
+szabo_table_gaymal <- table(yrbs_gaymal$ever_sex_sps, yrbs_gaymal$year)
 prop.table(szabo_table_gaymal)
 
 ## using formula interface
-multiCA_szabo_tbl_gaymal <- multiCA.test(ssp_cond ~ year, data=yrbs_gaymal)
+multiCA_szabo_tbl_gaymal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_gaymal)
 
 df_proportions_gaymal <- yrbs_gaymal %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_gaymal)
@@ -552,18 +561,18 @@ print(df_proportions_gaymal)
 
 
 #bisexual male
-szabo_table_bimal <- table(yrbs_bimal$ssp_cond, yrbs_bimal$year)
+szabo_table_bimal <- table(yrbs_bimal$ever_sex_sps, yrbs_bimal$year)
 prop.table(szabo_table_bimal)
 
 ## using formula interface
-multiCA_szabo_tbl_bimal <- multiCA.test(ssp_cond ~ year, data=yrbs_bimal)
+multiCA_szabo_tbl_bimal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_bimal)
 
 df_proportions_bimal <- yrbs_bimal %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_bimal)
@@ -571,36 +580,36 @@ print(df_proportions_bimal)
 
 
 #don't know male
-szabo_table_dkomal <- table(yrbs_dkomal$ssp_cond, yrbs_dkomal$year)
+szabo_table_dkomal <- table(yrbs_dkomal$ever_sex_sps, yrbs_dkomal$year)
 prop.table(szabo_table_dkomal)
 
 ## using formula interface
-multiCA_szabo_tbl_dkomal <- multiCA.test(ssp_cond ~ year, data=yrbs_dkomal)
+multiCA_szabo_tbl_dkomal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_dkomal)
 
 df_proportions_dkomal <- yrbs_dkomal %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_dkomal)
 
 
 #declined to answer male
-szabo_table_refmal <- table(yrbs_refmal$ssp_cond, yrbs_refmal$year)
+szabo_table_refmal <- table(yrbs_refmal$ever_sex_sps, yrbs_refmal$year)
 prop.table(szabo_table_refmal)
 
 ## using formula interface
-multiCA_szabo_tbl_refmal <- multiCA.test(ssp_cond ~ year, data=yrbs_refmal)
+multiCA_szabo_tbl_refmal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_refmal)
 
 df_proportions_refmal <- yrbs_refmal %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_refmal)
@@ -627,126 +636,126 @@ yrbs_18yoM <- yrbs_male[yrbs_male$age == 18, ]
 
 
 #14 year old female
-szabo_table_14yoF <- table(yrbs_14yoF$ssp_cond, yrbs_14yoF$year)
+szabo_table_14yoF <- table(yrbs_14yoF$ever_sex_sps, yrbs_14yoF$year)
 prop.table(szabo_table_14yoF)
 
 ## using formula interface
-multiCA_szabo_tbl_14yoF <- multiCA.test(ssp_cond ~ year, data=yrbs_14yoF)
+multiCA_szabo_tbl_14yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_14yoF)
 
 df_proportions_14yoF <- yrbs_14yoF %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_14yoF)
 
 
 #15 year old female
-szabo_table_15yoF <- table(yrbs_15yoF$ssp_cond, yrbs_15yoF$year)
+szabo_table_15yoF <- table(yrbs_15yoF$ever_sex_sps, yrbs_15yoF$year)
 prop.table(szabo_table_15yoF)
 
 ## using formula interface
-multiCA_szabo_tbl_15yoF <- multiCA.test(ssp_cond ~ year, data=yrbs_15yoF)
+multiCA_szabo_tbl_15yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_15yoF)
 
 df_proportions_15yoF <- yrbs_15yoF %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_15yoF)
 
 
 #16 year old female
-szabo_table_16yoF <- table(yrbs_16yoF$ssp_cond, yrbs_16yoF$year)
+szabo_table_16yoF <- table(yrbs_16yoF$ever_sex_sps, yrbs_16yoF$year)
 prop.table(szabo_table_16yoF)
 
 ## using formula interface
-multiCA_szabo_tbl_16yoF <- multiCA.test(ssp_cond ~ year, data=yrbs_16yoF)
+multiCA_szabo_tbl_16yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_16yoF)
 
 df_proportions_16yoF <- yrbs_16yoF %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_16yoF)
 
 
 #17 year old female
-szabo_table_17yoF <- table(yrbs_17yoF$ssp_cond, yrbs_17yoF$year)
+szabo_table_17yoF <- table(yrbs_17yoF$ever_sex_sps, yrbs_17yoF$year)
 prop.table(szabo_table_17yoF)
 
 ## using formula interface
-multiCA_szabo_tbl_17yoF <- multiCA.test(ssp_cond ~ year, data=yrbs_17yoF)
+multiCA_szabo_tbl_17yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_17yoF)
 
 df_proportions_17yoF <- yrbs_17yoF %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_17yoF)
 
 
 #18 year old female
-szabo_table_18yoF <- table(yrbs_18yoF$ssp_cond, yrbs_18yoF$year)
+szabo_table_18yoF <- table(yrbs_18yoF$ever_sex_sps, yrbs_18yoF$year)
 prop.table(szabo_table_18yoF)
 
 ## using formula interface
-multiCA_szabo_tbl_18yoF <- multiCA.test(ssp_cond ~ year, data=yrbs_18yoF)
+multiCA_szabo_tbl_18yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_18yoF)
 
 df_proportions_18yoF <- yrbs_18yoF %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_18yoF)
 
 
 #14 year old male
-szabo_table_14yoM <- table(yrbs_14yoM$ssp_cond, yrbs_14yoM$year)
+szabo_table_14yoM <- table(yrbs_14yoM$ever_sex_sps, yrbs_14yoM$year)
 prop.table(szabo_table_14yoM)
 
 ## using formula interface
-multiCA_szabo_tbl_14yoM <- multiCA.test(ssp_cond ~ year, data=yrbs_14yoM)
+multiCA_szabo_tbl_14yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_14yoM)
 
 df_proportions_14yoM <- yrbs_14yoM %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_14yoM)
 
 
 #15 year old male
-szabo_table_15yoM <- table(yrbs_15yoM$ssp_cond, yrbs_15yoM$year)
+szabo_table_15yoM <- table(yrbs_15yoM$ever_sex_sps, yrbs_15yoM$year)
 prop.table(szabo_table_15yoM)
 
 ## using formula interface
-multiCA_szabo_tbl_15yoM <- multiCA.test(ssp_cond ~ year, data=yrbs_15yoM)
+multiCA_szabo_tbl_15yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_15yoM)
 
 df_proportions_15yoM <- yrbs_15yoM %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_15yoM)
@@ -754,18 +763,18 @@ print(df_proportions_15yoM)
 
 
 #16 year old male
-szabo_table_16yoM <- table(yrbs_16yoM$ssp_cond, yrbs_16yoM$year)
+szabo_table_16yoM <- table(yrbs_16yoM$ever_sex_sps, yrbs_16yoM$year)
 prop.table(szabo_table_16yoM)
 
 ## using formula interface
-multiCA_szabo_tbl_16yoM <- multiCA.test(ssp_cond ~ year, data=yrbs_16yoM)
+multiCA_szabo_tbl_16yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_16yoM)
 
 df_proportions_16yoM <- yrbs_16yoM %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_16yoM)
@@ -773,36 +782,36 @@ print(df_proportions_16yoM)
 
 
 #17 year old male
-szabo_table_17yoM <- table(yrbs_17yoM$ssp_cond, yrbs_17yoM$year)
+szabo_table_17yoM <- table(yrbs_17yoM$ever_sex_sps, yrbs_17yoM$year)
 prop.table(szabo_table_17yoM)
 
 ## using formula interface
-multiCA_szabo_tbl_17yoM <- multiCA.test(ssp_cond ~ year, data=yrbs_17yoM)
+multiCA_szabo_tbl_17yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_17yoM)
 
 df_proportions_17yoM <- yrbs_17yoM %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_17yoM)
 
 
 #18 year old male
-szabo_table_18yoM <- table(yrbs_18yoM$ssp_cond, yrbs_18yoM$year)
+szabo_table_18yoM <- table(yrbs_18yoM$ever_sex_sps, yrbs_18yoM$year)
 prop.table(szabo_table_18yoM)
 
 ## using formula interface
-multiCA_szabo_tbl_18yoM <- multiCA.test(ssp_cond ~ year, data=yrbs_18yoM)
+multiCA_szabo_tbl_18yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_18yoM)
 
 df_proportions_18yoM <- yrbs_18yoM %>%
   group_by(year) %>%
   summarise(
-    females_prop = sum(ssp_cond == "2_female", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    males_prop = sum(ssp_cond == "3_male", na.rm = T) / sum(!is.na(ssp_cond)) * 100,
-    both_prop = sum(ssp_cond == "4_fem+mal", na.rm = T) / sum(!is.na(ssp_cond)) * 100
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
   )
 
 print(df_proportions_18yoM)
