@@ -1024,6 +1024,11 @@ yrbs_merge_new$smoke_vape <- ifelse(yrbs_merge_new$ever_smoke == "Yes" | yrbs_me
 
 table(yrbs_merge_new$smoke_vape)
 
+# Create the new variable
+yrbs_merge_new$any_bully <- ifelse(yrbs_merge_new$cyberbullied == "Yes" | yrbs_merge_new$bullied == "Yes", "Yes", "No")
+
+table(yrbs_merge_new$any_bully)
+
 #drink_days
 #1 = 0 days 
 #2 = 1 or 2 days 
