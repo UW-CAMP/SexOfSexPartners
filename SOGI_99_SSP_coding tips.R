@@ -36,3 +36,13 @@ lapply(yrpos, function(x) table(yrbs_by_yr[[x]]$sex, yrbs_by_yr[[x]]$sex_of_sp))
 lapply(yrpos, function(x) round(100* prop.table(table(yrbs_by_yr[[x]]$sex, yrbs_by_yr[[x]]$sex_of_sp))))
 
 
+
+myvec <- 1:10
+sqrt(myvec)
+sapply(myvec, sqrt)
+lapply(myvec, sqrt)
+
+sapply(myvec, "+", 5)
+sapply(myvec, function(x) x+5)
+myvec+5
+
