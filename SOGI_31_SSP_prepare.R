@@ -1006,6 +1006,9 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(smoke_days = case_when(
   TRUE ~ smoke_days  # Keep other values unchanged
 ))
 
+
+
+
 #ever_vape
 #1 = yes
 #2 = no
@@ -1041,6 +1044,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(drink_days = case_when(
   TRUE ~ drink_days  # Keep other values unchanged
 ))
 
+
 #max_drinks
 #1 = Did not drink alcohol in past 30 days 
 #2 = 1 or 2 drinks 
@@ -1063,6 +1067,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(max_drinks = case_when(
   TRUE ~ max_drinks  # Keep other values unchanged
 ))
 
+yrbs_merge_new$ever_drink_D <- ifelse(yrbs_merge_new$drink_days == "0 days", 0, 1)
 
 #ever_weed 
 #1 = 0 times 
@@ -1240,6 +1245,15 @@ yrbs_merge_new$ever_drugs <- ifelse(yrbs_merge_new$ever_mdma_D == 1 |
 
 table(yrbs_merge_new$ever_drugs)
 
+# Create the new variable for ever reporting drug use
+yrbs_merge_new$ever_hard_drugs <- ifelse(yrbs_merge_new$ever_mdma_D == 1 | 
+                                      yrbs_merge_new$ever_meth_D == 1 | 
+                                      yrbs_merge_new$ever_heroin_D == 1 | 
+                                      yrbs_merge_new$ever_inhalants_D == 1 | 
+                                      yrbs_merge_new$ever_cocaine_D == 1, 
+                                    "Yes", "No")
+
+table(yrbs_merge_new$ever_hard_drugs)
 
 #Convert btwn 12 and 24 months, during past 12 months, and more than 24 months ago to YES
 #convert never to NO

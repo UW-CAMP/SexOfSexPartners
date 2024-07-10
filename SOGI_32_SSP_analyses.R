@@ -54,16 +54,6 @@ yrbs_2017 <- yrbs_final[yrbs_final$year == "2017",]
 yrbs_2019 <- yrbs_final[yrbs_final$year == "2019",]
 yrbs_2021 <- yrbs_final[yrbs_final$year == "2021",]
 
-##Variable conditional on EHHS
-
-#ALREADY CREATED IN PREPARE FILE
-# Create ever_sex_sps using ifelse statement
-#yrbs_2015$ever_sex_sps <- ifelse(yrbs_2015$sex_of_sps == "1_never", NA, yrbs_2015$sex_of_sps)
-#yrbs_2017$ever_sex_sps <- ifelse(yrbs_2017$sex_of_sps == "1_never", NA, yrbs_2017$sex_of_sps)
-#yrbs_2019$ever_sex_sps <- ifelse(yrbs_2019$sex_of_sps == "1_never", NA, yrbs_2019$sex_of_sps)
-#yrbs_2021$ever_sex_sps <- ifelse(yrbs_2021$sex_of_sps == "1_never", NA, yrbs_2021$sex_of_sps)
-
-
 ##Subset by sexual orientation
 #Filter by year 
 yrbs_straight <- yrbs_final[yrbs_final$so_new == "1_straight",]
@@ -898,6 +888,8 @@ print(p_values)
 ## WEIGHTED CHI SQUARE TESTS 
 ###########
 
+##Depression
+
 ##Lesbian females 
 yrbs_les_sex <- yrbs_lesfem %>%
   filter(sex_of_sps != "1_never")
@@ -917,6 +909,282 @@ print(les_fem_chi1)
 les_fem_chi2 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$depression, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
                            drop.missing.levels=TRUE, mean1=TRUE)
 print(les_fem_chi2)
+
+
+
+
+##gay males 
+yrbs_gay_sex <- yrbs_gaymal %>%
+  filter(sex_of_sps != "1_never")
+
+table(yrbs_gay_sex$discord_1)
+table(yrbs_gay_sex$discord_2)
+
+gay_mal_tbl1 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$depression)
+print(gay_mal_tbl1)
+
+#discord_1
+gay_mal_chi1 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$depression, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(gay_mal_chi1)
+
+#discord_2
+gay_mal_chi2 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$depression, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(gay_mal_chi2)
+
+
+##str males 
+yrbs_strM_sex <- yrbs_strmal %>%
+  filter(sex_of_sps != "1_never")
+
+table(yrbs_strM_sex$discord_1)
+table(yrbs_strM_sex$discord_2)
+
+str_mal_tbl1 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$depression)
+print(str_mal_tbl1)
+
+#discord_1
+str_mal_chi1 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$depression, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_mal_chi1)
+
+#discord_2
+str_mal_chi2 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$depression, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_mal_chi2)
+
+
+
+
+##str females 
+yrbs_strF_sex <- yrbs_strfem %>%
+  filter(sex_of_sps != "1_never")
+
+table(yrbs_strF_sex$discord_1)
+table(yrbs_strF_sex$discord_2)
+
+str_fem_tbl1 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$depression)
+print(str_fem_tbl1)
+
+#discord_1
+str_fem_chi1 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$depression, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_fem_chi1)
+
+#discord_2
+str_fem_chi2 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$depression, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_fem_chi2)
+
+
+
+
+##suic_idea
+
+##Lesbian females 
+
+les_fem_tbl3 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$suic_idea)
+print(les_fem_tbl3)
+
+#discord_1
+les_fem_chi3 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$suic_idea, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(les_fem_chi3)
+
+#discord_2
+les_fem_chi4 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$suic_idea, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(les_fem_chi4)
+
+
+
+##gay males 
+
+gay_mal_tbl2 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$suic_idea)
+print(gay_mal_tbl2)
+
+#discord_1
+gay_mal_chi3 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$suic_idea, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(gay_mal_chi3)
+
+#discord_2
+gay_mal_chi4 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$suic_idea, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(gay_mal_chi4)
+
+
+##str males 
+
+str_mal_tbl2 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$suic_idea)
+print(str_mal_tbl2)
+
+#discord_1
+str_mal_chi3 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$suic_idea, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_mal_chi3)
+
+#discord_2
+str_mal_chi4 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$suic_idea, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_mal_chi4)
+
+
+##str females 
+
+str_fem_tbl2 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$suic_idea)
+print(str_fem_tbl2)
+
+#discord_1
+str_fem_chi3 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$suic_idea, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_fem_chi3)
+
+#discord_2
+str_fem_chi4 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$suic_idea, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_fem_chi4)
+
+
+##smoke_vape
+
+##Lesbian females 
+
+les_fem_tbl5 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$smoke_vape)
+print(les_fem_tbl5)
+
+#discord_1
+les_fem_chi5 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$smoke_vape, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(les_fem_chi5)
+
+#discord_2
+les_fem_chi6 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$smoke_vape, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(les_fem_chi6)
+
+
+
+
+##gay males 
+
+gay_mal_tbl5 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$smoke_vape)
+print(gay_mal_tbl5)
+
+#discord_1
+gay_mal_chi5 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$smoke_vape, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(gay_mal_chi5)
+
+#discord_2
+gay_mal_chi6 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$smoke_vape, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(gay_mal_chi6)
+
+
+##str males 
+
+str_mal_tbl5 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$smoke_vape)
+print(str_mal_tbl5)
+
+#discord_1
+str_mal_chi5 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$smoke_vape, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_mal_chi5)
+
+#discord_2
+str_mal_chi6 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$smoke_vape, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_mal_chi6)
+
+
+
+
+##str females 
+
+str_fem_tbl5 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$smoke_vape)
+print(str_fem_tbl5)
+
+#discord_1
+str_fem_chi5 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$smoke_vape, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_fem_chi5)
+
+#discord_2
+str_fem_chi6 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$smoke_vape, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_fem_chi6)
+
+
+##ever_weed_D
+
+##Lesbian females 
+
+les_fem_tbl6 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$ever_weed_D)
+print(les_fem_tbl6)
+
+#discord_1
+les_fem_chi7 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$ever_weed_D, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(les_fem_chi7)
+
+#discord_2
+les_fem_chi8 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$ever_weed_D, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(les_fem_chi8)
+
+
+
+
+##gay males 
+
+gay_mal_tbl6 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_weed_D)
+print(gay_mal_tbl6)
+
+#discord_1
+gay_mal_chi7 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_weed_D, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(gay_mal_chi7)
+
+#discord_2
+gay_mal_chi8 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$ever_weed_D, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(gay_mal_chi8)
+
+
+##str males 
+
+str_mal_tbl6 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_weed_D)
+print(str_mal_tbl6)
+
+#discord_1
+str_mal_chi7 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_weed_D, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_mal_chi7)
+
+#discord_2
+str_mal_chi8 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$ever_weed_D, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_mal_chi8)
+
+
+
+
+##str females 
+
+str_fem_tbl6 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_weed_D)
+print(str_fem_tbl6)
+
+#discord_1
+str_fem_chi7 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_weed_D, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_fem_chi7)
+
+#discord_2
+str_fem_chi8 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$ever_weed_D, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
+                           drop.missing.levels=TRUE, mean1=TRUE)
+print(str_fem_chi8)
 
 
 ##############################################################################################
