@@ -603,14 +603,13 @@ png("plots/SSP/SSP_by_age_and_year_four_panel.png",
    legend("center", c("Never had sex",
                       "Female partners only", 
                       "Male partners only", 
-                      "Female and male partners"),
-          col="black",
-          lty = lty_sps, 
-          cex=0.8, bty = "o"
+                      "Female and male partners",
+                      "",
+                      "Age 14", "Age 15", "Age 16", "Age 17", "Age 18"),
+          col=c("black", "black", "black", "black", "white", col_age),
+          lty = c(lty_sps, "blank", "solid", "solid", "solid", "solid", "solid"), 
+          seg.len=5, cex=0.8, bty = "o"
    ) 
-   col_age = c("red", "orange", "green", "blue", "black")
-   lty_sps <- c(2,3,1,4)
-   
 }
 
 dev.off()
