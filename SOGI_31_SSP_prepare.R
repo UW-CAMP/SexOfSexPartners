@@ -867,6 +867,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(ever_forced_sex = case_when(
   TRUE ~ ever_forced_sex # Keep other values unchanged
 ))
 
+yrbs_merge_new$ever_forced_sex <- ifelse(yrbs_merge_new$ever_forced_sex == "No", 0, 1)
 
 yrbs_merge_new <- yrbs_merge_new %>% mutate(forced_sex_dating = case_when(
   forced_sex_dating == "1" ~ "0 times",
@@ -900,6 +901,10 @@ yrbs_merge_new <- yrbs_merge_new %>%
     TRUE ~ "Yes"
   ))
 
+
+table(yrbs_merge_new$any_dating_violence)
+yrbs_merge_new$any_dating_violence <- ifelse(yrbs_merge_new$any_dating_violence == "No", 0, 1)
+
 #bullied 
 # 1 = yes 
 # 2 = no
@@ -910,6 +915,9 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(bullied = case_when(
   TRUE ~ bullied  # Keep other values unchanged
 ))
 
+table(yrbs_merge_new$bullied)
+
+yrbs_merge_new$bullied <- ifelse(yrbs_merge_new$bullied == "No", 0, 1)
 
 #cyberbullied
 #1 = yes
@@ -921,6 +929,8 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(cyberbullied = case_when(
   TRUE ~ cyberbullied  # Keep other values unchanged
 ))
 
+yrbs_merge_new$cyberbullied <- ifelse(yrbs_merge_new$cyberbullied == "No", 0, 1)
+
 #depression
 #1 = yes
 #2 = no 
@@ -930,6 +940,10 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(depression = case_when(
   depression == "2" ~ "No",
   TRUE ~ depression  # Keep other values unchanged
 ))
+
+
+yrbs_merge_new$depression <- ifelse(yrbs_merge_new$depression == "Yes", 1, 0)
+
 
 #suic_idea
 #1 = yes
@@ -941,6 +955,8 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(suic_idea = case_when(
   TRUE ~ suic_idea  # Keep other values unchanged
 ))
 
+yrbs_merge_new$suic_idea <- ifelse(yrbs_merge_new$suic_idea == "No", 0, 1)
+
 #suic_plan
 #1 = yes
 #2 = no
@@ -950,6 +966,9 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(suic_plan = case_when(
   suic_plan == "2" ~ "No",
   TRUE ~ suic_plan  # Keep other values unchanged
 ))
+
+table(yrbs_merge_new$suic_plan)
+yrbs_merge_new$suic_plan <- ifelse(yrbs_merge_new$suic_plan == "No", 0, 1)
 
 #suic_attempt
 #1 = 0 times
@@ -993,6 +1012,8 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(ever_smoke = case_when(
   TRUE ~ ever_smoke  # Keep other values unchanged
 ))
 
+yrbs_merge_new$ever_smoke <- ifelse(yrbs_merge_new$ever_smoke == "No", 0, 1)
+
 #smoke_days 
 #1 = 0 days 
 #2 = 1 or 2 days 
@@ -1031,8 +1052,11 @@ yrbs_merge_new$smoke_vape <- ifelse(yrbs_merge_new$ever_smoke == "Yes" | yrbs_me
 
 table(yrbs_merge_new$smoke_vape)
 
+yrbs_merge_new$smoke_vape <- ifelse(yrbs_merge_new$smoke_vape == "Yes", 1, 0)
+
+
 # Create the new variable
-yrbs_merge_new$any_bully <- ifelse(yrbs_merge_new$cyberbullied == "Yes" | yrbs_merge_new$bullied == "Yes", "Yes", "No")
+yrbs_merge_new$any_bully <- ifelse(yrbs_merge_new$cyberbullied == 1 | yrbs_merge_new$bullied == 1, 1, 0)
 
 table(yrbs_merge_new$any_bully)
 
@@ -1253,7 +1277,7 @@ yrbs_merge_new$ever_drugs <- ifelse(yrbs_merge_new$ever_mdma_D == 1 |
                                       yrbs_merge_new$ever_inhalants_D == 1 | 
                                       yrbs_merge_new$ever_cocaine_D == 1 | 
                                       yrbs_merge_new$ever_weed_D == 1, 
-                               "Yes", "No")
+                               1, 0)
 
 table(yrbs_merge_new$ever_drugs)
 
@@ -1263,7 +1287,7 @@ yrbs_merge_new$ever_hard_drugs <- ifelse(yrbs_merge_new$ever_mdma_D == 1 |
                                       yrbs_merge_new$ever_heroin_D == 1 | 
                                       yrbs_merge_new$ever_inhalants_D == 1 | 
                                       yrbs_merge_new$ever_cocaine_D == 1, 
-                                    "Yes", "No")
+                                    1, 0)
 
 table(yrbs_merge_new$ever_hard_drugs)
 

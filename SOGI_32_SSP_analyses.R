@@ -923,6 +923,7 @@ table(yrbs_gay_sex$discord_2)
 gay_mal_tbl1 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$depression)
 print(gay_mal_tbl1)
 
+
 #discord_1
 gay_mal_chi1 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$depression, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
                            drop.missing.levels=TRUE, mean1=TRUE)
@@ -1466,6 +1467,10 @@ print(str_fem_chi17)
 str_fem_chi18 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$any_bully, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
                             drop.missing.levels=TRUE, mean1=TRUE)
 print(str_fem_chi18)
+
+
+##############################################################################################
+
 
 
 ##############################################################################################
