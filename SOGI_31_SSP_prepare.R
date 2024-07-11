@@ -893,6 +893,13 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(dating_violence = case_when(
 
 table(yrbs_merge_new$dating_violence)
 
+yrbs_merge_new <- yrbs_merge_new %>%
+  mutate(any_dating_violence = case_when(
+    dating_violence == "did not date" ~ NA_character_,
+    dating_violence == "0 times" ~ "No",
+    TRUE ~ "Yes"
+  ))
+
 #bullied 
 # 1 = yes 
 # 2 = no
