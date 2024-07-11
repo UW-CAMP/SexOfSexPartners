@@ -1470,9 +1470,464 @@ print(str_fem_chi18)
 
 
 ##############################################################################################
+#Calculating ORs for the significant chi square tests
+
+###lesbian females###
 
 
 
+#Depression
+
+yrbs_les_sex$discord_2 <- factor(yrbs_les_sex$discord_2, levels = c(1, 0))
+yrbs_les_sex$suic_attempt_D <- factor(yrbs_les_sex$suic_attempt_D, levels = c(1, 0))
+yrbs_les_sex$ever_weed_D <- factor(yrbs_les_sex$ever_weed_D, levels = c(1, 0))
+yrbs_les_sex$smoke_vape <- factor(yrbs_les_sex$smoke_vape, levels = c(1, 0))
+yrbs_les_sex$ever_forced_sex <- factor(yrbs_les_sex$ever_forced_sex, levels = c(1, 0))
+yrbs_les_sex$any_dating_violence <- factor(yrbs_les_sex$any_dating_violence, levels = c(1, 0))
+yrbs_les_sex$any_bully <- factor(yrbs_les_sex$any_bully, levels = c(1, 0))
+
+
+
+survey_design_lf <- svydesign(ids = ~1, data = yrbs_les_sex, weights = ~weight)
+
+
+#suicide attempt
+
+# weighted contingency table
+weighted_tbl_lf1 <- svytable(~discord_2 + suic_attempt_D, survey_design_lf)
+print(weighted_tbl_lf1)
+
+# logistic regression model to account for weights
+model_lf1 <- svyglm(suic_attempt_D ~ discord_2, design = survey_design_lf, family = quasibinomial())
+summary(model_lf1)
+
+# OR and 95% CIs
+OR_lf1 <- exp(coef(model_lf1)[2])
+CI_lf1 <- exp(confint(model_lf1)[2, ])
+
+OR_lf1
+CI_lf1
+
+
+
+#smoking and vaping
+
+weighted_tbl_lf2 <- svytable(~discord_2 + smoke_vape, survey_design_lf)
+print(weighted_tbl_lf2)
+
+# logistic regression model to account for weights
+model_lf2 <- svyglm(smoke_vape ~ discord_2, design = survey_design_lf, family = quasibinomial())
+summary(model_lf2)
+
+# OR and 95% CIs
+OR_lf2 <- exp(coef(model_lf2)[2])
+CI_lf2 <- exp(confint(model_lf2)[2, ])
+
+OR_lf2
+CI_lf2
+
+
+
+#forced sex
+
+weighted_tbl_lf3 <- svytable(~discord_2 + ever_forced_sex, survey_design_lf)
+print(weighted_tbl_lf3)
+
+# logistic regression model to account for weights
+model_lf3 <- svyglm(ever_forced_sex ~ discord_2, design = survey_design_lf, family = quasibinomial())
+summary(model_lf3)
+
+# OR and 95% CIs
+OR_lf3 <- exp(coef(model_lf3)[2])
+CI_lf3 <- exp(confint(model_lf3)[2, ])
+
+OR_lf3
+CI_lf3
+
+
+#dating violence
+
+weighted_tbl_lf4 <- svytable(~discord_2 + any_dating_violence, survey_design_lf)
+print(weighted_tbl_lf4)
+
+# logistic regression model to account for weights
+model_lf4 <- svyglm(any_dating_violence ~ discord_2, design = survey_design_lf, family = quasibinomial())
+summary(model_lf4)
+
+# OR and 95% CIs
+OR_lf4 <- exp(coef(model_lf4)[2])
+CI_lf4 <- exp(confint(model_lf4)[2, ])
+
+OR_lf4
+CI_lf4
+
+
+
+#any bullying
+
+weighted_tbl_lf5 <- svytable(~discord_2 + any_bully, survey_design_lf)
+print(weighted_tbl_lf5)
+
+# logistic regression model to account for weights
+model_lf5 <- svyglm(any_bully~ discord_2, design = survey_design_lf, family = quasibinomial())
+summary(model_lf5)
+
+# OR and 95% CIs
+OR_lf5 <- exp(coef(model_lf5)[2])
+CI_lf5 <- exp(confint(model_lf5)[2, ])
+
+OR_lf5
+CI_lf5
+
+
+
+###gay males###
+
+#Depression
+
+yrbs_gay_sex$discord_2 <- factor(yrbs_gay_sex$discord_2, levels = c(1, 0))
+yrbs_gay_sex$depression <- factor(yrbs_gay_sex$depression, levels = c(1, 0))
+yrbs_gay_sex$suic_idea <- factor(yrbs_gay_sex$suic_idea, levels = c(1, 0))
+yrbs_gay_sex$suic_attempt_D <- factor(yrbs_gay_sex$suic_attempt_D, levels = c(1, 0))
+yrbs_gay_sex$smoke_vape <- factor(yrbs_gay_sex$smoke_vape, levels = c(1, 0))
+yrbs_gay_sex$ever_weed_D <- factor(yrbs_gay_sex$ever_weed_D, levels = c(1, 0))
+yrbs_gay_sex$ever_hard_drugs <- factor(yrbs_gay_sex$ever_hard_drugs, levels = c(1, 0))
+yrbs_gay_sex$unsafe_schl_D <- factor(yrbs_gay_sex$unsafe_schl_D, levels = c(1, 0))
+
+survey_design_gm <- svydesign(ids = ~1, data = yrbs_gay_sex, weights = ~weight)
+
+# weighted contingency table
+weighted_tbl_gm1 <- svytable(~discord_2 + depression, survey_design_gm)
+print(weighted_tbl_gm1)
+
+# logistic regression model to account for weights
+model_gm1 <- svyglm(depression ~ discord_2, design = survey_design_gm, family = quasibinomial())
+summary(model_gm1)
+
+# OR and 95% CIs
+OR_gm1 <- exp(coef(model_gm1)[2])
+CI_gm1 <- exp(confint(model_gm1)[2, ])
+
+OR_gm1
+CI_gm1
+
+
+
+# weighted contingency table
+
+#suicidal ideation
+
+weighted_tbl_gm2 <- svytable(~discord_2 + suic_idea, survey_design_gm)
+print(weighted_tbl_gm2)
+
+# logistic regression model to account for weights
+model_gm2 <- svyglm(suic_idea ~ discord_2, design = survey_design_gm, family = quasibinomial())
+summary(model_gm2)
+
+# OR and 95% CIs
+OR_gm2 <- exp(coef(model_gm2)[2])
+CI_gm2 <- exp(confint(model_gm2)[2, ])
+
+OR_gm2
+CI_gm2
+
+
+
+#suicide attempt
+
+weighted_tbl_gm3 <- svytable(~discord_2 + suic_attempt_D, survey_design_gm)
+print(weighted_tbl_gm3)
+
+# logistic regression model to account for weights
+model_gm3 <- svyglm(suic_attempt_D ~ discord_2, design = survey_design_gm, family = quasibinomial())
+summary(model_gm3)
+
+# OR and 95% CIs
+OR_gm3 <- exp(coef(model_gm3)[2])
+CI_gm3 <- exp(confint(model_gm3)[2, ])
+
+OR_gm3
+CI_gm3
+
+
+
+#smoking and vaping
+
+weighted_tbl_gm4 <- svytable(~discord_2 + smoke_vape, survey_design_gm)
+print(weighted_tbl_gm4)
+
+# logistic regression model to account for weights
+model_gm4 <- svyglm(smoke_vape ~ discord_2, design = survey_design_gm, family = quasibinomial())
+summary(model_gm4)
+
+# OR and 95% CIs
+OR_gm4 <- exp(coef(model_gm4)[2])
+CI_gm4 <- exp(confint(model_gm4)[2, ])
+
+OR_gm4
+CI_gm4
+
+
+
+#marijuana use
+
+weighted_tbl_gm5 <- svytable(~discord_2 + ever_weed_D, survey_design_gm)
+print(weighted_tbl_gm5)
+
+# logistic regression model to account for weights
+model_gm5 <- svyglm(ever_weed_D ~ discord_2, design = survey_design_gm, family = quasibinomial())
+summary(model_gm5)
+
+# OR and 95% CIs
+OR_gm5 <- exp(coef(model_gm5)[2])
+CI_gm5 <- exp(confint(model_gm5)[2, ])
+
+OR_gm5
+CI_gm5
+
+
+#hard drug use
+
+weighted_tbl_gm6 <- svytable(~discord_2 + ever_hard_drugs, survey_design_gm)
+print(weighted_tbl_gm6)
+
+# logistic regression model to account for weights
+model_gm6 <- svyglm(ever_hard_drugs ~ discord_2, design = survey_design_gm, family = quasibinomial())
+summary(model_gm6)
+
+# OR and 95% CIs
+OR_gm6 <- exp(coef(model_gm6)[2])
+CI_gm6 <- exp(confint(model_gm6)[2, ])
+
+OR_gm6
+CI_gm6
+
+
+
+#feeling unsafe at school
+
+weighted_tbl_gm7 <- svytable(~discord_2 + unsafe_schl_D, survey_design_gm)
+print(weighted_tbl_gm7)
+
+# logistic regression model to account for weights
+model_gm7 <- svyglm(unsafe_schl_D ~ discord_2, design = survey_design_gm, family = quasibinomial())
+summary(model_gm7)
+
+# OR and 95% CIs
+OR_gm7 <- exp(coef(model_gm7)[2])
+CI_gm7 <- exp(confint(model_gm7)[2, ])
+
+OR_gm7
+CI_gm7
+
+
+
+###straight females###
+
+
+
+#Depression
+
+yrbs_strF_sex$discord_2 <- factor(yrbs_strF_sex$discord_2, levels = c(1, 0))
+yrbs_strF_sex$suic_idea <- factor(yrbs_strF_sex$suic_idea, levels = c(1, 0))
+yrbs_strF_sex$suic_attempt_D <- factor(yrbs_strF_sex$suic_attempt_D, levels = c(1, 0))
+yrbs_strF_sex$ever_hard_drugs <- factor(yrbs_strF_sex$ever_hard_drugs, levels = c(1, 0))
+yrbs_strF_sex$ever_forced_sex <- factor(yrbs_strF_sex$ever_forced_sex, levels = c(1, 0))
+yrbs_strF_sex$unsafe_schl_D <- factor(yrbs_strF_sex$unsafe_schl_D, levels = c(1, 0))
+
+
+
+survey_design_sf <- svydesign(ids = ~1, data = yrbs_strF_sex, weights = ~weight)
+
+
+#suicidial ideation
+
+# weighted contingency table
+weighted_tbl_sf1 <- svytable(~discord_2 + suic_idea, survey_design_sf)
+print(weighted_tbl_sf1)
+
+# logistic regression model to account for weights
+model_sf1 <- svyglm(suic_idea ~ discord_2, design = survey_design_sf, family = quasibinomial())
+summary(model_sf1)
+
+# OR and 95% CIs
+OR_sf1 <- exp(coef(model_sf1)[2])
+CI_sf1 <- exp(confint(model_sf1)[2, ])
+
+OR_sf1
+CI_sf1
+
+
+#suicide attempt
+
+weighted_tbl_sf2 <- svytable(~discord_2 + suic_attempt_D, survey_design_sf)
+print(weighted_tbl_sf2)
+
+# logistic regression model to account for weights
+model_sf2 <- svyglm(suic_attempt_D ~ discord_2, design = survey_design_sf, family = quasibinomial())
+summary(model_sf2)
+
+# OR and 95% CIs
+OR_sf2 <- exp(coef(model_sf2)[2])
+CI_sf2 <- exp(confint(model_sf2)[2, ])
+
+OR_sf2
+CI_sf2
+
+
+#hard drug use
+
+weighted_tbl_sf3 <- svytable(~discord_2 + ever_hard_drugs, survey_design_sf)
+print(weighted_tbl_sf3)
+
+# logistic regression model to account for weights
+model_sf3 <- svyglm(ever_hard_drugs ~ discord_2, design = survey_design_sf, family = quasibinomial())
+summary(model_sf3)
+
+# OR and 95% CIs
+OR_sf3 <- exp(coef(model_sf3)[2])
+CI_sf3 <- exp(confint(model_sf3)[2, ])
+
+OR_sf3
+CI_sf3
+
+
+#forced sex
+
+weighted_tbl_sf4 <- svytable(~discord_2 + ever_forced_sex, survey_design_sf)
+print(weighted_tbl_sf4)
+
+# logistic regression model to account for weights
+model_sf4 <- svyglm(ever_forced_sex ~ discord_2, design = survey_design_sf, family = quasibinomial())
+summary(model_sf4)
+
+# OR and 95% CIs
+OR_sf4 <- exp(coef(model_sf4)[2])
+CI_sf4 <- exp(confint(model_sf4)[2, ])
+
+OR_sf4
+CI_sf4
+
+
+
+#feeling unsafe at school
+
+weighted_tbl_sf5 <- svytable(~discord_2 + unsafe_schl_D, survey_design_sf)
+print(weighted_tbl_sf5)
+
+# logistic regression model to account for weights
+model_sf5 <- svyglm(unsafe_schl_D~ discord_2, design = survey_design_sf, family = quasibinomial())
+summary(model_sf5)
+
+# OR and 95% CIs
+OR_sf5 <- exp(coef(model_sf5)[2])
+CI_sf5 <- exp(confint(model_sf5)[2, ])
+
+OR_sf5
+CI_sf5
+
+
+
+###straight males###
+
+
+
+#Depression
+
+yrbs_strM_sex$discord_2 <- factor(yrbs_strM_sex$discord_2, levels = c(1, 0))
+yrbs_strM_sex$ever_drink_D <- factor(yrbs_strM_sex$ever_drink_D, levels = c(1, 0))
+yrbs_strM_sex$ever_forced_sex <- factor(yrbs_strM_sex$ever_forced_sex, levels = c(1, 0))
+yrbs_strM_sex$any_bully <- factor(yrbs_strM_sex$any_bully, levels = c(1, 0))
+
+
+survey_design_sm <- svydesign(ids = ~1, data = yrbs_strM_sex, weights = ~weight)
+
+
+#alcohol use
+
+# weighted contingency table
+weighted_tbl_sm1 <- svytable(~discord_2 + ever_drink_D, survey_design_sm)
+print(weighted_tbl_sm1)
+
+# logistic regression model to account for weights
+model_sm1 <- svyglm(ever_drink_D ~ discord_2, design = survey_design_sm, family = quasibinomial())
+summary(model_sm1)
+
+# OR and 95% CIs
+OR_sm1 <- exp(coef(model_sm1)[2])
+CI_sm1 <- exp(confint(model_sm1)[2, ])
+
+OR_sm1
+CI_sm1
+
+
+#forced sex
+
+weighted_tbl_sm2 <- svytable(~discord_2 + ever_forced_sex, survey_design_sm)
+print(weighted_tbl_sm2)
+
+# logistic regression model to account for weights
+model_sm2 <- svyglm(ever_forced_sex ~ discord_2, design = survey_design_sm, family = quasibinomial())
+summary(model_sm2)
+
+# OR and 95% CIs
+OR_sm2 <- exp(coef(model_sm2)[2])
+CI_sm2 <- exp(confint(model_sm2)[2, ])
+
+OR_sm2
+CI_sm2
+
+
+#any bullying
+
+weighted_tbl_sm3 <- svytable(~discord_2 + any_bully, survey_design_sm)
+print(weighted_tbl_sm3)
+
+# logistic regression model to account for weights
+model_sm3 <- svyglm(any_bully ~ discord_2, design = survey_design_sm, family = quasibinomial())
+summary(model_sm3)
+
+# OR and 95% CIs
+OR_sm3 <- exp(coef(model_sm3)[2])
+CI_sm3 <- exp(confint(model_sm3)[2, ])
+
+OR_sm3
+CI_sm3
+
+
+#forced sex
+
+weighted_tbl_sm4 <- svytable(~discord_2 + ever_forced_sex, survey_design_sm)
+print(weighted_tbl_sm4)
+
+# logistic regression model to account for weights
+model_sm4 <- svyglm(ever_forced_sex ~ discord_2, design = survey_design_sm, family = quasibinomial())
+summary(model_sm4)
+
+# OR and 95% CIs
+OR_sm4 <- exp(coef(model_sm4)[2])
+CI_sm4 <- exp(confint(model_sm4)[2, ])
+
+OR_sm4
+CI_sm4
+
+
+
+#feeling unsafe at school
+
+weighted_tbl_sm5 <- svytable(~discord_2 + unsafe_schl_D, survey_design_sm)
+print(weighted_tbl_sm5)
+
+# logistic regression model to account for weights
+model_sm5 <- svyglm(unsafe_schl_D~ discord_2, design = survey_design_sm, family = quasibinomial())
+summary(model_sm5)
+
+# OR and 95% CIs
+OR_sm5 <- exp(coef(model_sm5)[2])
+CI_sm5 <- exp(confint(model_sm5)[2, ])
+
+OR_sm5
+CI_sm5
 ##############################################################################################
 #######################################
 ########  PLOTS #######################
