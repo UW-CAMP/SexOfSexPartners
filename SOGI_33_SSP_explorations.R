@@ -6,6 +6,7 @@
 ### Prepare workspace ----- 
 # clear environment
 #rm(list = ls())
+library(RColorBrewer)
 
 # packages
 source("SOGI_00_packages.R")
@@ -318,7 +319,7 @@ dev.off()
 #####
 
 png("plots/SSP/SSP_by_age_and_year_four_panel.png", 
-    width = 12*300, height = 12*300, res = 300
+    width = 10*300, height = 10*300, res = 300
 )
 {
   par(mfrow=c(2,2))
@@ -328,8 +329,9 @@ png("plots/SSP/SSP_by_age_and_year_four_panel.png",
   my_xlim = c(2014.5, 2021.5)
   pt_text_cex = 0.6
   
-  col_age = c("red", "orange", "green", "blue", "black")
-  lty_sps <- c(2,3,1,4)
+  #col_age = c("red", "orange", "green", "blue", "black")
+  col_age = brewer.pal(7, "YlOrBr")[3:7]    
+  lty_sps <- c("F3","dotted","dashed","solid")
   
   
   # Females unconditional
@@ -363,10 +365,6 @@ png("plots/SSP/SSP_by_age_and_year_four_panel.png",
   axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
   mtext("Male respondents", 3, cex = 0.7, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  # col_age <- gray(c(0.6, 0.4, 0.2, 0.1, 0.0))
-  col_age = c("red", "orange", "green", "blue", "black")
-  lty_sps <- c(2,3,1,4)
-  
   
   for(age in 1:5) {
     matplot(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, type='l', lty = lty_sps, 
@@ -387,50 +385,40 @@ png("plots/SSP/SSP_by_age_and_year_four_panel.png",
   axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
   mtext("Female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  # col_age <- gray(c(0.6, 0.4, 0.2, 0.1, 0.0))
-  col_age = c("red", "orange", "green", "blue", "black")
-  lty_sps <- c(2,3,1)
-  
-  lines(df_proportions_fem$year, df_proportions_fem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_fem$year, df_proportions_fem$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_fem$year, df_proportions_fem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
 
-  lines(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, lty = lty_sps[1], 
+  lines(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, lty = lty_sps[2], 
         col = col_age[1], lwd = my_lwd)
-  lines(df_proportions_14yoF$year, df_proportions_14yoF$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_14yoF$year, df_proportions_14yoF$males_prop/100, lty = lty_sps[3], 
         col = col_age[1], lwd = my_lwd)
-  lines(df_proportions_14yoF$year, df_proportions_14yoF$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_14yoF$year, df_proportions_14yoF$both_prop/100, lty = lty_sps[4], 
         col = col_age[1], lwd = my_lwd)
   
-  lines(df_proportions_15yoF$year, df_proportions_15yoF$females_prop/100, lty = lty_sps[1], 
+  lines(df_proportions_15yoF$year, df_proportions_15yoF$females_prop/100, lty = lty_sps[2], 
         col = col_age[2], lwd = my_lwd)
-  lines(df_proportions_15yoF$year, df_proportions_15yoF$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_15yoF$year, df_proportions_15yoF$males_prop/100, lty = lty_sps[3], 
         col = col_age[2], lwd = my_lwd)
-  lines(df_proportions_15yoF$year, df_proportions_15yoF$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_15yoF$year, df_proportions_15yoF$both_prop/100, lty = lty_sps[4], 
         col = col_age[2], lwd = my_lwd)
   
-  lines(df_proportions_16yoF$year, df_proportions_16yoF$females_prop/100, lty = lty_sps[1], 
+  lines(df_proportions_16yoF$year, df_proportions_16yoF$females_prop/100, lty = lty_sps[2], 
         col = col_age[3], lwd = my_lwd)
-  lines(df_proportions_16yoF$year, df_proportions_16yoF$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_16yoF$year, df_proportions_16yoF$males_prop/100, lty = lty_sps[3], 
         col = col_age[3], lwd = my_lwd)
-  lines(df_proportions_16yoF$year, df_proportions_16yoF$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_16yoF$year, df_proportions_16yoF$both_prop/100, lty = lty_sps[4], 
         col = col_age[3], lwd = my_lwd)
   
-  lines(df_proportions_17yoF$year, df_proportions_17yoF$females_prop/100, lty = lty_sps[1], 
+  lines(df_proportions_17yoF$year, df_proportions_17yoF$females_prop/100, lty = lty_sps[2], 
         col = col_age[4], lwd = my_lwd)
-  lines(df_proportions_17yoF$year, df_proportions_17yoF$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_17yoF$year, df_proportions_17yoF$males_prop/100, lty = lty_sps[3], 
         col = col_age[4], lwd = my_lwd)
-  lines(df_proportions_17yoF$year, df_proportions_17yoF$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_17yoF$year, df_proportions_17yoF$both_prop/100, lty = lty_sps[4], 
         col = col_age[4], lwd = my_lwd)
   
-  lines(df_proportions_18yoF$year, df_proportions_18yoF$females_prop/100, lty = lty_sps[1], 
+  lines(df_proportions_18yoF$year, df_proportions_18yoF$females_prop/100, lty = lty_sps[2], 
         col = col_age[5], lwd = my_lwd)
-  lines(df_proportions_18yoF$year, df_proportions_18yoF$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_18yoF$year, df_proportions_18yoF$males_prop/100, lty = lty_sps[3], 
         col = col_age[5], lwd = my_lwd)
-  lines(df_proportions_18yoF$year, df_proportions_18yoF$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_18yoF$year, df_proportions_18yoF$both_prop/100, lty = lty_sps[4], 
         col = col_age[5], lwd = my_lwd)
   
   points(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, 
@@ -510,43 +498,40 @@ png("plots/SSP/SSP_by_age_and_year_four_panel.png",
   axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
   mtext("Male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  # col_age <- gray(c(0.6, 0.4, 0.2, 0.1, 0.0))
-  col_age = c("red", "orange", "green", "blue", "black")
-  lty_sps <- c(2,3,1)
-  
-  lines(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, lty = lty_sps[1], 
+
+  lines(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, lty = lty_sps[2], 
         col = col_age[1], lwd = my_lwd)
-  lines(df_proportions_14yoM$year, df_proportions_14yoM$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_14yoM$year, df_proportions_14yoM$males_prop/100, lty = lty_sps[3], 
         col = col_age[1], lwd = my_lwd)
-  lines(df_proportions_14yoM$year, df_proportions_14yoM$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_14yoM$year, df_proportions_14yoM$both_prop/100, lty = lty_sps[4], 
         col = col_age[1], lwd = my_lwd)
   
-  lines(df_proportions_15yoM$year, df_proportions_15yoM$females_prop/100, lty = lty_sps[1], 
+  lines(df_proportions_15yoM$year, df_proportions_15yoM$females_prop/100, lty = lty_sps[2], 
         col = col_age[2], lwd = my_lwd)
-  lines(df_proportions_15yoM$year, df_proportions_15yoM$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_15yoM$year, df_proportions_15yoM$males_prop/100, lty = lty_sps[3], 
         col = col_age[2], lwd = my_lwd)
-  lines(df_proportions_15yoM$year, df_proportions_15yoM$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_15yoM$year, df_proportions_15yoM$both_prop/100, lty = lty_sps[4], 
         col = col_age[2], lwd = my_lwd)
   
-  lines(df_proportions_16yoM$year, df_proportions_16yoM$females_prop/100, lty = lty_sps[1], 
+  lines(df_proportions_16yoM$year, df_proportions_16yoM$females_prop/100, lty = lty_sps[2], 
         col = col_age[3], lwd = my_lwd)
-  lines(df_proportions_16yoM$year, df_proportions_16yoM$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_16yoM$year, df_proportions_16yoM$males_prop/100, lty = lty_sps[3], 
         col = col_age[3], lwd = my_lwd)
-  lines(df_proportions_16yoM$year, df_proportions_16yoM$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_16yoM$year, df_proportions_16yoM$both_prop/100, lty = lty_sps[4], 
         col = col_age[3], lwd = my_lwd)
   
-  lines(df_proportions_17yoM$year, df_proportions_17yoM$females_prop/100, lty = lty_sps[1], 
+  lines(df_proportions_17yoM$year, df_proportions_17yoM$females_prop/100, lty = lty_sps[2], 
         col = col_age[4], lwd = my_lwd)
-  lines(df_proportions_17yoM$year, df_proportions_17yoM$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_17yoM$year, df_proportions_17yoM$males_prop/100, lty = lty_sps[3], 
         col = col_age[4], lwd = my_lwd)
-  lines(df_proportions_17yoM$year, df_proportions_17yoM$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_17yoM$year, df_proportions_17yoM$both_prop/100, lty = lty_sps[4], 
         col = col_age[4], lwd = my_lwd)
   
-  lines(df_proportions_18yoM$year, df_proportions_18yoM$females_prop/100, lty = lty_sps[1], 
+  lines(df_proportions_18yoM$year, df_proportions_18yoM$females_prop/100, lty = lty_sps[2], 
         col = col_age[5], lwd = my_lwd)
-  lines(df_proportions_18yoM$year, df_proportions_18yoM$males_prop/100, lty = lty_sps[2], 
+  lines(df_proportions_18yoM$year, df_proportions_18yoM$males_prop/100, lty = lty_sps[3], 
         col = col_age[5], lwd = my_lwd)
-  lines(df_proportions_18yoM$year, df_proportions_18yoM$both_prop/100, lty = lty_sps[3], 
+  lines(df_proportions_18yoM$year, df_proportions_18yoM$both_prop/100, lty = lty_sps[4], 
         col = col_age[5], lwd = my_lwd)
   
   points(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, 
