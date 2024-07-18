@@ -1468,6 +1468,51 @@ str_fem_chi18 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$any_bully, va
                             drop.missing.levels=TRUE, mean1=TRUE)
 print(str_fem_chi18)
 
+##############################################################################################
+
+## Expected counts for chi squares 
+
+#Lesbian depression
+les_fem_depression <- table(yrbs_les_sex$discord_2, yrbs_les_sex$depression)
+les_fem_depression_tot <- addmargins(les_fem_depression)
+print(les_fem_depression_tot)
+
+les_fem_depress_row_totals <- margin.table(les_fem_depression, 1)
+les_fem_depress_col_totals <- margin.table(les_fem_depression, 2)
+les_fem_depress_grand_total <- sum(les_fem_depression)
+
+
+les_fem_depression_exp <- outer(les_fem_depress_row_totals, les_fem_depress_col_totals) / les_fem_depress_grand_total
+print(les_fem_depression_exp)
+
+
+#Lesbian hard drug use
+les_fem_drugs <- table(yrbs_les_sex$discord_2, yrbs_les_sex$ever_hard_drugs)
+les_fem_drugs_tot <- addmargins(les_fem_drugs)
+print(les_fem_drugs_tot)
+
+les_fem_drugs_row_totals <- margin.table(les_fem_drugs, 1)
+les_fem_drugs_col_totals <- margin.table(les_fem_drugs, 2)
+les_fem_drugs_grand_total <- sum(les_fem_drugs)
+
+
+les_fem_drugs_exp <- outer(les_fem_drugs_row_totals, les_fem_drugs_col_totals) / les_fem_drugs_grand_total
+print(les_fem_drugs_exp)
+
+
+#Lesbian suicide
+les_fem_suicide <- table(yrbs_les_sex$discord_2, yrbs_les_sex$suic_attempt_D)
+les_fem_suicide_tot <- addmargins(les_fem_suicide)
+print(les_fem_suicide_tot)
+
+les_fem_suicide_row_totals <- margin.table(les_fem_suicide, 1)
+les_fem_suicide_col_totals <- margin.table(les_fem_suicide, 2)
+les_fem_suicide_grand_total <- sum(les_fem_suicide)
+
+
+les_fem_suicide_exp <- outer(les_fem_suicide_row_totals, les_fem_suicide_col_totals) / les_fem_suicide_grand_total
+print(les_fem_suicide_exp)
+
 
 ##############################################################################################
 #Calculating ORs for the significant chi square tests
