@@ -1472,6 +1472,41 @@ print(str_fem_chi18)
 
 ## Expected counts for chi squares 
 
+calc.exp.cells <- function(x, y) {
+  temp <- table(x$discord_2, x[,y])
+  temp_tot <- addmargins(temp)
+  temp_row_totals <- margin.table(temp, 1)
+  temp_col_totals <- margin.table(temp, 2)
+  temp_grand_total <- sum(temp)
+  temp_exp <- outer(temp_row_totals, temp_col_totals) / temp_grand_total
+  return(temp_exp)
+}
+
+
+mymatrices <- list(yrbs_les_sex, yrbs_gay_sex, yrbs_strF_sex, yrbs_strM_sex)
+mypredictors <- c("depression", "suic_idea", "smoke_vape", "ever_weed_D", "unsafe_schl_D", 
+                  "any_dating_violence", "suic_attempt_D", "any_bully", "ever_drink_D", 
+                  "ever_hard_drugs", "ever_forced_sex"
+                  )
+
+mins <- matrix(NA, nrow=length(mymatrices), ncol=length(mypredictors))
+
+for(i in 1:length(mymatrices)) {
+  for( j in 1:length(mypredictors)) {
+    mins[i,j] <- min(calc.exp.cells(mymatrices[[i]], mypredictors[j]))
+  }
+}
+mins
+
+
+calc.exp.cells(yrbs_les_sex, "depression")
+calc.exp.cells(yrbs_les_sex, "depression")
+calc.exp.cells(yrbs_les_sex, "depression")
+calc.exp.cells(yrbs_les_sex, "depression")i
+
+calc.exp.cells(yrbs_les_sex, "depression")
+
+
 #Lesbian depression
 les_fem_depression <- table(yrbs_les_sex$discord_2, yrbs_les_sex$depression)
 les_fem_depression_tot <- addmargins(les_fem_depression)
