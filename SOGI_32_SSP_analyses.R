@@ -1498,15 +1498,6 @@ for(i in 1:length(mymatrices)) {
 }
 mins
 
-
-calc.exp.cells(yrbs_les_sex, "depression")
-calc.exp.cells(yrbs_les_sex, "depression")
-calc.exp.cells(yrbs_les_sex, "depression")
-calc.exp.cells(yrbs_les_sex, "depression")i
-
-calc.exp.cells(yrbs_les_sex, "depression")
-
-
 #Lesbian depression
 les_fem_depression <- table(yrbs_les_sex$discord_2, yrbs_les_sex$depression)
 les_fem_depression_tot <- addmargins(les_fem_depression)
@@ -2045,6 +2036,8 @@ png("plots/SSP/SSP_by_sex_and_year.png",
          col = "#37C817", lwd = my_lwd)
    lines(df_proportions_fem$year, df_proportions_fem$none_prop/100, lty = 1, 
          col = "black", lwd = my_lwd)
+   
+   #text(2021.1, 0.55, "*")
    
    plot(df_proportions_mal$year, df_proportions_mal$females_prop/100, type = "l", 
         col = "white", lwd = my_lwd, xlab = "", ylab = "", 
