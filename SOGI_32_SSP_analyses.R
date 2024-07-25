@@ -2037,7 +2037,10 @@ png("plots/SSP/SSP_by_sex_and_year.png",
    lines(df_proportions_fem$year, df_proportions_fem$none_prop/100, lty = 1, 
          col = "black", lwd = my_lwd)
    
-   #text(2021.1, 0.55, "*")
+   text(2021.3, 0.55, "*")
+   text(2021.3, 0.33, "*")
+   text(2021.3, 0.10, "*")
+   text(2021.3, 0.03, "*")
    
    plot(df_proportions_mal$year, df_proportions_mal$females_prop/100, type = "l", 
         col = "white", lwd = my_lwd, xlab = "", ylab = "", 
@@ -2055,6 +2058,9 @@ png("plots/SSP/SSP_by_sex_and_year.png",
          col = "#37C817", lwd = my_lwd)
    lines(df_proportions_mal$year, df_proportions_mal$none_prop/100, lty = 1, 
          col = "black", lwd = my_lwd)
+   
+   text(2021.3, 0.57, "*")
+   text(2021.3, 0.40, "*")
    
    legend(2016, 1, c("None", "Female partners only", 
                      "Male partners only", 
@@ -2079,6 +2085,10 @@ png("plots/SSP/SSP_by_sex_and_year.png",
    lines(df_proportions_fem2$year, df_proportions_fem2$both_prop/100, lty = 4, 
          col = "#37C817", lwd = my_lwd)
    
+   text(2021.3, 0.72, "*")
+   text(2021.3, 0.21, "*")
+   text(2021.3, 0.07, "*")
+   
    plot(df_proportions_mal2$year, df_proportions_mal2$females_prop/100, type = "l", 
         col = "white", lwd = my_lwd, xlab = "", ylab = "", 
         xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
@@ -2093,6 +2103,8 @@ png("plots/SSP/SSP_by_sex_and_year.png",
          col = "#EEC441", lwd = my_lwd)
    lines(df_proportions_mal2$year, df_proportions_mal2$both_prop/100, lty = 4, 
          col = "#37C817", lwd = my_lwd)
+   
+   text(2021.3, 0.04, "*")
 }
 dev.off()
 
