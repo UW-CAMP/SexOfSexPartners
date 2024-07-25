@@ -2343,10 +2343,10 @@ dev.off()
 #####
 
 png("plots/SSP/SSP_by_age_and_year_fem.png", 
-    width = 5*400, height = 6*300, res = 300
+    width = 14*300, height = 3*300, res = 300
 )
 {
-  par(mfrow=c(2,3))
+  par(mfrow=c(1,6))
   par(mar=c(2,0,3,0))
   par(oma=c(0,5,0,1))
   my_lwd = 1.5
@@ -2369,6 +2369,9 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
   lines(df_proportions_14yoF$year, df_proportions_14yoF$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
   
+  text(2021.3, 0.30, "*")
+  text(2021.3, 0.10, "*")
+  
   
   
   plot(df_proportions_15yoF$year, df_proportions_15yoF$females_prop/100, type = "l", 
@@ -2385,6 +2388,11 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
         col = "#EEC441", lwd = my_lwd)
   lines(df_proportions_15yoF$year, df_proportions_15yoF$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
+  
+  text(2021.3, 0.66, "*")
+  text(2021.3, 0.25, "*")
+  text(2021.3, 0.10, "*")
+
   
   
   
@@ -2403,13 +2411,16 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
   lines(df_proportions_16yoF$year, df_proportions_16yoF$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
   
+  text(2021.3, 0.75, "*")
+  text(2021.3, 0.20, "*")
+
+  
   
   plot(df_proportions_17yoF$year, df_proportions_17yoF$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
   mtext("17yo female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "D", cex=0.7)
@@ -2419,6 +2430,9 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
         col = "#EEC441", lwd = my_lwd)
   lines(df_proportions_17yoF$year, df_proportions_17yoF$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
+  
+  text(2021.3, 0.77, "*")
+  text(2021.3, 0.06, "*")
   
   
   plot(df_proportions_18yoF$year, df_proportions_18yoF$females_prop/100, type = "l", 
@@ -2435,7 +2449,10 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
         col = "#EEC441", lwd = my_lwd)
   lines(df_proportions_18yoF$year, df_proportions_18yoF$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
- 
+
+  text(2021.3, 0.75, "*")
+  text(2021.3, 0.20, "*")
+  
   # Create an empty plot for the legend
   plot.new()
   legend("center", c("Female partners only", 
@@ -2443,7 +2460,11 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
                      "Female and male partners"),
          col=c("#31BAF6", "#EEC441", "#37C817"), 
          lty = 1:4, cex=0.8, bty = "o"
+
+         
   ) 
+  
+
 
   }
 
@@ -2458,15 +2479,14 @@ dev.off()
 #####
 
 png("plots/SSP/SSP_by_age_and_year_mal.png", 
-    width = 5*400, height = 6*300, res = 300
+    width = 14*300, height = 3*300, res = 300
 )
 {
-  par(mfrow=c(2,3))
+  par(mfrow=c(1,6))
   par(mar=c(2,0,3,0))
   par(oma=c(0,5,0,1))
   my_lwd = 1.5
   my_xlim = c(2014.5, 2021.5)
-  
   
   plot(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
@@ -2517,13 +2537,14 @@ png("plots/SSP/SSP_by_age_and_year_mal.png",
   lines(df_proportions_16yoM$year, df_proportions_16yoM$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
   
-  
+  text(2021.3, 0.90, "*")
+  text(2021.3, 0.08, "*")
+   
   plot(df_proportions_17yoM$year, df_proportions_17yoM$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
   mtext("17yo male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "D", cex=0.7)
