@@ -2117,10 +2117,10 @@ dev.off()
 #####
 
 png("plots/SSP/SSP_by_SO_and_year_fem.png", 
-    width = 5*400, height = 6*300, res = 300
+    width = 14*300, height = 3*300, res = 300
 )
 {
-  par(mfrow=c(2,3))
+  par(mfrow=c(1,6))
   par(mar=c(2,0,3,0))
   par(oma=c(0,5,0,1))
   my_lwd = 1.5
@@ -2142,7 +2142,7 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
         col = "#EEC441", lwd = my_lwd)
   lines(df_proportions_strfem$year, df_proportions_strfem$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
-  
+
   
   plot(df_proportions_lesfem$year, df_proportions_lesfem$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
@@ -2176,13 +2176,15 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
   lines(df_proportions_bifem$year, df_proportions_bifem$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
   
+  text(2021.3, 0.53, "*")
+  text(2021.3, 0.40, "*")
+  
   
   plot(df_proportions_dkofem$year, df_proportions_dkofem$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
   mtext("Don't know female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "D", cex=0.7)
@@ -2192,6 +2194,9 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
         col = "#EEC441", lwd = my_lwd)
   lines(df_proportions_dkofem$year, df_proportions_dkofem$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
+  
+  text(2021.3, 0.51, "*")
+  text(2021.3, 0.39, "*")
   
   
   plot(df_proportions_reffem$year, df_proportions_reffem$females_prop/100, type = "l", 
@@ -2229,10 +2234,10 @@ dev.off()
 #####
 
 png("plots/SSP/SSP_by_SO_and_year_mal.png", 
-    width = 5*400, height = 6*300, res = 300
+    width = 14*300, height = 3*300, res = 300
 )
 {
-  par(mfrow=c(2,3))
+  par(mfrow=c(1,6))
   par(mar=c(2,0,3,0))
   par(oma=c(0,5,0,1))
   my_lwd = 1.5
@@ -2294,7 +2299,6 @@ png("plots/SSP/SSP_by_SO_and_year_mal.png",
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
   mtext("Don't know male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "D", cex=0.7)
@@ -2304,6 +2308,9 @@ png("plots/SSP/SSP_by_SO_and_year_mal.png",
         col = "#EEC441", lwd = my_lwd)
   lines(df_proportions_dkomal$year, df_proportions_dkomal$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
+  
+  text(2021.3, 0.60, "*")
+  text(2021.3, 0.30, "*")
   
   
   plot(df_proportions_refmal$year, df_proportions_refmal$females_prop/100, type = "l", 
@@ -2320,7 +2327,11 @@ png("plots/SSP/SSP_by_SO_and_year_mal.png",
         col = "#EEC441", lwd = my_lwd)
   lines(df_proportions_refmal$year, df_proportions_refmal$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
- 
+
+  text(2021.3, 0.85, "*")
+  text(2021.3, 0.00, "*")
+  
+  
   # Create an empty plot for the legend
   plot.new()
   legend("center", c("Female partners only", 
