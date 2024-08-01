@@ -2413,8 +2413,8 @@ df_proportions_strmal_unc <- yrbs_strmal %>%
   group_by(year) %>%
   summarise(
     never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
     both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
   )
 
@@ -2433,8 +2433,8 @@ df_proportions_gaymal_unc <- yrbs_gaymal %>%
   group_by(year) %>%
   summarise(
     never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
     both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
   )
 
@@ -2454,8 +2454,8 @@ df_proportions_bimal_unc <- yrbs_bimal %>%
   group_by(year) %>%
   summarise(
     never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
     both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
   )
 
@@ -2474,8 +2474,8 @@ df_proportions_dkomal_unc <- yrbs_dkomal %>%
   group_by(year) %>%
   summarise(
     never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
     both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
   )
 
@@ -2494,12 +2494,116 @@ df_proportions_refmal_unc <- yrbs_refmal %>%
   group_by(year) %>%
   summarise(
     never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    magay_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
     both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
   )
 
 print(df_proportions_refmal_unc)
+##############################################################################################
+
+##Additional prop tables for the supplemental tables
+
+ yrbs_14yoF %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
+
+
+yrbs_15yoF %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
+
+
+yrbs_16yoF %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
+
+
+yrbs_17yoF %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
+
+
+
+yrbs_18yoF %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
+
+
+yrbs_14yoM %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
+
+
+yrbs_15yoM %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
+
+
+yrbs_16yoM %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
+
+
+yrbs_17yoM %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
+
+
+
+yrbs_18yoM %>%
+  group_by(year) %>%
+  summarise(
+    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
+    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
+    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
+  )
 
 ##############################################################################################
 #######################################
