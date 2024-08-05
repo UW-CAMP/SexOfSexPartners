@@ -613,3 +613,341 @@ png("plots/SSP/SSP_by_age_and_year_four_panel.png",
 }
 
 dev.off()
+
+
+png("plots/SSP/SSP_by_age_and_year_uncond_panel.png", 
+    width = 10*300, height = 4*300, res = 300
+)
+{
+  par(mfrow=c(1,3))
+  par(mar=c(2,0,3,0))
+  par(oma=c(0,5,0,1))
+  my_lwd = 1.5
+  my_xlim = c(2014.5, 2021.5)
+  pt_text_cex = 0.6
+  
+  #col_age = c("red", "orange", "green", "blue", "black")
+  col_age = brewer.pal(7, "YlOrBr")[3:7]    
+  lty_sps <- c("F3","dotted","dashed","solid")
+  
+  
+  # Females unconditional
+  
+  plot(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
+  mtext("Female respondents", 3, cex = 0.7, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  # col_age <- gray(c(0.6, 0.4, 0.2, 0.1, 0.0))
+  
+  for(age in 1:5) {
+    matplot(yrs, t(df_prop_fem_uncond_by_age[age,,])/100, type='l', lty = lty_sps, 
+            col = col_age[age], lwd = my_lwd, add=T)
+    matplot(yrs, t(df_prop_fem_uncond_by_age[age,,])/100, type='p',
+            col = "#FFFFFF", pch=19, cex=1.5, add=T)
+    text(yrs, t(df_prop_fem_uncond_by_age[age,,])/100, age+13, 
+         col = col_age[age], cex=pt_text_cex)
+  }
+  
+  # Males unconditional
+  
+  plot(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(4, seq(0, 1, 0.1), seq(0, 1, 0.1), cex.axis = 0.7, las = 1)
+  mtext("Male respondents", 3, cex = 0.7, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  
+  for(age in 1:5) {
+    matplot(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, type='l', lty = lty_sps, 
+            col = col_age[age], lwd = my_lwd, add=T)
+    matplot(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, type='p',
+            col = "#FFFFFF", pch=19, cex=1.5, add=T)
+    text(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, age+13, 
+         col = col_age[age], cex=pt_text_cex)
+  }
+  
+  
+  plot.new() 
+  legend("center", c("Never had sex",
+                     "Female partners only", 
+                     "Male partners only", 
+                     "Female and male partners",
+                     "",
+                     "Age 14", "Age 15", "Age 16", "Age 17", "Age 18"),
+         col=c("black", "black", "black", "black", "white", col_age),
+         lty = c(lty_sps, "blank", "solid", "solid", "solid", "solid", "solid"), 
+         seg.len=5, cex=0.8, bty = "o"
+  ) 
+  
+}
+
+dev.off()
+
+
+
+
+
+
+
+png("plots/SSP/SSP_by_age_and_year_cond_panel.png", 
+    width = 10*300, height = 4*300, res = 300
+)
+{
+  par(mfrow=c(1,3))
+  par(mar=c(2,0,3,0))
+  par(oma=c(0,5,0,1))
+  my_lwd = 1.5
+  my_xlim = c(2014.5, 2021.5)
+  pt_text_cex = 0.6
+  
+  #col_age = c("red", "orange", "green", "blue", "black")
+  col_age = brewer.pal(7, "YlOrBr")[3:7]    
+  lty_sps <- c("F3","dotted","dashed","solid")
+  
+  
+  # Females conditional
+  
+  plot(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
+  mtext("Female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  
+  lines(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, lty = lty_sps[2], 
+        col = col_age[1], lwd = my_lwd)
+  lines(df_proportions_14yoF$year, df_proportions_14yoF$males_prop/100, lty = lty_sps[3], 
+        col = col_age[1], lwd = my_lwd)
+  lines(df_proportions_14yoF$year, df_proportions_14yoF$both_prop/100, lty = lty_sps[4], 
+        col = col_age[1], lwd = my_lwd)
+  
+  lines(df_proportions_15yoF$year, df_proportions_15yoF$females_prop/100, lty = lty_sps[2], 
+        col = col_age[2], lwd = my_lwd)
+  lines(df_proportions_15yoF$year, df_proportions_15yoF$males_prop/100, lty = lty_sps[3], 
+        col = col_age[2], lwd = my_lwd)
+  lines(df_proportions_15yoF$year, df_proportions_15yoF$both_prop/100, lty = lty_sps[4], 
+        col = col_age[2], lwd = my_lwd)
+  
+  lines(df_proportions_16yoF$year, df_proportions_16yoF$females_prop/100, lty = lty_sps[2], 
+        col = col_age[3], lwd = my_lwd)
+  lines(df_proportions_16yoF$year, df_proportions_16yoF$males_prop/100, lty = lty_sps[3], 
+        col = col_age[3], lwd = my_lwd)
+  lines(df_proportions_16yoF$year, df_proportions_16yoF$both_prop/100, lty = lty_sps[4], 
+        col = col_age[3], lwd = my_lwd)
+  
+  lines(df_proportions_17yoF$year, df_proportions_17yoF$females_prop/100, lty = lty_sps[2], 
+        col = col_age[4], lwd = my_lwd)
+  lines(df_proportions_17yoF$year, df_proportions_17yoF$males_prop/100, lty = lty_sps[3], 
+        col = col_age[4], lwd = my_lwd)
+  lines(df_proportions_17yoF$year, df_proportions_17yoF$both_prop/100, lty = lty_sps[4], 
+        col = col_age[4], lwd = my_lwd)
+  
+  lines(df_proportions_18yoF$year, df_proportions_18yoF$females_prop/100, lty = lty_sps[2], 
+        col = col_age[5], lwd = my_lwd)
+  lines(df_proportions_18yoF$year, df_proportions_18yoF$males_prop/100, lty = lty_sps[3], 
+        col = col_age[5], lwd = my_lwd)
+  lines(df_proportions_18yoF$year, df_proportions_18yoF$both_prop/100, lty = lty_sps[4], 
+        col = col_age[5], lwd = my_lwd)
+  
+  points(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_14yoF$year, df_proportions_14yoF$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_14yoF$year, df_proportions_14yoF$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_15yoF$year, df_proportions_15yoF$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_15yoF$year, df_proportions_15yoF$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_15yoF$year, df_proportions_15yoF$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_16yoF$year, df_proportions_16yoF$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_16yoF$year, df_proportions_16yoF$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_16yoF$year, df_proportions_16yoF$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_17yoF$year, df_proportions_17yoF$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_17yoF$year, df_proportions_17yoF$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_17yoF$year, df_proportions_17yoF$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_18yoF$year, df_proportions_18yoF$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_18yoF$year, df_proportions_18yoF$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_18yoF$year, df_proportions_18yoF$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  
+  text(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, "14", 
+       col = col_age[1], cex=pt_text_cex)
+  text(df_proportions_14yoF$year, df_proportions_14yoF$males_prop/100, "14", 
+       col = col_age[1], cex=pt_text_cex)
+  text(df_proportions_14yoF$year, df_proportions_14yoF$both_prop/100, "14", 
+       col = col_age[1], cex=pt_text_cex)
+  
+  text(df_proportions_15yoF$year, df_proportions_15yoF$females_prop/100, "15", 
+       col = col_age[2], cex=pt_text_cex)
+  text(df_proportions_15yoF$year, df_proportions_15yoF$males_prop/100, "15", 
+       col = col_age[2], cex=pt_text_cex)
+  text(df_proportions_15yoF$year, df_proportions_15yoF$both_prop/100, "15", 
+       col = col_age[2], cex=pt_text_cex)
+  
+  text(df_proportions_16yoF$year, df_proportions_16yoF$females_prop/100, "16", 
+       col = col_age[3], cex=pt_text_cex)
+  text(df_proportions_16yoF$year, df_proportions_16yoF$males_prop/100, "16", 
+       col = col_age[3], cex=pt_text_cex)
+  text(df_proportions_16yoF$year, df_proportions_16yoF$both_prop/100, "16", 
+       col = col_age[3], cex=pt_text_cex)
+  
+  text(df_proportions_17yoF$year, df_proportions_17yoF$females_prop/100, "17", 
+       col = col_age[4], cex=pt_text_cex)
+  text(df_proportions_17yoF$year, df_proportions_17yoF$males_prop/100, "17", 
+       col = col_age[4], cex=pt_text_cex)
+  text(df_proportions_17yoF$year, df_proportions_17yoF$both_prop/100, "17", 
+       col = col_age[4], cex=pt_text_cex)
+  
+  text(df_proportions_18yoF$year, df_proportions_18yoF$females_prop/100, "18", 
+       col = col_age[5], cex=pt_text_cex)
+  text(df_proportions_18yoF$year, df_proportions_18yoF$males_prop/100, "18", 
+       col = col_age[5], cex=pt_text_cex)
+  text(df_proportions_18yoF$year, df_proportions_18yoF$both_prop/100, "18", 
+       col = col_age[5], cex=pt_text_cex)
+  
+  
+  # Males conditional
+  
+  plot(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(4, seq(0, 1, 0.1), seq(0, 1, 0.1), cex.axis = 0.7, las = 1)
+  mtext("Male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  
+  lines(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, lty = lty_sps[2], 
+        col = col_age[1], lwd = my_lwd)
+  lines(df_proportions_14yoM$year, df_proportions_14yoM$males_prop/100, lty = lty_sps[3], 
+        col = col_age[1], lwd = my_lwd)
+  lines(df_proportions_14yoM$year, df_proportions_14yoM$both_prop/100, lty = lty_sps[4], 
+        col = col_age[1], lwd = my_lwd)
+  
+  lines(df_proportions_15yoM$year, df_proportions_15yoM$females_prop/100, lty = lty_sps[2], 
+        col = col_age[2], lwd = my_lwd)
+  lines(df_proportions_15yoM$year, df_proportions_15yoM$males_prop/100, lty = lty_sps[3], 
+        col = col_age[2], lwd = my_lwd)
+  lines(df_proportions_15yoM$year, df_proportions_15yoM$both_prop/100, lty = lty_sps[4], 
+        col = col_age[2], lwd = my_lwd)
+  
+  lines(df_proportions_16yoM$year, df_proportions_16yoM$females_prop/100, lty = lty_sps[2], 
+        col = col_age[3], lwd = my_lwd)
+  lines(df_proportions_16yoM$year, df_proportions_16yoM$males_prop/100, lty = lty_sps[3], 
+        col = col_age[3], lwd = my_lwd)
+  lines(df_proportions_16yoM$year, df_proportions_16yoM$both_prop/100, lty = lty_sps[4], 
+        col = col_age[3], lwd = my_lwd)
+  
+  lines(df_proportions_17yoM$year, df_proportions_17yoM$females_prop/100, lty = lty_sps[2], 
+        col = col_age[4], lwd = my_lwd)
+  lines(df_proportions_17yoM$year, df_proportions_17yoM$males_prop/100, lty = lty_sps[3], 
+        col = col_age[4], lwd = my_lwd)
+  lines(df_proportions_17yoM$year, df_proportions_17yoM$both_prop/100, lty = lty_sps[4], 
+        col = col_age[4], lwd = my_lwd)
+  
+  lines(df_proportions_18yoM$year, df_proportions_18yoM$females_prop/100, lty = lty_sps[2], 
+        col = col_age[5], lwd = my_lwd)
+  lines(df_proportions_18yoM$year, df_proportions_18yoM$males_prop/100, lty = lty_sps[3], 
+        col = col_age[5], lwd = my_lwd)
+  lines(df_proportions_18yoM$year, df_proportions_18yoM$both_prop/100, lty = lty_sps[4], 
+        col = col_age[5], lwd = my_lwd)
+  
+  points(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_14yoM$year, df_proportions_14yoM$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_14yoM$year, df_proportions_14yoM$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_15yoM$year, df_proportions_15yoM$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_15yoM$year, df_proportions_15yoM$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_15yoM$year, df_proportions_15yoM$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_16yoM$year, df_proportions_16yoM$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_16yoM$year, df_proportions_16yoM$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_16yoM$year, df_proportions_16yoM$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_17yoM$year, df_proportions_17yoM$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_17yoM$year, df_proportions_17yoM$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_17yoM$year, df_proportions_17yoM$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_18yoM$year, df_proportions_18yoM$females_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_18yoM$year, df_proportions_18yoM$males_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  points(df_proportions_18yoM$year, df_proportions_18yoM$both_prop/100, 
+         col = "#FFFFFF", pch=19, cex=1.5)
+  
+  text(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, "14", 
+       col = col_age[1], cex=pt_text_cex)
+  text(df_proportions_14yoM$year, df_proportions_14yoM$males_prop/100, "14", 
+       col = col_age[1], cex=pt_text_cex)
+  text(df_proportions_14yoM$year, df_proportions_14yoM$both_prop/100, "14", 
+       col = col_age[1], cex=pt_text_cex)
+  
+  text(df_proportions_15yoM$year, df_proportions_15yoM$females_prop/100, "15", 
+       col = col_age[2], cex=pt_text_cex)
+  text(df_proportions_15yoM$year, df_proportions_15yoM$males_prop/100, "15", 
+       col = col_age[2], cex=pt_text_cex)
+  text(df_proportions_15yoM$year, df_proportions_15yoM$both_prop/100, "15", 
+       col = col_age[2], cex=pt_text_cex)
+  
+  text(df_proportions_16yoM$year, df_proportions_16yoM$females_prop/100, "16", 
+       col = col_age[3], cex=pt_text_cex)
+  text(df_proportions_16yoM$year, df_proportions_16yoM$males_prop/100, "16", 
+       col = col_age[3], cex=pt_text_cex)
+  text(df_proportions_16yoM$year, df_proportions_16yoM$both_prop/100, "16", 
+       col = col_age[3], cex=pt_text_cex)
+  
+  text(df_proportions_17yoM$year, df_proportions_17yoM$females_prop/100, "17", 
+       col = col_age[4], cex=pt_text_cex)
+  text(df_proportions_17yoM$year, df_proportions_17yoM$males_prop/100, "17", 
+       col = col_age[4], cex=pt_text_cex)
+  text(df_proportions_17yoM$year, df_proportions_17yoM$both_prop/100, "17", 
+       col = col_age[4], cex=pt_text_cex)
+  
+  text(df_proportions_18yoM$year, df_proportions_18yoM$females_prop/100, "18", 
+       col = col_age[5], cex=pt_text_cex)
+  text(df_proportions_18yoM$year, df_proportions_18yoM$males_prop/100, "18", 
+       col = col_age[5], cex=pt_text_cex)
+  text(df_proportions_18yoM$year, df_proportions_18yoM$both_prop/100, "18", 
+       col = col_age[5], cex=pt_text_cex)
+  
+  plot.new()
+  legend("center", c("Never had sex",
+                     "Female partners only", 
+                     "Male partners only", 
+                     "Female and male partners",
+                     "",
+                     "Age 14", "Age 15", "Age 16", "Age 17", "Age 18"),
+         col=c("black", "black", "black", "black", "white", col_age),
+         lty = c(lty_sps, "blank", "solid", "solid", "solid", "solid", "solid"), 
+         seg.len=5, cex=0.8, bty = "o"
+  ) 
+}
+
+dev.off()
+
