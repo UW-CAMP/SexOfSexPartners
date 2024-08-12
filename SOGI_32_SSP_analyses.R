@@ -604,7 +604,35 @@ df_proportions_refmal <- yrbs_refmal %>%
 
 print(df_proportions_refmal)
 
+######################################################
+#frequency of sexual orientation across years, by sex
 
+df_proportions_fem_so <- yrbs_female %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_fem_so)
+
+
+df_proportions_mal_so <- yrbs_male %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_mal_so)
 ################################################################################
 
 #################################
@@ -2646,6 +2674,95 @@ for(yr in yrpos) {
 }
 
 ####
+
+
+#################################################################################
+
+
+# FIGURE X. Proportion of respondents sexual orientation by year, split by sex
+#+++++++++++++++++++++++++++++++++++++++++
+png("plots/SSP/SO_by_year_two_panel.png", 
+    width = 9*300, height = 3*300, res = 300
+)
+{
+  #par(mfrow=c(1,3))
+  #par(mar=c(4,4,3,2))
+  #par(oma=c(0,2,0,0))
+  #my_lwd = 2.0
+  #my_xlim = c(2014.5, 2021.5)
+  #lty_sps <- c("F3","dotted","dashed")
+  
+  
+  par(mfrow=c(1,3))
+  par(mar=c(2,0,3,0))
+  par(oma=c(0,8,0,0))
+  my_lwd = 1.5
+  my_xlim = c(2014.5, 2021.5)
+  #pt_text_cex = 0.6
+  
+  
+  plot(df_proportions_fem_so$year, df_proportions_fem_so$straight_prop/100, type = "l", 
+       col = "pink", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
+  mtext("Females", 3, cex = 1, line =0.3)
+  mtext("Prop. of adolescents of a \ngiven sexual orientation by year", 2, cex = 1, line = 4, outer = TRUE)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "A", cex=1.2)
+  lines(df_proportions_fem_so$year, df_proportions_fem_so$lesgay_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_fem_so$year, df_proportions_fem_so$bi_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_fem_so$year, df_proportions_fem_so$dko_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  lines(df_proportions_fem_so$year, df_proportions_fem_so$ref_prop/100, lty = 5, 
+        col = "red", lwd = my_lwd)
+  
+  text(2021.3, 0.61, "*", col = "pink")
+  text(2021.3, 0.04, "*", col = "#31BAF6")
+  text(2021.3, 0.19, "*", col = "#E6A820")
+  text(2021.3, 0.15, "*", col = "#37C817")
+  
+  
+  plot(df_proportions_mal_so$year, df_proportions_mal_so$straight_prop/100, type = "l", 
+       col = "pink", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  #axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
+  mtext("Males", 3, cex = 1, line =0.3)
+  #mtext("Prop. of males of a given sexual orientation by year", 2, cex = 1, line = 3, outer = TRUE)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "B", cex=1.2)
+  lines(df_proportions_mal_so$year, df_proportions_mal_so$lesgay_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_mal_so$year, df_proportions_mal_so$bi_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_mal_so$year, df_proportions_mal_so$dko_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  lines(df_proportions_mal_so$year, df_proportions_mal_so$ref_prop/100, lty = 5, 
+        col = "red", lwd = my_lwd)
+  
+  text(2021.3, 0.86, "*", col = "pink")
+  text(2021.3, 0.05, "*", col = "#E6A820")
+  text(2021.3, 0.07, "*", col = "#37C817")
+  
+  
+  plot.new()
+  legend("center", c("Straight",
+                     "Gay/lesbian", 
+                     "Bisexual", 
+                     "Don't know",
+                     "Declined to respond"),
+         col=c("pink", "#31BAF6", "#E6A820", "#37C817", "red"), 
+         lty = 1:5, cex=1.2, bty = "o"
+  )
+  
+}
+dev.off()
+
 
 
 # FIGURE 1. Proportion of respondents by sex of past sexual contacts
