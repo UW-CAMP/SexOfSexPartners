@@ -5,7 +5,7 @@
 
 ### Prepare workspace ----- 
 # clear environment
-rm(list = ls())
+#rm(list = ls())
 
 # packages
 source("SOGI_00_packages.R")
@@ -2163,6 +2163,7 @@ df_proportions_15yoF_unc <- yrbs_15yoF %>%
 print(df_proportions_15yoF_unc)
 
 
+
 #16yo female
 szabo_table_16yoF_unc <- table(yrbs_16yoF$sex_of_sps, yrbs_16yoF$year)
 prop.table(szabo_table_16yoF_unc)
@@ -2201,6 +2202,7 @@ df_proportions_17yoF_unc <- yrbs_17yoF %>%
   )
 
 print(df_proportions_17yoF_unc)
+
 
 
 #18yo female
@@ -2633,6 +2635,101 @@ yrbs_18yoM %>%
     both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
   )
 
+
+#################################################################################
+# New analyses- table S3
+
+##  FEMALES
+multiCA_szabo_tbl_14yoF_unc
+multiCA_szabo_tbl_15yoF_unc
+multiCA_szabo_tbl_16yoF_unc
+multiCA_szabo_tbl_17yoF_unc
+multiCA_szabo_tbl_18yoF_unc
+
+#females in 2015
+round(100*prop.table(table(yrbs_female15$age)),1)
+
+#females in 2017
+round(100*prop.table(table(yrbs_female17$age)),1)
+
+#females in 2019
+round(100*prop.table(table(yrbs_female19$age)),1)
+
+#females in 2021
+round(100*prop.table(table(yrbs_female21$age)),1)
+
+
+## MALES
+multiCA_szabo_tbl_14yoM_unc
+multiCA_szabo_tbl_15yoM_unc
+multiCA_szabo_tbl_16yoM_unc
+multiCA_szabo_tbl_17yoM_unc
+multiCA_szabo_tbl_18yoM_unc
+
+#males in 2015
+round(100*prop.table(table(yrbs_male15$age)),1)
+
+#males in 2017
+round(100*prop.table(table(yrbs_male17$age)),1)
+
+#males in 2019
+round(100*prop.table(table(yrbs_male19$age)),1)
+
+#males in 2021
+round(100*prop.table(table(yrbs_male21$age)),1)
+
+
+#Table S4
+
+round(100*prop.table(table(yrbs_sex_2015$so_new, yrbs_sex_2015$sex), c(2)),1)
+
+round(100*prop.table(table(yrbs_sex_2017$so_new, yrbs_sex_2017$sex), c(2)),1)
+
+round(100*prop.table(table(yrbs_sex_2019$so_new, yrbs_sex_2019$sex), c(2)),1)
+
+round(100*prop.table(table(yrbs_sex_2021$so_new, yrbs_sex_2021$sex), c(2)),1)
+
+
+table(yrbs_sex$sex, yrbs_sex$year)
+
+table(yrbs_female$year)
+
+table(yrbs_male$year)
+
+round(100*prop.table(table(yrbs_female15$so_new)),1)
+round(100*prop.table(table(yrbs_female17$so_new)),1)
+round(100*prop.table(table(yrbs_female19$so_new)),1)
+round(100*prop.table(table(yrbs_female21$so_new)),1)
+
+round(100*prop.table(table(yrbs_male15$so_new)),1)
+round(100*prop.table(table(yrbs_male17$so_new)),1)
+round(100*prop.table(table(yrbs_male19$so_new)),1)
+round(100*prop.table(table(yrbs_male21$so_new)),1)
+
+
+
+
+round(100*prop.table(table(yrbs_sex_2015$age, yrbs_sex_2015$sex), c(2)),1)
+round(100*prop.table(table(yrbs_sex_2017$age, yrbs_sex_2017$sex), c(2)),1)
+round(100*prop.table(table(yrbs_sex_2019$age, yrbs_sex_2019$sex), c(2)),1)
+round(100*prop.table(table(yrbs_sex_2021$age, yrbs_sex_2021$sex), c(2)),1)
+
+
+
+multiCA_szabo_tbl_14yoF
+multiCA_szabo_tbl_15yoF
+multiCA_szabo_tbl_16yoF
+multiCA_szabo_tbl_17yoF
+multiCA_szabo_tbl_18yoF
+
+multiCA_szabo_tbl_14yoM
+multiCA_szabo_tbl_15yoM
+multiCA_szabo_tbl_16yoM
+multiCA_szabo_tbl_17yoM
+multiCA_szabo_tbl_18yoM
+
+#################################################################################
+
 ##############################################################################################
 #######################################
 ########  PLOTS #######################
@@ -2676,8 +2773,6 @@ for(yr in yrpos) {
 ####
 
 
-#################################################################################
-
 
 # FIGURE X. Proportion of respondents sexual orientation by year, split by sex
 #+++++++++++++++++++++++++++++++++++++++++
@@ -2696,7 +2791,7 @@ png("plots/SSP/SO_by_year_two_panel.png",
   par(mfrow=c(1,3))
   par(mar=c(2,0,3,0))
   par(oma=c(0,8,0,0))
-  my_lwd = 1.5
+  my_lwd = 2.5
   my_xlim = c(2014.5, 2021.5)
   #pt_text_cex = 0.6
   
@@ -2773,9 +2868,15 @@ png("plots/SSP/SSP_by_sex_and_year.png",
 {
    par(mfrow=c(2,2))
    par(mar=c(2,0,3,0))
-   par(oma=c(0,5,0,1))
+   par(oma=c(2,5,0,1))
    my_lwd = 2.5
    my_xlim = c(2014.5, 2021.5)
+   
+   # N's for each year
+   Ns_all_fem <- c(7239, 6672, 6049, 6456) #all females
+   Ns_all_mal <- c(7108, 6034, 5629, 6884)   #all males
+   Ns_cond_fem <- c(2976, 2306, 2083, 2865) #females who have has sex
+   Ns_cond_mal <- c(3363, 2382, 2178, 2926)   #males who have had sex
    
    plot(df_proportions_fem$year, df_proportions_fem$females_prop/100, type = "l", 
         col = "white", lwd = my_lwd, xlab = "", ylab = "", 
@@ -2795,6 +2896,9 @@ png("plots/SSP/SSP_by_sex_and_year.png",
          col = "#37C817", lwd = my_lwd)
    lines(df_proportions_fem$year, df_proportions_fem$none_prop/100, lty = 1, 
          col = "black", lwd = my_lwd)
+   
+  
+   mtext(paste0("n=", Ns_all_fem), side = 1, line = 1, at=df_proportions_fem$year, cex=0.40)
    
    text(2021.3, 0.55, "*")
    text(2021.3, 0.33, "*", col = "#E6A820")
@@ -2817,7 +2921,9 @@ png("plots/SSP/SSP_by_sex_and_year.png",
          col = "#37C817", lwd = my_lwd)
    lines(df_proportions_mal$year, df_proportions_mal$none_prop/100, lty = 1, 
          col = "black", lwd = my_lwd)
-   
+  
+   mtext(paste0("n=", Ns_all_mal), side = 1, line = 1, at=df_proportions_mal$year, cex=0.40)
+    
    text(2021.3, 0.57, "*")
    text(2021.3, 0.40, "*", col = "#31BAF6")
    
@@ -2844,6 +2950,8 @@ png("plots/SSP/SSP_by_sex_and_year.png",
    lines(df_proportions_fem2$year, df_proportions_fem2$both_prop/100, lty = 4, 
          col = "#37C817", lwd = my_lwd)
    
+   mtext(paste0("n=", Ns_cond_fem), side = 1, line = 1, at=df_proportions_fem2$year, cex=0.40)
+   
    text(2021.3, 0.72, "*", col = "#E6A820")
    text(2021.3, 0.21, "*", col = "#37C817")
    text(2021.3, 0.07, "*", col = "#31BAF6")
@@ -2862,6 +2970,8 @@ png("plots/SSP/SSP_by_sex_and_year.png",
          col = "#E6A820", lwd = my_lwd)
    lines(df_proportions_mal2$year, df_proportions_mal2$both_prop/100, lty = 4, 
          col = "#37C817", lwd = my_lwd)
+  
+   mtext(paste0("n=", Ns_cond_mal), side = 1, line = 1, at=df_proportions_mal2$year, cex=0.40)
    
    text(2021.3, 0.04, "*", col = "#E6A820")
 }
