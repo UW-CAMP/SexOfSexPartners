@@ -2034,37 +2034,55 @@ CI_sm5
 
 #post hoc analyses on trend test for males who have sex with males (including those who 
 #have sex with males and females) to see if there is a sig. change over time. 
-
-tableNA(yrbs_male$sex_of_sps, yrbs_male$ever_sex_sps)
+#Only include those who have had sex 
 
 ##create a new variable for males with any male partners vs males with no male partners
 #yrbs_male 
 
-yrbs_male$sex_of_sps_D <- yrbs_male$sex_of_sps
-yrbs_male$sex_of_sps_D[yrbs_male$sex_of_sps %in% c("3_male", "4_fem+mal")] <- "any_male"
-tableNA(yrbs_male$sex_of_sps_D)
+yrbs_male$ever_sex_sps_D <- ifelse(yrbs_male$ever_sex_sps == "2_female", "only_female",
+                                   ifelse(yrbs_male$ever_sex_sps %in% c("3_male", "4_fem+mal"), "any_male", NA))
+
+
+table(yrbs_male$ever_sex_sps_D)
+
+
 
 #Trend test for any males with male partners
-szabo_M_male_sps <- table(yrbs_male$sex_of_sps_D, yrbs_male$year)
-prop.table(szabo_M_male_sps, 2)
+szabo_M_male_sps <- table(yrbs_male$ever_sex_sps_D, yrbs_male$year)
+prop.table(szabo_M_male_sps)
 
 ## using formula interface
-multiCA_szabo_tbl_M_male_sps <- multiCA.test(sex_of_sps_D ~ year, data=yrbs_male)
+multiCA_szabo_tbl_M_male_sps <- multiCA.test(ever_sex_sps_D ~ year, data=yrbs_male)
+
 multiCA_szabo_tbl_M_male_sps
+
+df_proportions_M_male_sps <- yrbs_male %>%
+  group_by(year) %>%
+  summarise(
+    only_females_prop = sum(ever_sex_sps_D == "only_female", na.rm = T) / sum(!is.na(ever_sex_sps_D)) * 100,
+    any_males_prop = sum(ever_sex_sps_D == "any_male", na.rm = T) / sum(!is.na(ever_sex_sps_D)) * 100
+  )
+
+print(df_proportions_M_male_sps)
+
 
 ##create a new variable for females with any female partners vs females with no female partners
 #yrbs_female 
 
-yrbs_female$sex_of_sps_D <- yrbs_female$sex_of_sps
-yrbs_female$sex_of_sps_D[yrbs_female$sex_of_sps %in% c("2_female", "4_fem+mal")] <- "any_female"
-tableNA(yrbs_female$sex_of_sps_D)
+yrbs_female$ever_sex_sps_D <- ifelse(yrbs_female$ever_sex_sps == "3_male", "only_male",
+                                   ifelse(yrbs_female$ever_sex_sps %in% c("2_female", "4_fem+mal"), "any_female", NA))
+
+
+table(yrbs_female$ever_sex_sps_D)
+
+
 
 #Trend test for any males with male partners
-szabo_F_female_sps <- table(yrbs_female$sex_of_sps_D, yrbs_female$year)
-prop.table(szabo_F_female_sps, 2)
+szabo_F_female_sps <- table(yrbs_female$ever_sex_sps_D, yrbs_female$year)
+prop.table(szabo_F_female_sps)
 
 ## using formula interface
-multiCA_szabo_tbl_F_female_sps <- multiCA.test(sex_of_sps_D ~ year, data=yrbs_female)
+multiCA_szabo_tbl_F_female_sps <- multiCA.test(ever_sex_sps_D ~ year, data=yrbs_female)
 
 multiCA_szabo_tbl_F_female_sps
 
@@ -2754,12 +2772,133 @@ for(yr in yrpos) {
 
 ####
 
-
-
-# FIGURE X. Proportion of respondents sexual orientation by year, split by sex
+###############################################################################################
+# FIGURE 1. Proportion of respondents by sex of past sexual contacts
 #+++++++++++++++++++++++++++++++++++++++++
+#####
+png("plots/SSP/SSP_by_sex_and_year.png", 
+    width = 4*300, height = 6*300, res = 300
+)
+{
+  par(mfrow=c(2,2))
+  par(mar=c(2,0,3,0))
+  par(oma=c(2,5,0,1))
+  my_lwd = 2.5
+  my_xlim = c(2014.5, 2021.5)
+  
+  # N's for each year
+  Ns_all_fem <- c(7239, 6672, 6049, 6456) #all females
+  Ns_all_mal <- c(7108, 6034, 5629, 6884)   #all males
+  Ns_cond_fem <- c(2976, 2306, 2083, 2865) #females who have has sex
+  Ns_cond_mal <- c(3363, 2382, 2178, 2926)   #males who have had sex
+  
+  plot(df_proportions_fem$year, df_proportions_fem$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
+  mtext("All female respondents", 3, cex = 0.7, line =0.3)
+  mtext("Proportion w/ sex partners of given sex", 2, cex = 0.7, line = 3, outer = TRUE)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "A", cex=0.7)
+  lines(df_proportions_fem$year, df_proportions_fem$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_fem$year, df_proportions_fem$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_fem$year, df_proportions_fem$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  lines(df_proportions_fem$year, df_proportions_fem$none_prop/100, lty = 1, 
+        col = "black", lwd = my_lwd)
+  
+  
+  mtext(paste0("n=", Ns_all_fem), side = 1, line = 1, at=df_proportions_fem$year, cex=0.40)
+  
+  text(2021.3, 0.55, "*")
+  text(2021.3, 0.33, "*", col = "#E6A820")
+  text(2021.3, 0.10, "*", col = "#37C817")
+  text(2021.3, 0.03, "*", col = "#31BAF6")
+  
+  plot(df_proportions_mal$year, df_proportions_mal$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext("All male respondents", 3, cex = 0.7, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "B", cex=0.7)
+  lines(df_proportions_mal$year, df_proportions_mal$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_mal$year, df_proportions_mal$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_mal$year, df_proportions_mal$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  lines(df_proportions_mal$year, df_proportions_mal$none_prop/100, lty = 1, 
+        col = "black", lwd = my_lwd)
+  
+  mtext(paste0("n=", Ns_all_mal), side = 1, line = 1, at=df_proportions_mal$year, cex=0.40)
+  
+  text(2021.3, 0.57, "*")
+  text(2021.3, 0.40, "*", col = "#31BAF6")
+  
+  legend(2016, 1, c("None", "Female partners only", 
+                    "Male partners only", 
+                    "Female and male partners"),
+         col=c("#000000", "#31BAF6", "#E6A820", "#37C817"), 
+         lty = 1:4, cex=0.5
+  )
+  
+  plot(df_proportions_fem2$year, df_proportions_fem2$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
+  mtext("Female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "C", cex=0.7)
+  lines(df_proportions_fem2$year, df_proportions_fem2$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_fem2$year, df_proportions_fem2$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_fem2$year, df_proportions_fem2$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  mtext(paste0("n=", Ns_cond_fem), side = 1, line = 1, at=df_proportions_fem2$year, cex=0.40)
+  
+  text(2021.3, 0.72, "*", col = "#E6A820")
+  text(2021.3, 0.21, "*", col = "#37C817")
+  text(2021.3, 0.07, "*", col = "#31BAF6")
+  
+  plot(df_proportions_mal2$year, df_proportions_mal2$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext("Male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "D", cex=0.7)
+  lines(df_proportions_mal2$year, df_proportions_mal2$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_mal2$year, df_proportions_mal2$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_mal2$year, df_proportions_mal2$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  mtext(paste0("n=", Ns_cond_mal), side = 1, line = 1, at=df_proportions_mal2$year, cex=0.40)
+  
+  text(2021.3, 0.04, "*", col = "#E6A820")
+}
+dev.off()
+
+
+
+###############################################################################################
+# FIGURE 2. Proportion of respondents sexual orientation by year, split by sex
+#+++++++++++++++++++++++++++++++++++++++++
+#####
 png("plots/SSP/SO_by_year_two_panel.png", 
-    width = 9*300, height = 3*300, res = 300
+    width = 7*300, height = 3*300, res = 300
 )
 {
   #par(mfrow=c(1,3))
@@ -2770,9 +2909,9 @@ png("plots/SSP/SO_by_year_two_panel.png",
   #lty_sps <- c("F3","dotted","dashed")
   
   
-  par(mfrow=c(1,3))
+  par(mfrow=c(1,2))
   par(mar=c(2,0,3,0))
-  par(oma=c(0,8,0,0))
+  par(oma=c(0,8,0,2))
   my_lwd = 2.5
   my_xlim = c(2014.5, 2021.5)
   #pt_text_cex = 0.6
@@ -2802,6 +2941,16 @@ png("plots/SSP/SO_by_year_two_panel.png",
   text(2021.3, 0.19, "*", col = "#E6A820")
   text(2021.3, 0.15, "*", col = "#37C817")
   
+  #plot.new()
+  legend("topright", c("Straight",
+                       "Gay/lesbian", 
+                       "Bisexual", 
+                       "Not sure",
+                       "Declined to respond"),
+         col=c("pink", "#31BAF6", "#E6A820", "#37C817", "red"), 
+         lty = 1:5, cex=0.4, bty = "o"
+  )
+  
   
   plot(df_proportions_mal_so$year, df_proportions_mal_so$straight_prop/100, type = "l", 
        col = "pink", lwd = my_lwd, xlab = "", ylab = "", 
@@ -2827,141 +2976,252 @@ png("plots/SSP/SO_by_year_two_panel.png",
   text(2021.3, 0.07, "*", col = "#37C817")
   
   
-  plot.new()
-  legend("center", c("Straight",
-                     "Gay/lesbian", 
-                     "Bisexual", 
-                     "Don't know",
-                     "Declined to respond"),
-         col=c("pink", "#31BAF6", "#E6A820", "#37C817", "red"), 
-         lty = 1:5, cex=1.2, bty = "o"
-  )
   
-}
-dev.off()
-
-
-
-# FIGURE 1. Proportion of respondents by sex of past sexual contacts
-#+++++++++++++++++++++++++++++++++++++++++
-png("plots/SSP/SSP_by_sex_and_year.png", 
-    width = 4*300, height = 6*300, res = 300
-    )
-{
-   par(mfrow=c(2,2))
-   par(mar=c(2,0,3,0))
-   par(oma=c(2,5,0,1))
-   my_lwd = 2.5
-   my_xlim = c(2014.5, 2021.5)
-   
-   # N's for each year
-   Ns_all_fem <- c(7239, 6672, 6049, 6456) #all females
-   Ns_all_mal <- c(7108, 6034, 5629, 6884)   #all males
-   Ns_cond_fem <- c(2976, 2306, 2083, 2865) #females who have has sex
-   Ns_cond_mal <- c(3363, 2382, 2178, 2926)   #males who have had sex
-   
-   plot(df_proportions_fem$year, df_proportions_fem$females_prop/100, type = "l", 
-        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-   axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
-   mtext("All female respondents", 3, cex = 0.7, line =0.3)
-   mtext("Proportion w/ sex partners of given sex", 2, cex = 0.7, line = 3, outer = TRUE)
-   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-   text(2014.6, 0.99, "A", cex=0.7)
-   lines(df_proportions_fem$year, df_proportions_fem$females_prop/100, lty = 2, 
-         col = "#31BAF6", lwd = my_lwd)
-   lines(df_proportions_fem$year, df_proportions_fem$males_prop/100, lty = 3, 
-         col = "#E6A820", lwd = my_lwd)
-   lines(df_proportions_fem$year, df_proportions_fem$both_prop/100, lty = 4, 
-         col = "#37C817", lwd = my_lwd)
-   lines(df_proportions_fem$year, df_proportions_fem$none_prop/100, lty = 1, 
-         col = "black", lwd = my_lwd)
-   
-  
-   mtext(paste0("n=", Ns_all_fem), side = 1, line = 1, at=df_proportions_fem$year, cex=0.40)
-   
-   text(2021.3, 0.55, "*")
-   text(2021.3, 0.33, "*", col = "#E6A820")
-   text(2021.3, 0.10, "*", col = "#37C817")
-   text(2021.3, 0.03, "*", col = "#31BAF6")
-   
-   plot(df_proportions_mal$year, df_proportions_mal$females_prop/100, type = "l", 
-        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-   mtext("All male respondents", 3, cex = 0.7, line =0.3)
-   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-   text(2014.6, 0.99, "B", cex=0.7)
-   lines(df_proportions_mal$year, df_proportions_mal$females_prop/100, lty = 2, 
-         col = "#31BAF6", lwd = my_lwd)
-      lines(df_proportions_mal$year, df_proportions_mal$males_prop/100, lty = 3, 
-         col = "#E6A820", lwd = my_lwd)
-   lines(df_proportions_mal$year, df_proportions_mal$both_prop/100, lty = 4, 
-         col = "#37C817", lwd = my_lwd)
-   lines(df_proportions_mal$year, df_proportions_mal$none_prop/100, lty = 1, 
-         col = "black", lwd = my_lwd)
-  
-   mtext(paste0("n=", Ns_all_mal), side = 1, line = 1, at=df_proportions_mal$year, cex=0.40)
-    
-   text(2021.3, 0.57, "*")
-   text(2021.3, 0.40, "*", col = "#31BAF6")
-   
-   legend(2016, 1, c("None", "Female partners only", 
-                     "Male partners only", 
-                     "Female and male partners"),
-          col=c("#000000", "#31BAF6", "#E6A820", "#37C817"), 
-          lty = 1:4, cex=0.5
-   )
-   
-   plot(df_proportions_fem2$year, df_proportions_fem2$females_prop/100, type = "l", 
-        col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
-        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-   axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
-   mtext("Female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-   text(2014.6, 0.99, "C", cex=0.7)
-   lines(df_proportions_fem2$year, df_proportions_fem2$females_prop/100, lty = 2, 
-         col = "#31BAF6", lwd = my_lwd)
-   lines(df_proportions_fem2$year, df_proportions_fem2$males_prop/100, lty = 3, 
-         col = "#E6A820", lwd = my_lwd)
-   lines(df_proportions_fem2$year, df_proportions_fem2$both_prop/100, lty = 4, 
-         col = "#37C817", lwd = my_lwd)
-   
-   mtext(paste0("n=", Ns_cond_fem), side = 1, line = 1, at=df_proportions_fem2$year, cex=0.40)
-   
-   text(2021.3, 0.72, "*", col = "#E6A820")
-   text(2021.3, 0.21, "*", col = "#37C817")
-   text(2021.3, 0.07, "*", col = "#31BAF6")
-   
-   plot(df_proportions_mal2$year, df_proportions_mal2$females_prop/100, type = "l", 
-        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-   mtext("Male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-   text(2014.6, 0.99, "D", cex=0.7)
-   lines(df_proportions_mal2$year, df_proportions_mal2$females_prop/100, lty = 2, 
-         col = "#31BAF6", lwd = my_lwd)
-   lines(df_proportions_mal2$year, df_proportions_mal2$males_prop/100, lty = 3, 
-         col = "#E6A820", lwd = my_lwd)
-   lines(df_proportions_mal2$year, df_proportions_mal2$both_prop/100, lty = 4, 
-         col = "#37C817", lwd = my_lwd)
-  
-   mtext(paste0("n=", Ns_cond_mal), side = 1, line = 1, at=df_proportions_mal2$year, cex=0.40)
-   
-   text(2021.3, 0.04, "*", col = "#E6A820")
 }
 dev.off()
 
 
 ###############################################################################################
-# FIGURE 2: Proportion of respondents by sex of past sexual contacts, 
+# FIGURE 3: Proportion of female respondents by sex of past sexual contacts, 
+# among those who have ever had sexual contact, broken out by reported sexual orientation 
+#+++++++++++++++++++++++++++++++++++++++++
+#####
+
+png("plots/SSP/SSP_by_SO_and_year_fem.png", 
+    width = 14*300, height = 3*300, res = 300
+)
+{
+  par(mfrow=c(1,6))
+  par(mar=c(2,0,3,0))
+  par(oma=c(0,9,0,1))
+  my_lwd = 2.5
+  my_xlim = c(2014.5, 2021.5)
+  lty_sps <- c("F3","dotted","dashed")
+  
+  plot(df_proportions_strfem$year, df_proportions_strfem$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
+  mtext("Straight", 3, cex = 1.2, line =0.3)
+  mtext("Prop. of females with sex partners \n of a given sex, among those who  \n have ever had sex", 2, cex = 1, line = 3, outer = TRUE)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "A", cex=1.2)
+  lines(df_proportions_strfem$year, df_proportions_strfem$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_strfem$year, df_proportions_strfem$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_strfem$year, df_proportions_strfem$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  
+  plot(df_proportions_lesfem$year, df_proportions_lesfem$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext("Lesbian", 3, cex = 1.2, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "B", cex=1.2)
+  lines(df_proportions_lesfem$year, df_proportions_lesfem$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_lesfem$year, df_proportions_lesfem$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_lesfem$year, df_proportions_lesfem$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  
+  
+  plot(df_proportions_bifem$year, df_proportions_bifem$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext("Bisexual", 3, cex = 1.2, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "C", cex=1.2)
+  lines(df_proportions_bifem$year, df_proportions_bifem$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_bifem$year, df_proportions_bifem$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_bifem$year, df_proportions_bifem$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  legend("top", c("Female partners only", 
+                  "Male partners only", 
+                  "Female and male partners"),
+         col=c("#31BAF6", "#E6A820", "#37C817"), 
+         lty = 1:4, cex=0.8, bty = "o"
+  )
+  
+  text(2021.3, 0.53, "*", col = "#37C817")
+  text(2021.3, 0.40, "*", col = "#E6A820")
+  
+  
+  plot(df_proportions_dkofem$year, df_proportions_dkofem$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext("Not sure", 3, cex = 1.2, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "D", cex=1.2)
+  lines(df_proportions_dkofem$year, df_proportions_dkofem$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_dkofem$year, df_proportions_dkofem$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_dkofem$year, df_proportions_dkofem$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  text(2021.3, 0.51, "*", col = "#E6A820")
+  text(2021.3, 0.39, "*", col = "#37C817")
+  
+  
+  plot(df_proportions_reffem$year, df_proportions_reffem$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext("Declined to answer", 3, cex = 1.2, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "E", cex=1.2)
+  lines(df_proportions_reffem$year, df_proportions_reffem$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_reffem$year, df_proportions_reffem$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_reffem$year, df_proportions_reffem$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  
+}
+dev.off()
+
+
+
+###############################################################################################
+# FIGURE 4: PLOTS BY SO AND YEAR FOR MALES (CONDITIONED ON EHHS)
+# tables 10-14
+#Straight male, gay male, bisexual male, don't know male, declined to answer male
+#+++++++++++++++++++++++++++++++++++++++++
+#####
+
+png("plots/SSP/SSP_by_SO_and_year_mal.png", 
+    width = 14*300, height = 3*300, res = 300
+)
+{
+  par(mfrow=c(1,6))
+  par(mar=c(2,0,3,0))
+  par(oma=c(0,9,0,1))
+  my_lwd = 2.5
+  my_xlim = c(2014.5, 2021.5)
+  
+  lty_sps <- c("solid","F3","dotted","dashed")
+  
+  plot(df_proportions_strmal$year, df_proportions_strmal$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
+  mtext("Straight", 3, cex = 1.2, line =0.3)
+  mtext("Prop. of males with sex partners \n of a given sex, among those who  \n have ever had sex", 2, cex = 1, line = 3, outer = TRUE)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "A", cex=1.2)
+  lines(df_proportions_strmal$year, df_proportions_strmal$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_strmal$year, df_proportions_strmal$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_strmal$year, df_proportions_strmal$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  
+  plot(df_proportions_gaymal$year, df_proportions_gaymal$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext("Gay", 3, cex = 1.2, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "B", cex=1.2)
+  lines(df_proportions_gaymal$year, df_proportions_gaymal$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_gaymal$year, df_proportions_gaymal$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_gaymal$year, df_proportions_gaymal$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  
+  
+  plot(df_proportions_bimal$year, df_proportions_bimal$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext("Bisexual", 3, cex = 1.2, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "C", cex=1.2)
+  lines(df_proportions_bimal$year, df_proportions_bimal$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_bimal$year, df_proportions_bimal$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_bimal$year, df_proportions_bimal$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  legend("top", c("Female partners only", 
+                  "Male partners only", 
+                  "Female and male partners"),
+         col=c("#31BAF6", "#E6A820", "#37C817"), 
+         lty = 1:4, cex=0.8, bty = "o"
+  )
+  
+  plot(df_proportions_dkomal$year, df_proportions_dkomal$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext(" \"Not sure\" ", 3, cex = 1.2, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "D", cex=1.2)
+  lines(df_proportions_dkomal$year, df_proportions_dkomal$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_dkomal$year, df_proportions_dkomal$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_dkomal$year, df_proportions_dkomal$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  text(2021.3, 0.60, "*", col = "#31BAF6")
+  text(2021.3, 0.30, "*", col = "#37C817")
+  
+  
+  plot(df_proportions_refmal$year, df_proportions_refmal$females_prop/100, type = "l", 
+       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
+       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  mtext("Declined to answer", 3, cex = 1.2, line =0.3)
+  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
+  text(2014.6, 0.99, "E", cex=1.2)
+  lines(df_proportions_refmal$year, df_proportions_refmal$females_prop/100, lty = 2, 
+        col = "#31BAF6", lwd = my_lwd)
+  lines(df_proportions_refmal$year, df_proportions_refmal$males_prop/100, lty = 3, 
+        col = "#E6A820", lwd = my_lwd)
+  lines(df_proportions_refmal$year, df_proportions_refmal$both_prop/100, lty = 4, 
+        col = "#37C817", lwd = my_lwd)
+  
+  text(2021.3, 0.85, "*", col = "#31BAF6")
+  text(2021.3, 0.00, "*", col = "#E6A820")
+  
+  
+  
+  
+}
+
+dev.off()
+
+
+###############################################################################################
+# FIGURE 5: Proportion of respondents by sex of past sexual contacts, 
 # by respondent age, among those who have ever had sexual contact
 #+++++++++++++++++++++++++++++++++++++++++
 #####
@@ -3212,7 +3472,7 @@ png("plots/SSP/SSP_by_age_and_year_cond_panel.png",
                      "Male partners only", 
                      "Female and male partners",
                      "",
-                     "Age 14", "Age 15", "Age 16", "Age 17", "Age 18"),
+                     "Age 14", "Age 15", "Age 16", "Age 17", "Age 18+"),
          col=c("black", "black", "black", "black", "white", col_age),
          lty = c(lty_sps, "blank", "solid", "solid", "solid", "solid", "solid"), 
          seg.len=5, cex=0.8, bty = "o"
@@ -3222,322 +3482,7 @@ png("plots/SSP/SSP_by_age_and_year_cond_panel.png",
 dev.off()
 
 ###############################################################################################
-# FIGURE 3: Proportion of female respondents by sex of past sexual contacts, 
-# among those who have ever had sexual contact, broken out by reported sexual orientation 
-#+++++++++++++++++++++++++++++++++++++++++
-#####
-
-png("plots/SSP/SSP_by_SO_and_year_fem.png", 
-    width = 14*300, height = 3*300, res = 300
-)
-{
-  par(mfrow=c(1,6))
-  par(mar=c(2,0,3,0))
-  par(oma=c(0,9,0,1))
-  my_lwd = 2.5
-  my_xlim = c(2014.5, 2021.5)
-  lty_sps <- c("F3","dotted","dashed")
-  
-  plot(df_proportions_strfem$year, df_proportions_strfem$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
-  mtext("Straight", 3, cex = 1.2, line =0.3)
-  mtext("Prop. of females with sex partners \n of a given sex, among those who  \n have ever had sex", 2, cex = 1, line = 3, outer = TRUE)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "A", cex=1.2)
-  lines(df_proportions_strfem$year, df_proportions_strfem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_strfem$year, df_proportions_strfem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_strfem$year, df_proportions_strfem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  
-  plot(df_proportions_lesfem$year, df_proportions_lesfem$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Lesbian", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "B", cex=1.2)
-  lines(df_proportions_lesfem$year, df_proportions_lesfem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_lesfem$year, df_proportions_lesfem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_lesfem$year, df_proportions_lesfem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  
-  
-  plot(df_proportions_bifem$year, df_proportions_bifem$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Bisexual", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "C", cex=1.2)
-  lines(df_proportions_bifem$year, df_proportions_bifem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_bifem$year, df_proportions_bifem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_bifem$year, df_proportions_bifem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  legend("top", c("Female partners only", 
-                  "Male partners only", 
-                  "Female and male partners"),
-         col=c("#31BAF6", "#E6A820", "#37C817"), 
-         lty = 1:4, cex=0.8, bty = "o"
-  )
-  
-  text(2021.3, 0.53, "*", col = "#37C817")
-  text(2021.3, 0.40, "*", col = "#E6A820")
-  
-  
-  plot(df_proportions_dkofem$year, df_proportions_dkofem$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext(" \"Not sure\" ", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "D", cex=1.2)
-  lines(df_proportions_dkofem$year, df_proportions_dkofem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_dkofem$year, df_proportions_dkofem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_dkofem$year, df_proportions_dkofem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.51, "*", col = "#E6A820")
-  text(2021.3, 0.39, "*", col = "#37C817")
-  
-  
-  plot(df_proportions_reffem$year, df_proportions_reffem$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Declined to answer", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "E", cex=1.2)
-  lines(df_proportions_reffem$year, df_proportions_reffem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_reffem$year, df_proportions_reffem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_reffem$year, df_proportions_reffem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  
-}
-dev.off()
-
-
-###############################################################################################
-# FIGURE 4: Proportion of male respondents by sex of past sexual contacts, 
-# among those who have ever had sexual contact, broken out by reported sexual orientation 
-#+++++++++++++++++++++++++++++++++++++++++
-#####
-
-png("plots/SSP/SSP_by_SO_and_year_mal.png", 
-    width = 14*300, height = 3*300, res = 300
-)
-{
-  par(mfrow=c(1,6))
-  par(mar=c(2,0,3,0))
-  par(oma=c(0,9,0,1))
-  my_lwd = 2.5
-  my_xlim = c(2014.5, 2021.5)
-  
-  
-  plot(df_proportions_strmal$year, df_proportions_strmal$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
-  mtext("Straight", 3, cex = 1.2, line =0.3)
-  mtext("Prop. of males with sex partners \n of a given sex, among those who  \n have ever had sex", 2, cex = 1, line = 3, outer = TRUE)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "A", cex=1.2)
-  lines(df_proportions_strmal$year, df_proportions_strmal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_strmal$year, df_proportions_strmal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_strmal$year, df_proportions_strmal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  
-  plot(df_proportions_gaymal$year, df_proportions_gaymal$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Gay", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "B", cex=1.2)
-  lines(df_proportions_gaymal$year, df_proportions_gaymal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_gaymal$year, df_proportions_gaymal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_gaymal$year, df_proportions_gaymal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  
-  
-  plot(df_proportions_bimal$year, df_proportions_bimal$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Bisexual", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "C", cex=1.2)
-  lines(df_proportions_bimal$year, df_proportions_bimal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_bimal$year, df_proportions_bimal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_bimal$year, df_proportions_bimal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  legend("top", c("Female partners only", 
-                  "Male partners only", 
-                  "Female and male partners"),
-         col=c("#31BAF6", "#E6A820", "#37C817"), 
-         lty = 1:4, cex=0.8, bty = "o"
-  )
-  
-  plot(df_proportions_dkomal$year, df_proportions_dkomal$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext(" \"Not sure\" ", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "D", cex=1.2)
-  lines(df_proportions_dkomal$year, df_proportions_dkomal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_dkomal$year, df_proportions_dkomal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_dkomal$year, df_proportions_dkomal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.60, "*", col = "#31BAF6")
-  text(2021.3, 0.30, "*", col = "#37C817")
-  
-  
-  plot(df_proportions_refmal$year, df_proportions_refmal$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Declined to answer", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "E", cex=1.2)
-  lines(df_proportions_refmal$year, df_proportions_refmal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_refmal$year, df_proportions_refmal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_refmal$year, df_proportions_refmal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.85, "*", col = "#31BAF6")
-  text(2021.3, 0.00, "*", col = "#E6A820")
-  
-  
-  
-  
-}
-
-dev.off()
-
-###############################################################################################
-# FIGURE S1: Proportion of respondents by sex of past sexual contacts, by respondent age
-#+++++++++++++++++++++++++++++++++++++++++
-#####
-
-png("plots/SSP/SSP_by_age_and_year_uncond_panel.png", 
-    width = 10*300, height = 4*300, res = 300
-)
-{
-  par(mfrow=c(1,3))
-  par(mar=c(2,0,3,0))
-  par(oma=c(0,5,0,1))
-  my_lwd = 1.5
-  my_xlim = c(2014.5, 2021.5)
-  pt_text_cex = 0.6
-  
-  #col_age = c("red", "orange", "green", "blue", "black")
-  col_age = brewer.pal(7, "YlOrBr")[3:7]    
-  lty_sps <- c("F3","dotted","dashed","solid")
-  
-  
-  # Females unconditional
-  
-  plot(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
-  mtext("Female respondents", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  # col_age <- gray(c(0.6, 0.4, 0.2, 0.1, 0.0))
-  
-  for(age in 1:5) {
-    matplot(yrs, t(df_prop_fem_uncond_by_age[age,,])/100, type='l', lty = lty_sps, 
-            col = col_age[age], lwd = my_lwd, add=T)
-    matplot(yrs, t(df_prop_fem_uncond_by_age[age,,])/100, type='p',
-            col = "#FFFFFF", pch=19, cex=1.5, add=T)
-    text(yrs, t(df_prop_fem_uncond_by_age[age,,])/100, age+13, 
-         col = col_age[age], cex=pt_text_cex)
-  }
-  
-  # Males unconditional
-  
-  plot(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(4, seq(0, 1, 0.1), seq(0, 1, 0.1), cex.axis = 0.7, las = 1)
-  mtext("Male respondents", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  
-  for(age in 1:5) {
-    matplot(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, type='l', lty = lty_sps, 
-            col = col_age[age], lwd = my_lwd, add=T)
-    matplot(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, type='p',
-            col = "#FFFFFF", pch=19, cex=1.5, add=T)
-    text(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, age+13, 
-         col = col_age[age], cex=pt_text_cex)
-  }
-  
-  
-  plot.new() 
-  legend("center", c("Never had sex",
-                     "Female partners only", 
-                     "Male partners only", 
-                     "Female and male partners",
-                     "",
-                     "Age 14", "Age 15", "Age 16", "Age 17", "Age 18"),
-         col=c("black", "black", "black", "black", "white", col_age),
-         lty = c(lty_sps, "blank", "solid", "solid", "solid", "solid", "solid"), 
-         seg.len=5, cex=0.8, bty = "o"
-  ) 
-  
-}
-
-dev.off()
-
-
-###############################################################################################
-# FIGURE S2:Proportion of female respondents by sex of past sexual contacts, 
+# FIGURE S1: Proportion of female respondents by sex of past sexual contacts, 
 # including those with no prior sexual contact, broken out by reported sexual orientation
 #+++++++++++++++++++++++++++++++++++++++++
 #####
@@ -3629,7 +3574,7 @@ png("plots/SSP/SSP_by_SO_and_year_fem_uncond.png",
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext(" \"Not sure\" ", 3, cex = 1.2, line =0.3)
+  mtext("Not sure", 3, cex = 1.2, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "D", cex=1.2)
   lines(df_proportions_dkofem_unc$year, df_proportions_dkofem_unc$females_prop/100, lty = 2, 
@@ -3667,8 +3612,11 @@ png("plots/SSP/SSP_by_SO_and_year_fem_uncond.png",
 dev.off()
 
 
+
+
+
 ###############################################################################################
-# FIGURE S3: Proportion of male respondents by sex of past sexual contacts, 
+# FIGURE S2: Proportion of male respondents by sex of past sexual contacts, 
 # including those with no prior sexual contact, broken out by reported sexual orientation
 #+++++++++++++++++++++++++++++++++++++++++
 #####
@@ -3756,7 +3704,7 @@ png("plots/SSP/SSP_by_SO_and_year_mal_uncond.png",
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
   axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext(" \"Not sure\" ", 3, cex = 1.2, line =0.3)
+  mtext("Not sure", 3, cex = 1.2, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "D", cex=1.2)
   lines(df_proportions_dkomal_unc$year, df_proportions_dkomal_unc$females_prop/100, lty = 2, 
@@ -3802,263 +3750,95 @@ dev.off()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-############################################################################################
-## Perhaps can remove everything for plots after this point. Reordered and renamed 
-## plots above to reflect the ordering in the manuscript
-
-
 ###############################################################################################
-# FIGURE 2: PLOTS BY SO AND YEAR FOR FEMALES (CONDITIONED ON EHHS)
-# tables 5-9
-#Straight female, lesbian female, bisexual female, don't know female, declined to answer female
+# FIGURE S3: Proportion of respondents by sex of past sexual contacts, by respondent age
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 
-png("plots/SSP/SSP_by_SO_and_year_fem.png", 
-    width = 14*300, height = 3*300, res = 300
+
+png("plots/SSP/SSP_by_age_and_year_uncond_panel.png", 
+    width = 10*300, height = 4*300, res = 300
 )
 {
-  par(mfrow=c(1,6))
+  par(mfrow=c(1,3))
   par(mar=c(2,0,3,0))
-  par(oma=c(0,9,0,1))
-  my_lwd = 2.5
+  par(oma=c(0,5,0,1))
+  my_lwd = 1.5
   my_xlim = c(2014.5, 2021.5)
+  pt_text_cex = 0.6
   
-  plot(df_proportions_strfem$year, df_proportions_strfem$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
-  mtext("Straight", 3, cex = 1.2, line =0.3)
-  mtext("Prop. of females with sex partners \n of a given sex, among those who  \n have ever had sex", 2, cex = 1, line = 3, outer = TRUE)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "A", cex=1.2)
-  lines(df_proportions_strfem$year, df_proportions_strfem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_strfem$year, df_proportions_strfem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_strfem$year, df_proportions_strfem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-
-  
-  plot(df_proportions_lesfem$year, df_proportions_lesfem$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Lesbian", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "B", cex=1.2)
-  lines(df_proportions_lesfem$year, df_proportions_lesfem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_lesfem$year, df_proportions_lesfem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_lesfem$year, df_proportions_lesfem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
+  #col_age = c("red", "orange", "green", "blue", "black")
+  col_age = brewer.pal(7, "YlOrBr")[3:7]    
+  lty_sps <- c("F3","dotted","dashed","solid")
   
   
+  # Females unconditional
   
-  plot(df_proportions_bifem$year, df_proportions_bifem$females_prop/100, type = "l", 
+  plot(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Bisexual", 3, cex = 1.2, line =0.3)
+  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
+  mtext("Female respondents", 3, cex = 0.7, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "C", cex=1.2)
-  lines(df_proportions_bifem$year, df_proportions_bifem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_bifem$year, df_proportions_bifem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_bifem$year, df_proportions_bifem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
+  # col_age <- gray(c(0.6, 0.4, 0.2, 0.1, 0.0))
   
-  legend("top", c("Female partners only", 
-                     "Male partners only", 
-                     "Female and male partners"),
-         col=c("#31BAF6", "#E6A820", "#37C817"), 
-         lty = 1:4, cex=0.8, bty = "o"
-  )
-  
-  text(2021.3, 0.53, "*", col = "#37C817")
-  text(2021.3, 0.40, "*", col = "#E6A820")
-  
-  
-  plot(df_proportions_dkofem$year, df_proportions_dkofem$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext(" \"Not sure\" ", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "D", cex=1.2)
-  lines(df_proportions_dkofem$year, df_proportions_dkofem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_dkofem$year, df_proportions_dkofem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_dkofem$year, df_proportions_dkofem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.51, "*", col = "#E6A820")
-  text(2021.3, 0.39, "*", col = "#37C817")
-  
-  
-  plot(df_proportions_reffem$year, df_proportions_reffem$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Declined to answer", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "E", cex=1.2)
-  lines(df_proportions_reffem$year, df_proportions_reffem$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_reffem$year, df_proportions_reffem$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_reffem$year, df_proportions_reffem$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-
-  
+  for(age in 1:5) {
+    matplot(yrs, t(df_prop_fem_uncond_by_age[age,,])/100, type='l', lty = lty_sps, 
+            col = col_age[age], lwd = my_lwd, add=T)
+    matplot(yrs, t(df_prop_fem_uncond_by_age[age,,])/100, type='p',
+            col = "#FFFFFF", pch=19, cex=1.5, add=T)
+    text(yrs, t(df_prop_fem_uncond_by_age[age,,])/100, age+13, 
+         col = col_age[age], cex=pt_text_cex)
   }
-dev.off()
-
-###############################################################################################
-# FIGURE 3: PLOTS BY SO AND YEAR FOR MALES (CONDITIONED ON EHHS)
-# tables 10-14
-#Straight male, gay male, bisexual male, don't know male, declined to answer male
-#+++++++++++++++++++++++++++++++++++++++++
-#####
-
-png("plots/SSP/SSP_by_SO_and_year_mal.png", 
-    width = 14*300, height = 3*300, res = 300
-)
-{
-  par(mfrow=c(1,6))
-  par(mar=c(2,0,3,0))
-  par(oma=c(0,9,0,1))
-  my_lwd = 2.5
-  my_xlim = c(2014.5, 2021.5)
   
-  lty_sps <- c("solid","F3","dotted","dashed")
+  # Males unconditional
   
-  plot(df_proportions_strmal$year, df_proportions_strmal$females_prop/100, type = "l", 
+  plot(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
-  mtext("Straight", 3, cex = 1.2, line =0.3)
-  mtext("Prop. of males with sex partners \n of a given sex, among those who  \n have ever had sex", 2, cex = 1, line = 3, outer = TRUE)
+  axis(4, seq(0, 1, 0.1), seq(0, 1, 0.1), cex.axis = 0.7, las = 1)
+  mtext("Male respondents", 3, cex = 0.7, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "A", cex=1.2)
-  lines(df_proportions_strmal$year, df_proportions_strmal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_strmal$year, df_proportions_strmal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_strmal$year, df_proportions_strmal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
+  
+  for(age in 1:5) {
+    matplot(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, type='l', lty = lty_sps, 
+            col = col_age[age], lwd = my_lwd, add=T)
+    matplot(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, type='p',
+            col = "#FFFFFF", pch=19, cex=1.5, add=T)
+    text(yrs, t(df_prop_mal_uncond_by_age[age,,])/100, age+13, 
+         col = col_age[age], cex=pt_text_cex)
+  }
   
   
-  plot(df_proportions_gaymal$year, df_proportions_gaymal$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Gay", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "B", cex=1.2)
-  lines(df_proportions_gaymal$year, df_proportions_gaymal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_gaymal$year, df_proportions_gaymal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_gaymal$year, df_proportions_gaymal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  
-  
-  plot(df_proportions_bimal$year, df_proportions_bimal$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Bisexual", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "C", cex=1.2)
-  lines(df_proportions_bimal$year, df_proportions_bimal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_bimal$year, df_proportions_bimal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_bimal$year, df_proportions_bimal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  legend("top", c("Female partners only", 
+  plot.new() 
+  legend("center", c("Never had sex",
+                     "Female partners only", 
                      "Male partners only", 
-                     "Female and male partners"),
-         col=c("#31BAF6", "#E6A820", "#37C817"), 
-         lty = 1:4, cex=0.8, bty = "o"
-  )
-  
-  plot(df_proportions_dkomal$year, df_proportions_dkomal$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext(" \"Not sure\" ", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "D", cex=1.2)
-  lines(df_proportions_dkomal$year, df_proportions_dkomal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_dkomal$year, df_proportions_dkomal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_dkomal$year, df_proportions_dkomal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.60, "*", col = "#31BAF6")
-  text(2021.3, 0.30, "*", col = "#37C817")
-  
-  
-  plot(df_proportions_refmal$year, df_proportions_refmal$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("Declined to answer", 3, cex = 1.2, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "E", cex=1.2)
-  lines(df_proportions_refmal$year, df_proportions_refmal$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_refmal$year, df_proportions_refmal$males_prop/100, lty = 3, 
-        col = "#E6A820", lwd = my_lwd)
-  lines(df_proportions_refmal$year, df_proportions_refmal$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-
-  text(2021.3, 0.85, "*", col = "#31BAF6")
-  text(2021.3, 0.00, "*", col = "#E6A820")
-  
-  
-
+                     "Female and male partners",
+                     "",
+                     "Age 14", "Age 15", "Age 16", "Age 17", "Age 18+"),
+         col=c("black", "black", "black", "black", "white", col_age),
+         lty = c(lty_sps, "blank", "solid", "solid", "solid", "solid", "solid"), 
+         seg.len=5, cex=0.8, bty = "o"
+  ) 
   
 }
 
 dev.off()
 
-#######################################################################################
 
-# FIGURE 4: PLOTS BY AGE AND YEAR FOR FEMALES (CONDITIONED ON EHHS)
-# tables 15-19
+
+##############################################################
+#  THESE LAST TWO PLOTS WILL NOT BE INCLUDED IN THE MANUSCRIPT
+##############################################################
+
+
+#######################################################################################
+# PLOTS BY AGE AND YEAR FOR FEMALES (CONDITIONED ON EHHS)
 #Females Ages 14, 15, 16, 17, and 18 
 #+++++++++++++++++++++++++++++++++++++++++
 #####
@@ -4113,7 +3893,7 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
   text(2021.3, 0.66, "*")
   text(2021.3, 0.25, "*")
   text(2021.3, 0.10, "*")
-
+  
   
   
   
@@ -4134,7 +3914,7 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
   
   text(2021.3, 0.75, "*")
   text(2021.3, 0.20, "*")
-
+  
   
   
   plot(df_proportions_17yoF$year, df_proportions_17yoF$females_prop/100, type = "l", 
@@ -4170,7 +3950,7 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
         col = "#EEC441", lwd = my_lwd)
   lines(df_proportions_18yoF$year, df_proportions_18yoF$both_prop/100, lty = 4, 
         col = "#37C817", lwd = my_lwd)
-
+  
   text(2021.3, 0.75, "*")
   text(2021.3, 0.20, "*")
   
@@ -4181,20 +3961,19 @@ png("plots/SSP/SSP_by_age_and_year_fem.png",
                      "Female and male partners"),
          col=c("#31BAF6", "#EEC441", "#37C817"), 
          lty = 1:4, cex=0.8, bty = "o"
-
+         
          
   ) 
   
-
-
-  }
+  
+  
+}
 
 dev.off()
 
 #######################################################################################
 
-# FIGURE 5: PLOTS BY AGE AND YEAR FOR MALES (CONDITIONED ON EHHS)
-# tables 20-24
+# PLOTS BY AGE AND YEAR FOR MALES (CONDITIONED ON EHHS)
 #males Ages 14, 15, 16, 17, and 18 
 #+++++++++++++++++++++++++++++++++++++++++
 #####
@@ -4260,7 +4039,7 @@ png("plots/SSP/SSP_by_age_and_year_mal.png",
   
   text(2021.3, 0.90, "*")
   text(2021.3, 0.08, "*")
-   
+  
   plot(df_proportions_17yoM$year, df_proportions_17yoM$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
@@ -4302,11 +4081,73 @@ png("plots/SSP/SSP_by_age_and_year_mal.png",
   )
   
   
-  }
+}
 
 
 
 dev.off()
 
 #######################################################################################
+################################################################################
+##########################  END OF PLOTS  ######################################
+################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
