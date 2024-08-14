@@ -2034,55 +2034,37 @@ CI_sm5
 
 #post hoc analyses on trend test for males who have sex with males (including those who 
 #have sex with males and females) to see if there is a sig. change over time. 
-#Only include those who have had sex 
+
+tableNA(yrbs_male$sex_of_sps, yrbs_male$ever_sex_sps)
 
 ##create a new variable for males with any male partners vs males with no male partners
 #yrbs_male 
 
-yrbs_male$ever_sex_sps_D <- ifelse(yrbs_male$ever_sex_sps == "2_female", "only_female",
-                                   ifelse(yrbs_male$ever_sex_sps %in% c("3_male", "4_fem+mal"), "any_male", NA))
-
-
-table(yrbs_male$ever_sex_sps_D)
-
-
+yrbs_male$sex_of_sps_D <- yrbs_male$sex_of_sps
+yrbs_male$sex_of_sps_D[yrbs_male$sex_of_sps %in% c("3_male", "4_fem+mal")] <- "any_male"
+tableNA(yrbs_male$sex_of_sps_D)
 
 #Trend test for any males with male partners
-szabo_M_male_sps <- table(yrbs_male$ever_sex_sps_D, yrbs_male$year)
-prop.table(szabo_M_male_sps)
+szabo_M_male_sps <- table(yrbs_male$sex_of_sps_D, yrbs_male$year)
+prop.table(szabo_M_male_sps, 2)
 
 ## using formula interface
-multiCA_szabo_tbl_M_male_sps <- multiCA.test(ever_sex_sps_D ~ year, data=yrbs_male)
-
+multiCA_szabo_tbl_M_male_sps <- multiCA.test(sex_of_sps_D ~ year, data=yrbs_male)
 multiCA_szabo_tbl_M_male_sps
-
-df_proportions_M_male_sps <- yrbs_male %>%
-  group_by(year) %>%
-  summarise(
-    only_females_prop = sum(ever_sex_sps_D == "only_female", na.rm = T) / sum(!is.na(ever_sex_sps_D)) * 100,
-    any_males_prop = sum(ever_sex_sps_D == "any_male", na.rm = T) / sum(!is.na(ever_sex_sps_D)) * 100
-  )
-
-print(df_proportions_M_male_sps)
-
 
 ##create a new variable for females with any female partners vs females with no female partners
 #yrbs_female 
 
-yrbs_female$ever_sex_sps_D <- ifelse(yrbs_female$ever_sex_sps == "3_male", "only_male",
-                                   ifelse(yrbs_female$ever_sex_sps %in% c("2_female", "4_fem+mal"), "any_female", NA))
-
-
-table(yrbs_female$ever_sex_sps_D)
-
-
+yrbs_female$sex_of_sps_D <- yrbs_female$sex_of_sps
+yrbs_female$sex_of_sps_D[yrbs_female$sex_of_sps %in% c("2_female", "4_fem+mal")] <- "any_female"
+tableNA(yrbs_female$sex_of_sps_D)
 
 #Trend test for any males with male partners
-szabo_F_female_sps <- table(yrbs_female$ever_sex_sps_D, yrbs_female$year)
-prop.table(szabo_F_female_sps)
+szabo_F_female_sps <- table(yrbs_female$sex_of_sps_D, yrbs_female$year)
+prop.table(szabo_F_female_sps, 2)
 
 ## using formula interface
-multiCA_szabo_tbl_F_female_sps <- multiCA.test(ever_sex_sps_D ~ year, data=yrbs_female)
+multiCA_szabo_tbl_F_female_sps <- multiCA.test(sex_of_sps_D ~ year, data=yrbs_female)
 
 multiCA_szabo_tbl_F_female_sps
 
