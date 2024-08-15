@@ -2991,12 +2991,12 @@ dev.off()
 #####
 
 png("plots/SSP/SSP_by_SO_and_year_fem.png", 
-    width = 14*300, height = 3*300, res = 300
+    width = 14*300, height = 4*300, res = 300
 )
 {
-  par(mfrow=c(1,6))
+  par(mfrow=c(1,5))
   par(mar=c(2,0,3,0))
-  par(oma=c(0,9,0,1))
+  par(oma=c(2,8,0,3))
   my_lwd = 2.5
   my_xlim = c(2014.5, 2021.5)
   lty_sps <- c("F3","dotted","dashed")
@@ -3004,13 +3004,13 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
   plot(df_proportions_strfem$year, df_proportions_strfem$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.0)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.8)
   axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
   mtext("Straight", 3, cex = 1.2, line =0.3)
-  mtext("Prop. of females by SSP, among those who have ever had sex", 2, cex = 1, line = 3, outer = TRUE)
+  mtext("Prop. of females by SSP, among \nthose who have ever had sex", 2, cex = 1.0, line = 4, outer = TRUE)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "A", cex=1.2)
+  text(2014.6, 0.99, "A", cex=1.0)
   lines(df_proportions_strfem$year, df_proportions_strfem$females_prop/100, lty = 2, 
         col = "#31BAF6", lwd = my_lwd)
   lines(df_proportions_strfem$year, df_proportions_strfem$males_prop/100, lty = 3, 
@@ -3022,11 +3022,11 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
   plot(df_proportions_lesfem$year, df_proportions_lesfem$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.0)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.8)
   mtext("Lesbian", 3, cex = 1.2, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "B", cex=1.2)
+  text(2014.6, 0.99, "B", cex=1.0)
   lines(df_proportions_lesfem$year, df_proportions_lesfem$females_prop/100, lty = 2, 
         col = "#31BAF6", lwd = my_lwd)
   lines(df_proportions_lesfem$year, df_proportions_lesfem$males_prop/100, lty = 3, 
@@ -3039,11 +3039,11 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
   plot(df_proportions_bifem$year, df_proportions_bifem$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.0)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.8)
   mtext("Bisexual", 3, cex = 1.2, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "C", cex=1.2)
+  text(2014.6, 0.99, "C", cex=1.0)
   lines(df_proportions_bifem$year, df_proportions_bifem$females_prop/100, lty = 2, 
         col = "#31BAF6", lwd = my_lwd)
   lines(df_proportions_bifem$year, df_proportions_bifem$males_prop/100, lty = 3, 
@@ -3055,7 +3055,7 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
                   "Male partners only", 
                   "Female and male partners"),
          col=c("#31BAF6", "#E6A820", "#37C817"), 
-         lty = 1:4, cex=0.8, bty = "o"
+         lty = 2:4, cex=1.2, bty = "o"
   )
   
   text(2021.3, 0.53, "*", col = "#37C817")
@@ -3065,11 +3065,11 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
   plot(df_proportions_dkofem$year, df_proportions_dkofem$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.0)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.8)
   mtext("Not sure", 3, cex = 1.2, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "D", cex=1.2)
+  text(2014.6, 0.99, "D", cex=1.0)
   lines(df_proportions_dkofem$year, df_proportions_dkofem$females_prop/100, lty = 2, 
         col = "#31BAF6", lwd = my_lwd)
   lines(df_proportions_dkofem$year, df_proportions_dkofem$males_prop/100, lty = 3, 
@@ -3084,11 +3084,11 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
   plot(df_proportions_reffem$year, df_proportions_reffem$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.2)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=1.0)
+  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.8)
   mtext("Declined to answer", 3, cex = 1.2, line =0.3)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "E", cex=1.2)
+  text(2014.6, 0.99, "E", cex=1.0)
   lines(df_proportions_reffem$year, df_proportions_reffem$females_prop/100, lty = 2, 
         col = "#31BAF6", lwd = my_lwd)
   lines(df_proportions_reffem$year, df_proportions_reffem$males_prop/100, lty = 3, 
@@ -3175,7 +3175,7 @@ png("plots/SSP/SSP_by_SO_and_year_mal.png",
                   "Male partners only", 
                   "Female and male partners"),
          col=c("#31BAF6", "#E6A820", "#37C817"), 
-         lty = 1:4, cex=0.8, bty = "o"
+         lty = 2:4, cex=0.8, bty = "o"
   )
   
   plot(df_proportions_dkomal$year, df_proportions_dkomal$females_prop/100, type = "l", 
