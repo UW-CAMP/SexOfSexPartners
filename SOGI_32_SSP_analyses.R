@@ -2799,7 +2799,7 @@ png("plots/SSP/SSP_by_sex_and_year.png",
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
   axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
   mtext("All female respondents", 3, cex = 0.7, line =0.3)
-  mtext("Proportion w/ sex partners of given sex", 2, cex = 0.7, line = 3, outer = TRUE)
+  mtext("Prop. of respondents by SSP", 2, cex = 0.7, line = 3, outer = TRUE)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "A", cex=0.7)
   lines(df_proportions_fem$year, df_proportions_fem$females_prop/100, lty = 2, 
@@ -2898,7 +2898,7 @@ dev.off()
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 png("plots/SSP/SO_by_year_two_panel.png", 
-    width = 7*300, height = 3*300, res = 300
+    width = 6*300, height = 3.5*300, res = 300
 )
 {
   #par(mfrow=c(1,3))
@@ -2911,7 +2911,7 @@ png("plots/SSP/SO_by_year_two_panel.png",
   
   par(mfrow=c(1,2))
   par(mar=c(2,0,3,0))
-  par(oma=c(0,8,0,2))
+  par(oma=c(0,5,0,1))
   my_lwd = 2.5
   my_xlim = c(2014.5, 2021.5)
   #pt_text_cex = 0.6
@@ -2920,13 +2920,13 @@ png("plots/SSP/SO_by_year_two_panel.png",
   plot(df_proportions_fem_so$year, df_proportions_fem_so$straight_prop/100, type = "l", 
        col = "pink", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=2)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
-  mtext("Females", 3, cex = 1, line =0.3)
-  mtext("Prop. of adolescents of a \ngiven sexual identity by year", 2, cex = 1, line = 4, outer = TRUE)
+  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
+  mtext("Females", 3, cex = 0.7, line =0.3)
+  mtext("Prop. of adolescents of a \ngiven sexual identity by year", 2, cex = 0.7, line = 3, outer = TRUE)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "A", cex=1.2)
+  text(2014.6, 0.99, "A", cex=0.7)
   lines(df_proportions_fem_so$year, df_proportions_fem_so$lesgay_prop/100, lty = 2, 
         col = "#31BAF6", lwd = my_lwd)
   lines(df_proportions_fem_so$year, df_proportions_fem_so$bi_prop/100, lty = 3, 
@@ -2941,27 +2941,18 @@ png("plots/SSP/SO_by_year_two_panel.png",
   text(2021.3, 0.19, "*", col = "#E6A820")
   text(2021.3, 0.15, "*", col = "#37C817")
   
-  #plot.new()
-  legend("topright", c("Straight",
-                       "Gay/lesbian", 
-                       "Bisexual", 
-                       "Not sure",
-                       "Declined to respond"),
-         col=c("pink", "#31BAF6", "#E6A820", "#37C817", "red"), 
-         lty = 1:5, cex=0.4, bty = "o"
-  )
   
   
   plot(df_proportions_mal_so$year, df_proportions_mal_so$straight_prop/100, type = "l", 
        col = "pink", lwd = my_lwd, xlab = "", ylab = "", 
        xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=2)
+  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
   #axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
-  mtext("Males", 3, cex = 1, line =0.3)
+  mtext("Males", 3, cex = 0.7, line =0.3)
   #mtext("Prop. of males of a given sexual identity by year", 2, cex = 1, line = 3, outer = TRUE)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "B", cex=1.2)
+  text(2014.6, 0.99, "B", cex=0.7)
   lines(df_proportions_mal_so$year, df_proportions_mal_so$lesgay_prop/100, lty = 2, 
         col = "#31BAF6", lwd = my_lwd)
   lines(df_proportions_mal_so$year, df_proportions_mal_so$bi_prop/100, lty = 3, 
@@ -2977,7 +2968,19 @@ png("plots/SSP/SO_by_year_two_panel.png",
   
   
   
+  #plot.new()
+  legend("right", 
+         c("Straight",
+                       "Gay/lesbian", 
+                       "Bisexual", 
+                       "Not sure",
+                       "Declined to respond"),
+         col=c("pink", "#31BAF6", "#E6A820", "#37C817", "red"), 
+         lty = 1:5, cex=0.5, bty = "o"
+  )
+  
 }
+
 dev.off()
 
 
@@ -3005,7 +3008,7 @@ png("plots/SSP/SSP_by_SO_and_year_fem.png",
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
   axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
   mtext("Straight", 3, cex = 1.2, line =0.3)
-  mtext("Prop. of females with sex partners \n of a given sex, among those who  \n have ever had sex", 2, cex = 1, line = 3, outer = TRUE)
+  mtext("Prop. of females by SSP, among those who have ever had sex", 2, cex = 1, line = 3, outer = TRUE)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "A", cex=1.2)
   lines(df_proportions_strfem$year, df_proportions_strfem$females_prop/100, lty = 2, 
