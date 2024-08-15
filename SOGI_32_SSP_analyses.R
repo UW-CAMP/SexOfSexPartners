@@ -54,7 +54,7 @@ yrbs_2017 <- yrbs_final[yrbs_final$year == "2017",]
 yrbs_2019 <- yrbs_final[yrbs_final$year == "2019",]
 yrbs_2021 <- yrbs_final[yrbs_final$year == "2021",]
 
-##Subset by sexual orientation
+##Subset by sexual identity
 #Filter by year 
 yrbs_straight <- yrbs_final[yrbs_final$so_new == "1_straight",]
 yrbs_lesgay <- yrbs_final[yrbs_final$so_new == "2_lesgay",]
@@ -102,7 +102,7 @@ yrbs_male21 <- yrbs_2021[yrbs_2021$sex == "Male", ]
 ### CREATE PROP TABLES TO EXAMINE DATA 
 #########################################################
 
-#Tables examining by age, SSP, sex, and sexual orientation
+#Tables examining by age, SSP, sex, and sexual identity
 round(100* prop.table(table(yrbs_final$age, yrbs_final$sex_of_sps, yrbs_final$sex, yrbs_final$so_new), c(1,3, 4)),0)
 
 table(yrbs_final$sex, yrbs_final$sex_of_sp)
@@ -421,7 +421,7 @@ df_proportions_mal7 <- yrbs_male21 %>%
 print(df_proportions_mal7)
 
 ##############################################
-##FREQUENCY BY YEAR BY SEXUAL ORIENTATION
+##FREQUENCY BY YEAR BY SEXUAL identity
 
 #straight female
 szabo_table_strfem <- table(yrbs_strfem$ever_sex_sps, yrbs_strfem$year)
@@ -605,7 +605,7 @@ df_proportions_refmal <- yrbs_refmal %>%
 print(df_proportions_refmal)
 
 ######################################################
-#frequency of sexual orientation across years, by sex
+#frequency of sexual identity across years, by sex
 
 df_proportions_fem_so <- yrbs_female %>%
   group_by(year) %>%
@@ -2327,7 +2327,7 @@ df_proportions_18yoM_unc <- yrbs_18yoM %>%
 print(df_proportions_18yoM_unc)
 
 
-## SEXUAL ORIENTATION, UNCONDITIONAL
+## SEXUAL identity, UNCONDITIONAL
 
 #straight female
 szabo_table_strfem_unc <- table(yrbs_strfem$sex_of_sps, yrbs_strfem$year)
@@ -2894,7 +2894,7 @@ dev.off()
 
 
 ###############################################################################################
-# FIGURE 2. Proportion of respondents sexual orientation by year, split by sex
+# FIGURE 2. Proportion of respondents sexual identity by year, split by sex
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 png("plots/SSP/SO_by_year_two_panel.png", 
@@ -2924,7 +2924,7 @@ png("plots/SSP/SO_by_year_two_panel.png",
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
   axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
   mtext("Females", 3, cex = 1, line =0.3)
-  mtext("Prop. of adolescents of a \ngiven sexual orientation by year", 2, cex = 1, line = 4, outer = TRUE)
+  mtext("Prop. of adolescents of a \ngiven sexual identity by year", 2, cex = 1, line = 4, outer = TRUE)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "A", cex=1.2)
   lines(df_proportions_fem_so$year, df_proportions_fem_so$lesgay_prop/100, lty = 2, 
@@ -2959,7 +2959,7 @@ png("plots/SSP/SO_by_year_two_panel.png",
   mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
   #axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=1.2, las=1)
   mtext("Males", 3, cex = 1, line =0.3)
-  #mtext("Prop. of males of a given sexual orientation by year", 2, cex = 1, line = 3, outer = TRUE)
+  #mtext("Prop. of males of a given sexual identity by year", 2, cex = 1, line = 3, outer = TRUE)
   abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
   text(2014.6, 0.99, "B", cex=1.2)
   lines(df_proportions_mal_so$year, df_proportions_mal_so$lesgay_prop/100, lty = 2, 
@@ -2983,7 +2983,7 @@ dev.off()
 
 ###############################################################################################
 # FIGURE 3: Proportion of female respondents by sex of past sexual contacts, 
-# among those who have ever had sexual contact, broken out by reported sexual orientation 
+# among those who have ever had sexual contact, broken out by reported sexual identity 
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 
@@ -3483,7 +3483,7 @@ dev.off()
 
 ###############################################################################################
 # FIGURE S1: Proportion of female respondents by sex of past sexual contacts, 
-# including those with no prior sexual contact, broken out by reported sexual orientation
+# including those with no prior sexual contact, broken out by reported sexual identity
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 
@@ -3617,7 +3617,7 @@ dev.off()
 
 ###############################################################################################
 # FIGURE S2: Proportion of male respondents by sex of past sexual contacts, 
-# including those with no prior sexual contact, broken out by reported sexual orientation
+# including those with no prior sexual contact, broken out by reported sexual identity
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 
