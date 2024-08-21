@@ -3778,9 +3778,9 @@ png("plots/SSP/SSP_by_SO_and_year_fem_uncond.png",
   )
   
   
-  
-  #text(2021.3, 0.53, "*", col = "#37C817")
-  #text(2021.3, 0.40, "*", col = "#E6A820")
+  text(2021.3, 0.23, "*", col = "#E6A820", cex=1.8)
+  text(2021.3, 0.31, "*", col = "#37C817", cex=1.8)
+
   
   
   plot(df_proportions_dkofem_unc$year, df_proportions_dkofem_unc$females_prop/100, type = "l", 
@@ -3800,8 +3800,8 @@ png("plots/SSP/SSP_by_SO_and_year_fem_uncond.png",
   lines(df_proportions_dkofem_unc$year, df_proportions_dkofem_unc$never_prop/100, lty = 1, 
         col = "black", lwd = my_lwd)
   
-  #text(2021.3, 0.51, "*", col = "#E6A820")
-  #text(2021.3, 0.39, "*", col = "#37C817")
+  text(2021.3, 0.62, "*", col = "black", cex=1.8)
+  text(2021.3, 0.19, "*", col = "#E6A820", cex=1.8)
   
   
   plot(df_proportions_reffem_unc$year, df_proportions_reffem_unc$females_prop/100, type = "l", 
@@ -3820,6 +3820,10 @@ png("plots/SSP/SSP_by_SO_and_year_fem_uncond.png",
         col = "#37C817", lwd = my_lwd)
   lines(df_proportions_reffem_unc$year, df_proportions_reffem_unc$never_prop/100, lty = 1, 
         col = "black", lwd = my_lwd)
+  
+
+  text(2021.3, 0.65, "*", col = "black", cex=1.8)
+  text(2021.3, 0.22, "*", col = "#E6A820", cex=1.8)
   
   
 }
@@ -3868,6 +3872,9 @@ png("plots/SSP/SSP_by_SO_and_year_mal_uncond.png",
   lines(df_proportions_strmal_unc$year, df_proportions_strmal_unc$never_prop/100, lty = 1, 
         col = "black", lwd = my_lwd)
   
+  text(2021.3, 0.58, "*", col = "black", cex=1.8)
+  text(2021.3, 0.42, "*", col = "#31BAF6", cex=1.8)
+  
   
   plot(df_proportions_gaymal_unc$year, df_proportions_gaymal_unc$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
@@ -3886,7 +3893,7 @@ png("plots/SSP/SSP_by_SO_and_year_mal_uncond.png",
   lines(df_proportions_gaymal_unc$year, df_proportions_gaymal_unc$never_prop/100, lty = 1, 
         col = "black", lwd = my_lwd)
   
-  
+  text(2021.3, 0.02, "*", col = "#31BAF6", cex=1.8) 
   
   plot(df_proportions_bimal_unc$year, df_proportions_bimal_unc$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
@@ -3930,8 +3937,8 @@ png("plots/SSP/SSP_by_SO_and_year_mal_uncond.png",
   lines(df_proportions_dkomal_unc$year, df_proportions_dkomal_unc$never_prop/100, lty = 1, 
         col = "black", lwd = my_lwd)
   
-  text(2021.3, 0.60, "*", col = "#31BAF6")
-  text(2021.3, 0.30, "*", col = "#37C817")
+
+  text(2021.3, 0.11, "*", col = "#37C817", cex=1.8)
   
   
   plot(df_proportions_refmal_unc$year, df_proportions_refmal_unc$females_prop/100, type = "l", 
