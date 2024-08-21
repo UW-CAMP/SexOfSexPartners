@@ -2732,6 +2732,188 @@ multiCA_szabo_tbl_18yoM
 
 ##############################################################################################
 #######################################
+######## TABLES #######################
+#######################################
+##############################################################################################
+
+#Table S1: Proportion of respondents by sex of sex partners (SSP) over the lifetime, 
+#Youth Risk Behavior Survey (YRBS), 2015-2021	
+
+#frequency of each SSP by year, by sex (includes 1_never)
+
+#Females
+print(df_proportions_fem)
+
+# Males
+print(df_proportions_mal)
+
+#frequency of each SSP by year, by sex (does not includes 1_never)
+
+# Females
+print(df_proportions_fem2)
+
+# Males
+print(df_proportions_mal2)
+
+############################################################################################
+#Table S2: Proportion of respondents by self-reported sexual identity (SI), 
+#Youth Risk Behavior Survey (YRBS), 2015-2021	
+
+#frequency of sexual identity across years, by sex
+
+#Females
+print(df_proportions_fem_so)
+
+# Males
+print(df_proportions_mal_so)
+
+############################################################################################
+#Table S3: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
+#by reported sexual identity (SI), among those who have ever had sex, Youth Risk Behavior 
+#Survey (YRBS), 2015-2021	
+
+##(frequency by year by sexual identity, conditional)
+
+#straight female
+print(df_proportions_strfem)
+
+#lesbian female
+print(df_proportions_lesfem)
+
+#bisexual female
+print(df_proportions_bifem)
+
+#dont know female
+print(df_proportions_dkofem)
+
+#declined female
+print(df_proportions_reffem)
+
+#straight male
+print(df_proportions_strmal)
+
+
+#gay male
+print(df_proportions_gaymal)
+
+#bisexual male
+print(df_proportions_bimal)
+
+#don't know male
+print(df_proportions_dkomal)
+
+#declined to answer male
+print(df_proportions_refmal)
+
+################################################################################################
+#Table S4: Proportion of respondents by sex of sex of sex of sex partners (SSP) over the lifetime, 
+#by reported sexual identity (SI), including those with no prior sexual contact, Youth Risk 
+#Behavior Survey (YRBS), 2015-2021	
+
+##(frequency by year by sexual identity, unconditional)
+
+#straight female
+print(df_proportions_strfem_unc)
+
+#lesbian female
+print(df_proportions_lesfem_unc)
+
+#bisexual female
+print(df_proportions_bifem_unc)
+
+#don't know female
+print(df_proportions_dkofem_unc)
+
+#refused female
+print(df_proportions_reffem_unc)
+
+
+#straight male
+print(df_proportions_strmal_unc)
+
+#gay male
+print(df_proportions_gaymal_unc)
+
+#bisexual male
+print(df_proportions_bimal_unc)
+
+#don't know male
+print(df_proportions_dkomal_unc)
+
+#refused male
+print(df_proportions_refmal_unc)
+
+##############################################################################################
+#Table S5: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
+#by age, among those who have ever had sex, Youth Risk Behavior Survey (YRBS), 2015-2021	
+## Frequency of SSP by age, split by year and by sex
+
+
+#FEMALE 2015
+print(df_proportions_fem4)
+
+#FEMALE 2017
+print(df_proportions_fem5)
+
+#FEMALE 2019
+print(df_proportions_fem6)
+
+#FEMALE 2021
+print(df_proportions_fem7)
+
+
+#MALE 2015
+print(df_proportions_mal4)
+
+#MALE 2017
+print(df_proportions_mal5)
+
+#MALE 2019
+print(df_proportions_mal6)
+
+#MALE 2021
+print(df_proportions_mal7)
+
+###########################################################################################
+#Table S6: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
+#by age, including those with no prior sexual contact, Youth Risk Behavior Survey 
+#(YRBS), 2015-2021
+
+#14yo female
+print(df_proportions_14yoF_unc)
+
+#15yo female
+print(df_proportions_15yoF_unc)
+
+#16yo female
+print(df_proportions_16yoF_unc)
+
+#17yo female
+print(df_proportions_17yoF_unc)
+
+#18yo female
+print(df_proportions_18yoF_unc)
+
+
+#14yo male
+print(df_proportions_14yoM_unc)
+
+#15yo male
+print(df_proportions_15yoM_unc)
+
+#16yo male
+print(df_proportions_16yoM_unc)
+
+#17yo male
+print(df_proportions_17yoM_unc)
+
+#18yo male
+print(df_proportions_18yoM_unc)
+###########################################################################################
+
+
+##############################################################################################
+#######################################
 ########  PLOTS #######################
 #######################################
 ##############################################################################################
