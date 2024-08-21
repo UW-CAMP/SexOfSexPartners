@@ -2732,6 +2732,31 @@ multiCA_szabo_tbl_18yoM
 
 #################################################################################
 
+##Sensitivity analysis##
+
+#redo the analysis in Figure 2/ Table S2 in two ways:
+
+#Table S2: Proportion of respondents by self-reported sexual identity (SI), 
+#Youth Risk Behavior Survey (YRBS), 2015-2021	
+
+#frequency of sexual identity across years, by sex
+
+#Females
+print(df_proportions_fem_so)
+
+# Males
+print(df_proportions_mal_so)
+
+#1.  Take the people who responded “I describe my sexual identity some other way” 
+#in 2021, and remove them altogether
+
+
+
+#2.  Take the people who responded “I describe my sexual identity some other way” 
+#or “I do not know what this question is asking” in 2021, and remove them.
+
+
+
 ##############################################################################################
 #######################################
 ######## TABLES #######################
@@ -2762,6 +2787,35 @@ print(df_proportions_mal2)
 #Youth Risk Behavior Survey (YRBS), 2015-2021	
 
 #frequency of sexual identity across years, by sex
+
+#frequency of sexual identity across years, by sex
+
+df_proportions_fem_so <- yrbs_female %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_fem_so)
+
+
+df_proportions_mal_so <- yrbs_male %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_mal_so)
 
 #Females
 print(df_proportions_fem_so)
