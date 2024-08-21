@@ -429,6 +429,7 @@ prop.table(szabo_table_strfem)
 
 ## using formula interface
 multiCA_szabo_tbl_strfem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_strfem)
+print(multiCA_szabo_tbl_strfem)
 
 df_proportions_strfem <- yrbs_strfem %>%
   group_by(year) %>%
@@ -484,6 +485,7 @@ prop.table(szabo_table_dkofem)
 
 ## using formula interface
 multiCA_szabo_tbl_dkofem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_dkofem)
+print(multiCA_szabo_tbl_dkofem)
 
 df_proportions_dkofem <- yrbs_dkofem %>%
   group_by(year) %>%
@@ -2776,34 +2778,44 @@ print(df_proportions_mal_so)
 
 #straight female
 print(df_proportions_strfem)
+print(multiCA_szabo_tbl_strfem)
 
 #lesbian female
 print(df_proportions_lesfem)
+print(multiCA_szabo_tbl_lesfem)
 
 #bisexual female
 print(df_proportions_bifem)
+print(multiCA_szabo_tbl_bifem)
 
 #dont know female
 print(df_proportions_dkofem)
+print(multiCA_szabo_tbl_dkofem)
 
 #declined female
 print(df_proportions_reffem)
+print(multiCA_szabo_tbl_reffem)
 
 #straight male
 print(df_proportions_strmal)
+print(multiCA_szabo_tbl_strmal)
 
 
 #gay male
 print(df_proportions_gaymal)
+print(multiCA_szabo_tbl_gaymal)
 
 #bisexual male
 print(df_proportions_bimal)
+print(multiCA_szabo_tbl_bimal)
 
 #don't know male
 print(df_proportions_dkomal)
+print(multiCA_szabo_tbl_dkomal)
 
 #declined to answer male
 print(df_proportions_refmal)
+print(multiCA_szabo_tbl_refmal)
 
 ################################################################################################
 #Table S4: Proportion of respondents by sex of sex of sex of sex partners (SSP) over the lifetime, 
@@ -2814,34 +2826,44 @@ print(df_proportions_refmal)
 
 #straight female
 print(df_proportions_strfem_unc)
+print(multiCA_szabo_tbl_strfem_unc)
 
 #lesbian female
 print(df_proportions_lesfem_unc)
+print(multiCA_szabo_tbl_lesfem_unc)
 
 #bisexual female
 print(df_proportions_bifem_unc)
+print(multiCA_szabo_tbl_bifem_unc)
 
 #don't know female
 print(df_proportions_dkofem_unc)
+print(multiCA_szabo_tbl_dkofem_unc)
 
 #refused female
 print(df_proportions_reffem_unc)
+print(multiCA_szabo_tbl_reffem_unc)
 
 
 #straight male
 print(df_proportions_strmal_unc)
+print(multiCA_szabo_tbl_strmal_unc)
 
 #gay male
 print(df_proportions_gaymal_unc)
+print(multiCA_szabo_tbl_gaymal_unc)
 
 #bisexual male
 print(df_proportions_bimal_unc)
+print(multiCA_szabo_tbl_bimal_unc)
 
 #don't know male
 print(df_proportions_dkomal_unc)
+print(multiCA_szabo_tbl_dkomal_unc)
 
 #refused male
 print(df_proportions_refmal_unc)
+print(multiCA_szabo_tbl_refmal_unc)
 
 ##############################################################################################
 #Table S5: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
