@@ -2870,31 +2870,46 @@ print(multiCA_szabo_tbl_refmal_unc)
 #by age, among those who have ever had sex, Youth Risk Behavior Survey (YRBS), 2015-2021	
 ## Frequency of SSP by age, split by year and by sex
 
+#14yo female
+print(df_proportions_14yoF)
+print(multiCA_szabo_tbl_14yoF)
 
-#FEMALE 2015
-print(df_proportions_fem4)
+#15yo female
+print(df_proportions_15yoF)
+print(multiCA_szabo_tbl_15yoF)
 
-#FEMALE 2017
-print(df_proportions_fem5)
+#16yo female
+print(df_proportions_16yoF)
+print(multiCA_szabo_tbl_16yoF)
 
-#FEMALE 2019
-print(df_proportions_fem6)
+#17yo female
+print(df_proportions_17yoF)
+print(multiCA_szabo_tbl_17yoF)
 
-#FEMALE 2021
-print(df_proportions_fem7)
+#18yo female
+print(df_proportions_18yoF)
+print(multiCA_szabo_tbl_18yoF)
 
 
-#MALE 2015
-print(df_proportions_mal4)
+#14yo male
+print(df_proportions_14yoM)
+print(multiCA_szabo_tbl_14yoM)
 
-#MALE 2017
-print(df_proportions_mal5)
+#15yo male
+print(df_proportions_15yoM)
+print(multiCA_szabo_tbl_15yoM)
 
-#MALE 2019
-print(df_proportions_mal6)
+#16yo male
+print(df_proportions_16yoM)
+print(multiCA_szabo_tbl_16yoM)
 
-#MALE 2021
-print(df_proportions_mal7)
+#17yo male
+print(df_proportions_17yoM)
+print(multiCA_szabo_tbl_17yoM)
+
+#18yo male
+print(df_proportions_18yoM)
+print(multiCA_szabo_tbl_18yoM)
 
 ###########################################################################################
 #Table S6: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
