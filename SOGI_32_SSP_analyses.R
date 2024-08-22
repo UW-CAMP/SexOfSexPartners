@@ -4012,8 +4012,8 @@ png("plots/SSP/SSP_by_SO_and_year_mal_uncond.png",
   lines(df_proportions_refmal_unc$year, df_proportions_refmal_unc$never_prop/100, lty = 1, 
         col = "black", lwd = my_lwd)
   
-  text(2021.3, 0.85, "*", col = "#31BAF6")
-  text(2021.3, 0.00, "*", col = "#E6A820")
+  #text(2021.3, 0.85, "*", col = "#31BAF6")
+  #text(2021.3, 0.00, "*", col = "#E6A820")
   
   
   
