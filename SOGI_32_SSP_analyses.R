@@ -2741,20 +2741,115 @@ multiCA_szabo_tbl_18yoM
 
 #frequency of sexual identity across years, by sex
 
-#Females
-print(df_proportions_fem_so)
+yrbs_sens_subset1 <- subset(yrbs_final, so_21 != "7_somethingelse" | is.na(so_21))
 
-# Males
-print(df_proportions_mal_so)
+yrbs_sens_subset2 <- subset(yrbs_sens_subset1, so_21 != "6_dkwtm" | is.na(so_21))
 
-#1.  Take the people who responded “I describe my sexual identity some other way” 
-#in 2021, and remove them altogether
+table(yrbs_merge_new$so_21)
+table(yrbs_sens_subset1$so_21)
+table(yrbs_sens_subset2$so_21)
+
+
+yrbs_sens_subset1_fem <- subset(yrbs_sens_subset1, sex == "Female")
+yrbs_sens_subset1_mal <- subset(yrbs_sens_subset1, sex == "Male")
+yrbs_sens_subset2_fem <- subset(yrbs_sens_subset2, sex == "Female")
+yrbs_sens_subset2_mal <- subset(yrbs_sens_subset2, sex == "Male")
+
+#Sensitivity analysis 1- Take the people who responded “I describe my sexual 
+#identity some other way” in 2021, and remove them altogether
+
+
+df_proportions_fem_so_sens1 <- yrbs_sens_subset1_fem %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_fem_so_sens1)
+
+
+szabo_table_fem_sens1 <- table(yrbs_sens_subset1_fem$so_new, yrbs_sens_subset1_fem$year)
+prop.table(szabo_table_fem_sens1)
+
+## using formula interface
+multiCA_szabo_tbl_fem_sens1 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset1_fem)
+print(multiCA_szabo_tbl_fem_sens1)
+
+
+
+df_proportions_mal_so_sens1 <- yrbs_sens_subset1_mal %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_mal_so_sens1)
+
+
+szabo_table_mal_sens1 <- table(yrbs_sens_subset1_mal$so_new, yrbs_sens_subset1_mal$year)
+prop.table(szabo_table_mal_sens1)
+
+## using formula interface
+multiCA_szabo_tbl_mal_sens1 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset1_mal)
+print(multiCA_szabo_tbl_mal_sens1)
 
 
 
 #2.  Take the people who responded “I describe my sexual identity some other way” 
 #or “I do not know what this question is asking” in 2021, and remove them.
 
+df_proportions_fem_so_sens2 <- yrbs_sens_subset2_fem %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_fem_so_sens2)
+
+
+szabo_table_fem_sens2 <- table(yrbs_sens_subset2_fem$so_new, yrbs_sens_subset2_fem$year)
+
+## using formula interface
+multiCA_szabo_tbl_fem_sens2 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset2_fem)
+print(multiCA_szabo_tbl_fem_sens2)
+
+
+
+df_proportions_mal_so_sens2 <- yrbs_sens_subset1_ma2 %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_mal_so_sens2)
+
+
+szabo_table_mal_sens2 <- table(yrbs_sens_subset2_mal$so_new, yrbs_sens_subset2_mal$year)
+prop.table(szabo_table_mal_sens2)
+
+## using formula interface
+multiCA_szabo_tbl_mal_sens2 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset2_mal)
+print(multiCA_szabo_tbl_mal_sens2)
 
 
 ##############################################################################################
@@ -4012,8 +4107,8 @@ png("plots/SSP/SSP_by_SO_and_year_mal_uncond.png",
   lines(df_proportions_refmal_unc$year, df_proportions_refmal_unc$never_prop/100, lty = 1, 
         col = "black", lwd = my_lwd)
   
-  #text(2021.3, 0.85, "*", col = "#31BAF6")
-  #text(2021.3, 0.00, "*", col = "#E6A820")
+  text(2021.3, 0.85, "*", col = "#31BAF6")
+  text(2021.3, 0.00, "*", col = "#E6A820")
   
   
   
