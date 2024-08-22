@@ -2830,7 +2830,7 @@ print(multiCA_szabo_tbl_fem_sens2)
 
 
 
-df_proportions_mal_so_sens2 <- yrbs_sens_subset1_ma2 %>%
+df_proportions_mal_so_sens2 <- yrbs_sens_subset2_mal %>%
   group_by(year) %>%
   summarise(
     straight_prop = sum(so_new == "1_straight") / n() * 100,
@@ -2845,7 +2845,6 @@ print(df_proportions_mal_so_sens2)
 
 
 szabo_table_mal_sens2 <- table(yrbs_sens_subset2_mal$so_new, yrbs_sens_subset2_mal$year)
-prop.table(szabo_table_mal_sens2)
 
 ## using formula interface
 multiCA_szabo_tbl_mal_sens2 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset2_mal)
