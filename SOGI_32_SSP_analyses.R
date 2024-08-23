@@ -3153,11 +3153,30 @@ png("plots/SSP/SSP_by_sex_and_year.png",
   my_lwd = 2.5
   my_xlim = c(2014.5, 2021.5)
   
-  # N's for each year
-  Ns_all_fem <- c(7239, 6672, 6049, 6456) #all females
-  Ns_all_mal <- c(7108, 6034, 5629, 6884)   #all males
-  Ns_cond_fem <- c(2976, 2306, 2083, 2865) #females who have has sex
-  Ns_cond_mal <- c(3363, 2382, 2178, 2926)   #males who have had sex
+
+  #Calculate the N's for each year to populate Fig. 1
+  Ns_all_fem <- with(yrbs_final, tapply(sex == "Female", year, sum, na.rm = TRUE))
+  Ns_all_mal <- with(yrbs_final, tapply(sex == "Male", year, sum, na.rm = TRUE))
+  
+  Ns_cond_fem <- with(yrbs_final, tapply(sex == "Female" & sex_of_sps != "1_never", year, sum, na.rm = TRUE))
+  Ns_cond_mal <- with(yrbs_final, tapply(sex == "Male" & sex_of_sps != "1_never", year, sum, na.rm = TRUE))
+
+#Also have the Ns for each year appear in the console
+  Ns_list <- list(
+    Ns_all_fem = Ns_all_fem,
+    Ns_all_mal = Ns_all_mal,
+    Ns_cond_fem = Ns_cond_fem,
+    Ns_cond_mal = Ns_cond_mal
+  )
+  
+  sapply(names(Ns_list), function(name) {
+    cat(name, ":\n")
+    print(Ns_list[[name]])
+    cat("\n")
+  })
+
+  
+  
   
   plot(df_proportions_fem$year, df_proportions_fem$females_prop/100, type = "l", 
        col = "white", lwd = my_lwd, xlab = "", ylab = "", 
