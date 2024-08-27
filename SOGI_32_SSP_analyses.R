@@ -4573,11 +4573,6 @@ ssp_predictor_data1$sex_of_sps <- factor(ssp_predictor_data1$q65,
 
 
 
-# * cohort --------
-
-#ssp_predictor_data1$cohort <- ssp_predictor_data1$year - ssp_predictor_data1$age
-
-
 # * so_21 --------
 
 ssp_predictor_data1$so_21 <- NA
@@ -4673,17 +4668,8 @@ ssp_predictor_data1 <- ssp_predictor_data1 %>%
   select(all_of(varnames2))
 
 
-# * generate a YRBS 2015:2021 dataset to merge with 2021 ------
-#yrbs1519_merge <- rbind(yrbs[[15]],
-#                        yrbs[[17]],
-#                        yrbs[[19]])
-
-
-
 ssp_predictor_data1 <- ssp_predictor_data1 %>% 
   rename("psu" = "PSU")
-
-
 
 # Write .rds file ------
 write_rds(ssp_predictor_data1,
@@ -4764,8 +4750,6 @@ ssp_predictor_data2$sex_of_sps[ssp_predictor_data2$q64 == "Females and males"] <
 
 # * sex --------
 ssp_predictor_data2$sex <- ssp_predictor_data2$q2
-
-
 
 
 ssp_predictor_data2$missing_stopped <- NA
@@ -4873,14 +4857,6 @@ write_rds(ssp_predictor_data2_new,
           "data - raw/ssp_predictor_data2.RDS")
 
 
-# merge datasets -------
-#ssp_predictor_data_final <- rbind(
-#  ssp_predictor_data1,
-#  ssp_predictor_data2_new
-#)
-
-
-
 # Convert factors to characters
 ssp_predictor_data1 <- ssp_predictor_data1 %>% mutate(across(where(is.factor), as.character))
 ssp_predictor_data2_new <- ssp_predictor_data2_new %>% mutate(across(where(is.factor), as.character))
@@ -4894,8 +4870,7 @@ ssp_predictor_data_final <- rbind(ssp_predictor_data1, ssp_predictor_data2_new)
 
 
 
-#Factor age, sex, so_new, sex_of_sps, 
-
+#Factor age, sex, so_new, sex_of_sps, year, missing ssp
 ssp_predictor_data_final$age <- factor(ssp_predictor_data_final$age)
 ssp_predictor_data_final$sex <- factor(ssp_predictor_data_final$sex)
 ssp_predictor_data_final$so_new <- factor(ssp_predictor_data_final$so_new)
@@ -4925,7 +4900,6 @@ table(ssp_predictor_data_final$year)
 
 
 
-
 # logistic regression model predicting missing_ssp
 logistic_model <- glm(missing_ssp ~ sex + age + so_new + year, 
                       data = ssp_predictor_data_final, 
@@ -4935,8 +4909,19 @@ logistic_model <- glm(missing_ssp ~ sex + age + so_new + year,
 summary(logistic_model)
 
 
+# Calculate odds ratios and 95% CIs
+odds_ratios <- exp(coef(logistic_model))
 
+conf_int <- confint(logistic_model)
+conf_int_odds_ratios <- exp(conf_int)
 
+odds_ratios_df <- data.frame(
+  Estimate = odds_ratios,
+  Lower_95_CI = conf_int_odds_ratios[, 1],
+  Upper_95_CI = conf_int_odds_ratios[, 2]
+)
+
+print(odds_ratios_df)
 
 
 
