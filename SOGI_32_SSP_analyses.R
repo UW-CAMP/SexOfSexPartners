@@ -3276,6 +3276,7 @@ yrbs_sens_subset2_mal <- subset(yrbs_sens_subset2, sex == "Male")
 df_proportions_fem_so_sens1 <- yrbs_sens_subset1_fem %>%
   group_by(year) %>%
   summarise(
+    N = n(),
     straight_prop = sum(so_new == "1_straight") / n() * 100,
     lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
     bi_prop = sum(so_new == "3_bi") / n() * 100,
@@ -3299,6 +3300,7 @@ print(multiCA_szabo_tbl_fem_sens1)
 df_proportions_mal_so_sens1 <- yrbs_sens_subset1_mal %>%
   group_by(year) %>%
   summarise(
+    N = n(),
     straight_prop = sum(so_new == "1_straight") / n() * 100,
     lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
     bi_prop = sum(so_new == "3_bi") / n() * 100,
