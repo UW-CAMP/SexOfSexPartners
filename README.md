@@ -3,13 +3,15 @@
 Full citation: Lawley, KA, Barry MP, Koenig LJ, Suarez NA, Williams AM, Delaney KP, Hoover KW, Hamilton DT, Goodreau SM. Trends in sex of sex partners and sexual identity among US adolescents, 2015-2021. [journal info TBD]. 
 
 
-This manuscript uses data from the Youth Behavior Surveillance System (YRBS) years 2015-2021. The following instructions explain how to replicate the data retrieval, cleaning, and analyses used in this manuscript.
+This manuscript uses data from the Youth Risk Behavior Surveillance System (YRBS) years 2015-2021. The following instructions explain how to replicate the data retrieval, cleaning, and analyses used in this manuscript.
 
 
 To run the scripts in this project, you should create folders to store your data. Store the raw data files in a folder called "data - raw". You should also make a folder called "data - clean" to house the data that will be generated, and one called "plots" for the plots generated.
 
 **Step 1. Obtain data** 
+
 The YRBS National Data Set for 2019 and years prior can be found here: https://www.cdc.gov/healthyyouth/data/yrbs/sadc_2019/sadc_2019_national.dat
+
 The YRBS National Data Set for 2021 can be found here: https://www.cdc.gov/healthyyouth/data/yrbs/files/2021/XXH2021_YRBS_Data.dat
 
 
