@@ -3,12 +3,12 @@
 # Kendall Lawley | lawleyk@uw.edu | 2024 June
 ###################################################################################
 
-### Prepare workspace ----- 
+### Prepare workspace -----  
 # clear environment
 rm(list = ls())
 
 # * call in packages ----
-source("SOGI_00_packages.R")
+source("SoSP_00_packages.R")
 
 # * define functions -----
 tableNA <- function(x, ...){
@@ -383,7 +383,6 @@ for (year in yrbs_years) {
                                   is.na(yrbs[[year]]$q87) &
                                   is.na(yrbs[[year]]$q88)),1,0)
            
-                                  #& is.na(yrbs[[year]]$q89)),1,0)
 }
 
 for (year in yrbs_years) {
@@ -509,6 +508,7 @@ for (year in yrbs_years) {
 
 
 #####################################################################################
+# Notes on the meaning of each variable 
 #q15 = unsafe at school
 #q19 = sexual coercion ever
 #q20 = sexual coercion last year
@@ -657,7 +657,6 @@ yrbs21$sex_of_sps[yrbs21$q64 == "Females"] <- "2_female"
 yrbs21$sex_of_sps[yrbs21$q64 == "Males"] <- "3_male"
 yrbs21$sex_of_sps[yrbs21$q64 == "Females and males"] <- "4_fem+mal"
 
-# yrbs21 <- subset(yrbs21, !is.na(q8)) #remove observations based on missingness investigation
 
 ### Remove the "Survey Stoppers" ---------
 yrbs21$drop <- ifelse((is.na(yrbs21$q60) &
@@ -840,6 +839,7 @@ yrbs_merge_new <- yrbs_merge_new %>%
 ##############################################
 ## Recode variables 
 
+#Missing school for safety concerns
 #unsafe_schl
 #1 = 0 days 
 #2 = 1 day
@@ -945,6 +945,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(depression = case_when(
 yrbs_merge_new$depression <- ifelse(yrbs_merge_new$depression == "Yes", 1, 0)
 
 
+#suicidal ideation 
 #suic_idea
 #1 = yes
 #2 = no
@@ -957,6 +958,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(suic_idea = case_when(
 
 yrbs_merge_new$suic_idea <- ifelse(yrbs_merge_new$suic_idea == "No", 0, 1)
 
+#suicide plan
 #suic_plan
 #1 = yes
 #2 = no
@@ -970,6 +972,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(suic_plan = case_when(
 table(yrbs_merge_new$suic_plan)
 yrbs_merge_new$suic_plan <- ifelse(yrbs_merge_new$suic_plan == "No", 0, 1)
 
+#suicide attempts 
 #suic_attempt
 #1 = 0 times
 #2 = 1 time
@@ -991,6 +994,7 @@ yrbs_merge_new$suic_attempt_D <- ifelse(yrbs_merge_new$suic_attempt == "0 times"
 table(yrbs_merge_new$suic_attempt)
 table(yrbs_merge_new$suic_attempt_D)
 
+#Received treatment for suicide attempt 
 #suic_treat
 #1 = yes
 #2 = no
@@ -1002,6 +1006,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(suic_treat = case_when(
   TRUE ~ suic_treat  # Keep other values unchanged
 ))
 
+#Ever smoked tobacco
 #ever_smoke 
 #1 = yes
 #2 = no
@@ -1014,6 +1019,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(ever_smoke = case_when(
 
 yrbs_merge_new$ever_smoke <- ifelse(yrbs_merge_new$ever_smoke == "No", 0, 1)
 
+#Number of days in a month smoking tobacco
 #smoke_days 
 #1 = 0 days 
 #2 = 1 or 2 days 
@@ -1036,7 +1042,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(smoke_days = case_when(
 
 
 
-
+#Ever used an electronic cigarette or a vape pen
 #ever_vape
 #1 = yes
 #2 = no
@@ -1060,6 +1066,7 @@ yrbs_merge_new$any_bully <- ifelse(yrbs_merge_new$cyberbullied == 1 | yrbs_merge
 
 table(yrbs_merge_new$any_bully)
 
+#Number of days drinking in a month
 #drink_days
 #1 = 0 days 
 #2 = 1 or 2 days 
@@ -1080,7 +1087,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(drink_days = case_when(
   TRUE ~ drink_days  # Keep other values unchanged
 ))
 
-
+#maximum number if drinks 
 #max_drinks
 #1 = Did not drink alcohol in past 30 days 
 #2 = 1 or 2 drinks 
@@ -1105,6 +1112,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(max_drinks = case_when(
 
 yrbs_merge_new$ever_drink_D <- ifelse(yrbs_merge_new$drink_days == "0 days", 0, 1)
 
+#Ever used marijuana 
 #ever_weed 
 #1 = 0 times 
 #2 = 1 or 2 times 
@@ -1130,6 +1138,7 @@ yrbs_merge_new$ever_weed_D <- ifelse(yrbs_merge_new$ever_weed == "0 times", 0, 1
 table(yrbs_merge_new$ever_weed)
 table(yrbs_merge_new$ever_weed_D)
 
+#Number of days of marijuana use
 #weed_days 
 #1 = 0 times 
 #2 = 1 or 2 times 
@@ -1148,6 +1157,7 @@ yrbs_merge_new <- yrbs_merge_new %>% mutate(weed_days = case_when(
   TRUE ~ weed_days  # Keep other values unchanged
 ))
 
+#cocaine use
 #cocaine
 #1 = 0 times 
 #2 = 1 or 2 times 
@@ -1171,6 +1181,7 @@ yrbs_merge_new$ever_cocaine_D <- ifelse(yrbs_merge_new$cocaine == "0 times", 0, 
 table(yrbs_merge_new$cocaine)
 table(yrbs_merge_new$ever_cocaine_D)
 
+#Use of inhalents 
 #inhalants 
 #1 = 0 times 
 #2 = 1 or 2 times 
@@ -1194,6 +1205,7 @@ yrbs_merge_new$ever_inhalants_D <- ifelse(yrbs_merge_new$inhalants == "0 times",
 table(yrbs_merge_new$inhalants)
 table(yrbs_merge_new$ever_inhalants_D)
 
+#Heroin use
 #heroin
 #1 = 0 times 
 #2 = 1 or 2 times 
@@ -1216,7 +1228,9 @@ yrbs_merge_new$ever_heroin_D <- ifelse(yrbs_merge_new$heroin == "0 times", 0, 1)
 
 table(yrbs_merge_new$heroin)
 table(yrbs_merge_new$ever_heroin_D)
+]
 
+#Meth use
 #meth
 #1 = 0 times 
 #2 = 1 or 2 times 
@@ -1240,6 +1254,7 @@ yrbs_merge_new$ever_meth_D <- ifelse(yrbs_merge_new$meth == "0 times", 0, 1)
 table(yrbs_merge_new$meth)
 table(yrbs_merge_new$ever_meth_D)
 
+#MDMA use
 #mdma
 #1 = 0 times 
 #2 = 1 or 2 times 
@@ -1263,10 +1278,6 @@ yrbs_merge_new$ever_mdma_D <- ifelse(yrbs_merge_new$mdma == "0 times", 0, 1)
 table(yrbs_merge_new$mdma)
 table(yrbs_merge_new$ever_mdma_D)
 
-#ever_hiv_test
-#1 = yes
-#2 = no
-#3 = not sure 
 
 
 
