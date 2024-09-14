@@ -471,7 +471,7 @@ for(yr in yrpos) {
 # FIGURE 1. Proportion of respondents by sex of past sexual contacts
 #+++++++++++++++++++++++++++++++++++++++++
 #####
-png("plots/SSP/SSP_by_sex_and_year.png", 
+png("plots/SoSP/SSP_by_sex_and_year.png", 
     width = 4*300, height = 6*300, res = 300
 )
 {
@@ -611,7 +611,7 @@ dev.off()
 # FIGURE 2. Proportion of respondents sexual identity by year, split by sex
 #+++++++++++++++++++++++++++++++++++++++++
 #####
-png("plots/SSP/SO_by_year_two_panel.png", 
+png("plots/SoSP/SO_by_year_two_panel.png", 
     width = 6*300, height = 3.5*300, res = 300
 )
 {
@@ -697,7 +697,7 @@ dev.off()
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 
-png("plots/SSP/SSP_by_SO_and_year_fem_uncond.png", 
+png("plots/SoSP/SSP_by_SO_and_year_fem_uncond.png", 
     width = 14*300, height = 4*300, res = 300
 )
 {
@@ -832,7 +832,7 @@ dev.off()
 #####
 
 
-png("plots/SSP/SSP_by_SO_and_year_mal_uncond.png", 
+png("plots/SoSP/SSP_by_SO_and_year_mal_uncond.png", 
     width = 14*300, height = 4*300, res = 300
 )
 {
@@ -969,7 +969,7 @@ dev.off()
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 
-png("plots/SSP/SSP_by_age_and_year_uncond_panel.png", 
+png("plots/SoSP/SSP_by_age_and_year_uncond_panel.png", 
     width = 9*300, height = 3.5*300, res = 300
 )
 {
@@ -1052,7 +1052,7 @@ dev.off()
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 
-png("plots/SSP/SSP_by_SO_and_year_fem.png", 
+png("plots/SoSP/SSP_by_SO_and_year_fem.png", 
     width = 14*300, height = 4*300, res = 300
 )
 {
@@ -1170,7 +1170,7 @@ dev.off()
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 
-png("plots/SSP/SSP_by_SO_and_year_mal.png", 
+png("plots/SoSP/SSP_by_SO_and_year_mal.png", 
     width = 14*300, height = 4*300, res = 300
 )
 {
@@ -1287,7 +1287,7 @@ dev.off()
 #+++++++++++++++++++++++++++++++++++++++++
 #####
 
-png("plots/SSP/SSP_by_age_and_year_cond_panel.png", 
+png("plots/SoSP/SSP_by_age_and_year_cond_panel.png", 
     width = 6*300, height = 3.5*300, res = 300
 )
 {

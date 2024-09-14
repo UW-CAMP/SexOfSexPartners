@@ -1,5 +1,5 @@
 ###################################################################################
-## This is the new YRBS prepare script
+## This is the SoSP YRBS prepare script
 # Kendall Lawley | lawleyk@uw.edu | 2024 June
 ###################################################################################
 
@@ -1228,7 +1228,7 @@ yrbs_merge_new$ever_heroin_D <- ifelse(yrbs_merge_new$heroin == "0 times", 0, 1)
 
 table(yrbs_merge_new$heroin)
 table(yrbs_merge_new$ever_heroin_D)
-]
+
 
 #Meth use
 #meth
