@@ -1,14 +1,12 @@
-### Script for SSP analysis
+### Script for SoSP analysis
 
-# This script's code uses the YRBS dataset, previously prepared in script "SOGI_31_SSP_prepare"
+# This script's code uses the YRBS dataset, previously prepared in script "SoSP_01_prepare"
 ### to conduct SSP-related analyses
 
 ### Prepare workspace ----- 
-# clear environment
-#rm(list = ls())
 
 # packages
-source("SOGI_00_packages.R")
+source("SoSP_00_packages.R")
 
 # define functions
 tableNA <- function(x, ...){
@@ -18,28 +16,14 @@ tableNA <- function(x, ...){
 # call in data
 yrbs_final <- readRDS("data - clean/yrbs_final_new.rds")
 
-#If packages listed below are not already installed
-#install.packages("coin")
-#install.packages("multiCA")
-#install.packages("nnet")
-#install.packages("mlogit")
-#install.packages("lmtest")
-#install.packages("car")
-
-library(coin)
-library(multiCA)
-library(nnet)
-library(mlogit)
-library(lmtest)
-library(car)
 
 # Create directory
 
-if(!dir.exists("plots/SSP")){
+if(!dir.exists("plots/SoSP")){
    if(!dir.exists("plots/")){
       dir.create("plots/")
    }
-   dir.create("plots/SSP")
+   dir.create("plots/SoSP")
 }
 
 
@@ -111,7 +95,6 @@ chisq_test <- chisq.test(table(yrbs_final$sex, yrbs_final$sex_of_sp))
 chisq_test
 
 #Filter by year 
-
 table(yrbs_2015$sex, yrbs_2015$sex_of_sp)
 round(100* prop.table(table(yrbs_2015$sex, yrbs_2015$sex_of_sp)))
 table(yrbs_2017$sex, yrbs_2017$sex_of_sp)
@@ -138,7 +121,6 @@ yrbs_sex_2021 <- yrbs_sex[yrbs_sex$year == "2021",]
 ##################################################################
 
 #frequency of each SSP by year, by sex (includes 1_never)
-
 szabo_table_F <- table(yrbs_female$sex_of_sps, yrbs_female$year)
 prop.table(szabo_table_F)
 
@@ -147,7 +129,6 @@ multiCA_szabo_tbl_F <- multiCA.test(sex_of_sps ~ year, data=yrbs_female)
 
 
 #frequency of each SSP by year, by sex (cond on EHHS; include 1_never)
-
 df_proportions_fem <- yrbs_female %>%
   group_by(year) %>%
   summarise(
@@ -170,8 +151,6 @@ multiCA_szabo_tbl_M <- multiCA.test(sex_of_sps ~ year, data=yrbs_male)
 
 
 #frequency of each SSP by year, by sex (cond on EHHS; does include 1_never)
-
-
 df_proportions_mal <- yrbs_male %>%
   group_by(year) %>%
   summarise(
@@ -187,7 +166,6 @@ print(df_proportions_mal)
 
 
 #frequency of each SSP by year, by sex (does not includes 1_never)
-
 szabo_table_F2 <- table(yrbs_female$ever_sex_sps, yrbs_female$year)
 prop.table(szabo_table_F2)
 
@@ -196,8 +174,6 @@ multiCA_szabo_tbl_F2 <-multiCA.test(ever_sex_sps ~ year, data=yrbs_female)
 print(multiCA_szabo_tbl_F2)
 
 #frequency of each SSP by year, by sex (does not includes 1_never)
-
-
 df_proportions_fem2 <- yrbs_female %>%
   group_by(year) %>%
   summarise(
@@ -219,8 +195,6 @@ multiCA_szabo_tbl_M2 <- multiCA.test(ever_sex_sps ~ year, data=yrbs_male)
 
 
 #frequency of each SSP by year, by sex (does not includes 1_never)
-
-
 df_proportions_mal2 <- yrbs_male %>%
   group_by(year) %>%
   summarise(
@@ -1014,7 +988,6 @@ print(str_fem_chi2)
 ##suic_idea
 
 ##Lesbian females 
-
 les_fem_tbl3 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$suic_idea)
 print(les_fem_tbl3)
 
@@ -1031,7 +1004,6 @@ print(les_fem_chi4)
 
 
 ##gay males 
-
 gay_mal_tbl2 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$suic_idea)
 print(gay_mal_tbl2)
 
@@ -1047,7 +1019,6 @@ print(gay_mal_chi4)
 
 
 ##str males 
-
 str_mal_tbl2 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$suic_idea)
 print(str_mal_tbl2)
 
@@ -1063,7 +1034,6 @@ print(str_mal_chi4)
 
 
 ##str females 
-
 str_fem_tbl2 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$suic_idea)
 print(str_fem_tbl2)
 
@@ -1081,7 +1051,6 @@ print(str_fem_chi4)
 ##smoke_vape
 
 ##Lesbian females 
-
 les_fem_tbl5 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$smoke_vape)
 print(les_fem_tbl5)
 
@@ -1099,7 +1068,6 @@ print(les_fem_chi6)
 
 
 ##gay males 
-
 gay_mal_tbl5 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$smoke_vape)
 print(gay_mal_tbl5)
 
@@ -1115,7 +1083,6 @@ print(gay_mal_chi6)
 
 
 ##str males 
-
 str_mal_tbl5 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$smoke_vape)
 print(str_mal_tbl5)
 
@@ -1133,7 +1100,6 @@ print(str_mal_chi6)
 
 
 ##str females 
-
 str_fem_tbl5 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$smoke_vape)
 print(str_fem_tbl5)
 
@@ -1151,7 +1117,6 @@ print(str_fem_chi6)
 ##ever_weed_D
 
 ##Lesbian females 
-
 les_fem_tbl6 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$ever_weed_D)
 print(les_fem_tbl6)
 
@@ -1169,7 +1134,6 @@ print(les_fem_chi8)
 
 
 ##gay males 
-
 gay_mal_tbl6 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_weed_D)
 print(gay_mal_tbl6)
 
@@ -1185,7 +1149,6 @@ print(gay_mal_chi8)
 
 
 ##str males 
-
 str_mal_tbl6 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_weed_D)
 print(str_mal_tbl6)
 
@@ -1203,7 +1166,6 @@ print(str_mal_chi8)
 
 
 ##str females 
-
 str_fem_tbl6 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_weed_D)
 print(str_fem_tbl6)
 
@@ -1222,7 +1184,6 @@ print(str_fem_chi8)
 ##ever_drink_D
 
 ##Lesbian females 
-
 les_fem_tbl8 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$ever_drink_D)
 print(les_fem_tbl8)
 
@@ -1240,7 +1201,6 @@ print(les_fem_chi12)
 
 
 ##gay males 
-
 gay_mal_tbl8 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_drink_D)
 print(gay_mal_tbl8)
 
@@ -1256,7 +1216,6 @@ print(gay_mal_chi12)
 
 
 ##str males 
-
 str_mal_tbl8 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_drink_D)
 print(str_mal_tbl8)
 
@@ -1274,7 +1233,6 @@ print(str_mal_chi12)
 
 
 ##str females 
-
 str_fem_tbl8 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_drink_D)
 print(str_fem_tbl8)
 
@@ -1292,7 +1250,6 @@ print(str_fem_chi12)
 ##suic_attempt_D
 
 ##Lesbian females 
-
 les_fem_tbl9 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$suic_attempt_D)
 print(les_fem_tbl9)
 
@@ -1326,7 +1283,6 @@ print(gay_mal_chi14)
 
 
 ##str males 
-
 str_mal_tbl9 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$suic_attempt_D)
 print(str_mal_tbl9)
 
@@ -1344,7 +1300,6 @@ print(str_mal_chi14)
 
 
 ##str females 
-
 str_fem_tbl9 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$suic_attempt_D)
 print(str_fem_tbl9)
 
@@ -1362,7 +1317,6 @@ print(str_fem_chi14)
 ##ever_forced_sex
 
 ##Lesbian females 
-
 les_fem_tbl10 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$ever_forced_sex)
 print(les_fem_tbl10)
 
@@ -1380,7 +1334,6 @@ print(les_fem_chi16)
 
 
 ##gay males 
-
 gay_mal_tbl10 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_forced_sex)
 print(gay_mal_tbl10)
 
@@ -1396,7 +1349,6 @@ print(gay_mal_chi16)
 
 
 ##str males 
-
 str_mal_tbl10 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_forced_sex)
 print(str_mal_tbl10)
 
@@ -1414,7 +1366,6 @@ print(str_mal_chi16)
 
 
 ##str females 
-
 str_fem_tbl10 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_forced_sex)
 print(str_fem_tbl10)
 
@@ -1432,7 +1383,6 @@ print(str_fem_chi16)
 ##any_bully
 
 ##Lesbian females 
-
 les_fem_tbl11 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$any_bully)
 print(les_fem_tbl11)
 
@@ -1450,7 +1400,6 @@ print(les_fem_chi18)
 
 
 ##gay males 
-
 gay_mal_tbl11 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$any_bully)
 print(gay_mal_tbl11)
 
@@ -1465,8 +1414,9 @@ gay_mal_chi18 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$any_bully, var3
 print(gay_mal_chi18)
 
 
-##str males 
 
+
+##str males 
 str_mal_tbl11 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$any_bully)
 print(str_mal_tbl11)
 
@@ -1484,7 +1434,6 @@ print(str_mal_chi18)
 
 
 ##str females 
-
 str_fem_tbl11 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$any_bully)
 print(str_fem_tbl11)
 
@@ -1578,7 +1527,6 @@ print(les_fem_suicide_exp)
 
 
 #Depression
-
 yrbs_les_sex$discord_2 <- factor(yrbs_les_sex$discord_2, levels = c(1, 0))
 yrbs_les_sex$suic_attempt_D <- factor(yrbs_les_sex$suic_attempt_D, levels = c(1, 0))
 yrbs_les_sex$ever_weed_D <- factor(yrbs_les_sex$ever_weed_D, levels = c(1, 0))
@@ -1593,7 +1541,6 @@ survey_design_lf <- svydesign(ids = ~1, data = yrbs_les_sex, weights = ~weight)
 
 
 #suicide attempt
-
 # weighted contingency table
 weighted_tbl_lf1 <- svytable(~discord_2 + suic_attempt_D, survey_design_lf)
 print(weighted_tbl_lf1)
@@ -1612,7 +1559,6 @@ CI_lf1
 
 
 #smoking and vaping
-
 weighted_tbl_lf2 <- svytable(~discord_2 + smoke_vape, survey_design_lf)
 print(weighted_tbl_lf2)
 
@@ -1630,7 +1576,6 @@ CI_lf2
 
 
 #forced sex
-
 weighted_tbl_lf3 <- svytable(~discord_2 + ever_forced_sex, survey_design_lf)
 print(weighted_tbl_lf3)
 
@@ -1647,7 +1592,6 @@ CI_lf3
 
 
 #dating violence
-
 weighted_tbl_lf4 <- svytable(~discord_2 + any_dating_violence, survey_design_lf)
 print(weighted_tbl_lf4)
 
@@ -1665,7 +1609,6 @@ CI_lf4
 
 
 #any bullying
-
 weighted_tbl_lf5 <- svytable(~discord_2 + any_bully, survey_design_lf)
 print(weighted_tbl_lf5)
 
@@ -1685,7 +1628,6 @@ CI_lf5
 ###gay males###
 
 #Depression
-
 yrbs_gay_sex$discord_2 <- factor(yrbs_gay_sex$discord_2, levels = c(1, 0))
 yrbs_gay_sex$depression <- factor(yrbs_gay_sex$depression, levels = c(1, 0))
 yrbs_gay_sex$suic_idea <- factor(yrbs_gay_sex$suic_idea, levels = c(1, 0))
@@ -1717,7 +1659,6 @@ CI_gm1
 # weighted contingency table
 
 #suicidal ideation
-
 weighted_tbl_gm2 <- svytable(~discord_2 + suic_idea, survey_design_gm)
 print(weighted_tbl_gm2)
 
@@ -1735,7 +1676,6 @@ CI_gm2
 
 
 #suicide attempt
-
 weighted_tbl_gm3 <- svytable(~discord_2 + suic_attempt_D, survey_design_gm)
 print(weighted_tbl_gm3)
 
@@ -1753,7 +1693,6 @@ CI_gm3
 
 
 #smoking and vaping
-
 weighted_tbl_gm4 <- svytable(~discord_2 + smoke_vape, survey_design_gm)
 print(weighted_tbl_gm4)
 
@@ -1771,7 +1710,6 @@ CI_gm4
 
 
 #marijuana use
-
 weighted_tbl_gm5 <- svytable(~discord_2 + ever_weed_D, survey_design_gm)
 print(weighted_tbl_gm5)
 
@@ -1788,7 +1726,6 @@ CI_gm5
 
 
 #hard drug use
-
 weighted_tbl_gm6 <- svytable(~discord_2 + ever_hard_drugs, survey_design_gm)
 print(weighted_tbl_gm6)
 
@@ -1806,7 +1743,6 @@ CI_gm6
 
 
 #feeling unsafe at school
-
 weighted_tbl_gm7 <- svytable(~discord_2 + unsafe_schl_D, survey_design_gm)
 print(weighted_tbl_gm7)
 
@@ -1828,7 +1764,6 @@ CI_gm7
 
 
 #Depression
-
 yrbs_strF_sex$discord_2 <- factor(yrbs_strF_sex$discord_2, levels = c(1, 0))
 yrbs_strF_sex$suic_idea <- factor(yrbs_strF_sex$suic_idea, levels = c(1, 0))
 yrbs_strF_sex$suic_attempt_D <- factor(yrbs_strF_sex$suic_attempt_D, levels = c(1, 0))
@@ -1842,7 +1777,6 @@ survey_design_sf <- svydesign(ids = ~1, data = yrbs_strF_sex, weights = ~weight)
 
 
 #suicidial ideation
-
 # weighted contingency table
 weighted_tbl_sf1 <- svytable(~discord_2 + suic_idea, survey_design_sf)
 print(weighted_tbl_sf1)
@@ -1860,7 +1794,6 @@ CI_sf1
 
 
 #suicide attempt
-
 weighted_tbl_sf2 <- svytable(~discord_2 + suic_attempt_D, survey_design_sf)
 print(weighted_tbl_sf2)
 
@@ -1877,7 +1810,6 @@ CI_sf2
 
 
 #hard drug use
-
 weighted_tbl_sf3 <- svytable(~discord_2 + ever_hard_drugs, survey_design_sf)
 print(weighted_tbl_sf3)
 
@@ -1894,7 +1826,6 @@ CI_sf3
 
 
 #forced sex
-
 weighted_tbl_sf4 <- svytable(~discord_2 + ever_forced_sex, survey_design_sf)
 print(weighted_tbl_sf4)
 
@@ -1912,7 +1843,6 @@ CI_sf4
 
 
 #feeling unsafe at school
-
 weighted_tbl_sf5 <- svytable(~discord_2 + unsafe_schl_D, survey_design_sf)
 print(weighted_tbl_sf5)
 
@@ -1934,7 +1864,6 @@ CI_sf5
 
 
 #Depression
-
 yrbs_strM_sex$discord_2 <- factor(yrbs_strM_sex$discord_2, levels = c(1, 0))
 yrbs_strM_sex$ever_drink_D <- factor(yrbs_strM_sex$ever_drink_D, levels = c(1, 0))
 yrbs_strM_sex$ever_forced_sex <- factor(yrbs_strM_sex$ever_forced_sex, levels = c(1, 0))
@@ -1945,7 +1874,6 @@ survey_design_sm <- svydesign(ids = ~1, data = yrbs_strM_sex, weights = ~weight)
 
 
 #alcohol use
-
 # weighted contingency table
 weighted_tbl_sm1 <- svytable(~discord_2 + ever_drink_D, survey_design_sm)
 print(weighted_tbl_sm1)
@@ -1963,7 +1891,6 @@ CI_sm1
 
 
 #forced sex
-
 weighted_tbl_sm2 <- svytable(~discord_2 + ever_forced_sex, survey_design_sm)
 print(weighted_tbl_sm2)
 
@@ -1980,7 +1907,6 @@ CI_sm2
 
 
 #any bullying
-
 weighted_tbl_sm3 <- svytable(~discord_2 + any_bully, survey_design_sm)
 print(weighted_tbl_sm3)
 
@@ -1997,7 +1923,6 @@ CI_sm3
 
 
 #forced sex
-
 weighted_tbl_sm4 <- svytable(~discord_2 + ever_forced_sex, survey_design_sm)
 print(weighted_tbl_sm4)
 
@@ -2015,7 +1940,6 @@ CI_sm4
 
 
 #feeling unsafe at school
-
 weighted_tbl_sm5 <- svytable(~discord_2 + unsafe_schl_D, survey_design_sm)
 print(weighted_tbl_sm5)
 
@@ -2031,8 +1955,6 @@ OR_sm5
 CI_sm5
 
 ##############################################################################################
-
-##  LAST MINUTE ANALYSES ADDED 
 
 #post hoc analyses on trend test for males who have sex with males (including those who 
 #have sex with males and females) to see if there is a sig. change over time. 
@@ -2121,7 +2043,6 @@ print(df_proportions_discord)
 ########################################################################################
 
 ##Repeat trend tests for age and SO including everyone who has never had sex 
-##TASK #4 ON THE TO-DO LIST
 
 #AGE
 
@@ -2533,7 +2454,6 @@ df_proportions_refmal_unc <- yrbs_refmal %>%
 
 print(df_proportions_refmal_unc)
 ##############################################################################################
-
 ##Additional prop tables for the supplemental tables
 
  yrbs_14yoF %>%
@@ -3205,8 +3125,6 @@ print(df_proportions_mal2)
 
 #frequency of sexual identity across years, by sex
 
-#frequency of sexual identity across years, by sex
-
 df_proportions_fem_so <- yrbs_female %>%
   group_by(year) %>%
   summarise(
@@ -3248,7 +3166,7 @@ print(df_proportions_mal_so)
 
 ##Sensitivity analysis##
 
-#redo the analysis in Figure 2/ Table S2 in two ways:
+#redo the analysis in Figure 2/ Table S2 in two ways for sens analysis:
 
 #Table S2: Proportion of respondents by self-reported sexual identity (SI), 
 #Youth Risk Behavior Survey (YRBS), 2015-2021	
@@ -3545,8 +3463,6 @@ print(multiCA_szabo_tbl_17yoM)
 print(df_proportions_18yoM)
 print(multiCA_szabo_tbl_18yoM)
 
-###########################################################################################
-
 ##############################################################################################
 #######################################
 ########  PLOTS #######################
@@ -3738,13 +3654,6 @@ png("plots/SSP/SO_by_year_two_panel.png",
     width = 6*300, height = 3.5*300, res = 300
 )
 {
-  #par(mfrow=c(1,3))
-  #par(mar=c(4,4,3,2))
-  #par(oma=c(0,2,0,0))
-  #my_lwd = 2.0
-  #my_xlim = c(2014.5, 2021.5)
-  #lty_sps <- c("F3","dotted","dashed")
-  
   
   par(mfrow=c(1,2))
   par(mar=c(2,0,3,0))
@@ -4667,261 +4576,6 @@ png("plots/SSP/SSP_by_age_and_year_cond_panel.png",
          seg.len=3, cex=0.5, bty = "o"
   ) 
 }
-
-dev.off()
-
-##############################################################
-#  THESE LAST TWO PLOTS WILL NOT BE INCLUDED IN THE MANUSCRIPT
-##############################################################
-
-
-#######################################################################################
-# PLOTS BY AGE AND YEAR FOR FEMALES (CONDITIONED ON EHHS)
-#Females Ages 14, 15, 16, 17, and 18 
-#+++++++++++++++++++++++++++++++++++++++++
-#####
-
-png("plots/SSP/SSP_by_age_and_year_fem.png", 
-    width = 14*300, height = 3*300, res = 300
-)
-{
-  par(mfrow=c(1,6))
-  par(mar=c(2,0,3,0))
-  par(oma=c(0,5,0,1))
-  my_lwd = 1.5
-  my_xlim = c(2014.5, 2021.5)
-  
-  
-  plot(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
-  mtext("14yo female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "A", cex=0.7)
-  lines(df_proportions_14yoF$year, df_proportions_14yoF$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_14yoF$year, df_proportions_14yoF$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_14yoF$year, df_proportions_14yoF$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.30, "*")
-  text(2021.3, 0.10, "*")
-  
-  
-  
-  plot(df_proportions_15yoF$year, df_proportions_15yoF$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("15yo female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "B", cex=0.7)
-  lines(df_proportions_15yoF$year, df_proportions_15yoF$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_15yoF$year, df_proportions_15yoF$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_15yoF$year, df_proportions_15yoF$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.66, "*")
-  text(2021.3, 0.25, "*")
-  text(2021.3, 0.10, "*")
-  
-  
-  
-  
-  plot(df_proportions_16yoF$year, df_proportions_16yoF$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("16yo female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "C", cex=0.7)
-  lines(df_proportions_16yoF$year, df_proportions_16yoF$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_16yoF$year, df_proportions_16yoF$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_16yoF$year, df_proportions_16yoF$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.75, "*")
-  text(2021.3, 0.20, "*")
-  
-  
-  
-  plot(df_proportions_17yoF$year, df_proportions_17yoF$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("17yo female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "D", cex=0.7)
-  lines(df_proportions_17yoF$year, df_proportions_17yoF$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_17yoF$year, df_proportions_17yoF$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_17yoF$year, df_proportions_17yoF$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.77, "*")
-  text(2021.3, 0.06, "*")
-  
-  
-  plot(df_proportions_18yoF$year, df_proportions_18yoF$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("18yo female respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "E", cex=0.7)
-  lines(df_proportions_18yoF$year, df_proportions_18yoF$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_18yoF$year, df_proportions_18yoF$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_18yoF$year, df_proportions_18yoF$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.75, "*")
-  text(2021.3, 0.20, "*")
-  
-  # Create an empty plot for the legend
-  plot.new()
-  legend("center", c("Female partners only", 
-                     "Male partners only", 
-                     "Female and male partners"),
-         col=c("#31BAF6", "#EEC441", "#37C817"), 
-         lty = 1:4, cex=0.8, bty = "o"
-         
-         
-  ) 
-  
-  
-  
-}
-
-dev.off()
-
-#######################################################################################
-
-# PLOTS BY AGE AND YEAR FOR MALES (CONDITIONED ON EHHS)
-#males Ages 14, 15, 16, 17, and 18 
-#+++++++++++++++++++++++++++++++++++++++++
-#####
-
-png("plots/SSP/SSP_by_age_and_year_mal.png", 
-    width = 14*300, height = 3*300, res = 300
-)
-{
-  par(mfrow=c(1,6))
-  par(mar=c(2,0,3,0))
-  par(oma=c(0,5,0,1))
-  my_lwd = 1.5
-  my_xlim = c(2014.5, 2021.5)
-  
-  plot(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "Proportion", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  axis(2, seq(0,1,0.1), seq(0,1,0.1), cex.axis=0.7, las=1)
-  mtext("14yo male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "A", cex=0.7)
-  lines(df_proportions_14yoM$year, df_proportions_14yoM$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_14yoM$year, df_proportions_14yoM$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_14yoM$year, df_proportions_14yoM$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  
-  plot(df_proportions_15yoM$year, df_proportions_15yoM$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("15yo male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "B", cex=0.7)
-  lines(df_proportions_15yoM$year, df_proportions_15yoM$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_15yoM$year, df_proportions_15yoM$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_15yoM$year, df_proportions_15yoM$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  
-  
-  plot(df_proportions_16yoM$year, df_proportions_16yoM$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("16yo male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "C", cex=0.7)
-  lines(df_proportions_16yoM$year, df_proportions_16yoM$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_16yoM$year, df_proportions_16yoM$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_16yoM$year, df_proportions_16yoM$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  text(2021.3, 0.90, "*", col = "#31BAF6")
-  text(2021.3, 0.08, "*", col = "#37C817")
-  
-  plot(df_proportions_17yoM$year, df_proportions_17yoM$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("17yo male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "D", cex=0.7)
-  lines(df_proportions_17yoM$year, df_proportions_17yoM$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_17yoM$year, df_proportions_17yoM$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_17yoM$year, df_proportions_17yoM$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  
-  plot(df_proportions_18yoM$year, df_proportions_18yoM$females_prop/100, type = "l", 
-       col = "white", lwd = my_lwd, xlab = "", ylab = "", 
-       xlim = my_xlim, ylim = c(0, 1), main = "", frame.plot = TRUE, axes = FALSE)
-  axis(1, seq(2015,2021,2), labels=FALSE, cex.axis=0.7)
-  mtext(seq(2015,2021,2), side = 1, line = 0.5, at=seq(2015,2021,2), cex=0.58)
-  mtext("18yo male respondents\nwho have ever had sex", 3, cex = 0.7, line =0.3)
-  abline(h=seq(0,1,0.1), col='lightgray', lwd=0.5)
-  text(2014.6, 0.99, "E", cex=0.7)
-  lines(df_proportions_18yoM$year, df_proportions_18yoM$females_prop/100, lty = 2, 
-        col = "#31BAF6", lwd = my_lwd)
-  lines(df_proportions_18yoM$year, df_proportions_18yoM$males_prop/100, lty = 3, 
-        col = "#EEC441", lwd = my_lwd)
-  lines(df_proportions_18yoM$year, df_proportions_18yoM$both_prop/100, lty = 4, 
-        col = "#37C817", lwd = my_lwd)
-  
-  # Create an empty plot for the legend
-  plot.new()
-  legend("center", c("Female partners only", 
-                     "Male partners only", 
-                     "Female and male partners"),
-         col=c("#31BAF6", "#EEC441", "#37C817"), 
-         lty = 1:4, cex=0.8, bty = "o"
-  )
-  
-  
-}
-
-
 
 dev.off()
 
