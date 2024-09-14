@@ -37,7 +37,7 @@ In order, run the scripts “SoSP_00_packages” and “SoSP_01_prepare”. As p
 
 
 ***Step B: Run Project Analyses***
-After completing Step A once, you will save local copies of the data sets used by the remaining project files in the project. You may now run the remaining scripts based on which specific analyses are of interest. Analyses scripts are “SoSP_02_analyses”.
+After completing Step A once, you will save local copies of the data sets used by the remaining project files in the project. You may now run the remaining scripts based on which specific analyses are of interest. Analyses scripts are “SoSP_02_analyses”. Finally, you can run "SoSP_03_tables_figures" to generate the figures and data for the tables used in the manuscript. 
 
 
 You have now completed the steps to replicate all analyses used in this manuscript. For any questions, please email Steven Goodreau at goodreau@uw.edu.
