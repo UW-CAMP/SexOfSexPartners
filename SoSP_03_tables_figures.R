@@ -7,425 +7,6 @@
 
 ##############################################################################################
 #######################################
-######## TABLES #######################
-#######################################
-##############################################################################################
-
-#Table S1: Predictors of missingness in sex of sex partners (SoSP) over the lifetime, 
-# Youth Risk Behavior Survey (YRBS), 2015-2021. 5
-
-
-#Logistic regression predicting missing SSP from sex, age,
-#sexual identity, and year of survey
-
-#each set as a categorical variable
-#reference cats = female, 14, hetero, 2015
-
-class(ssp_predictor_data_final$sex)
-class(ssp_predictor_data_final$age)
-class(ssp_predictor_data_final$so_new)
-class(ssp_predictor_data_final$year)
-class(ssp_predictor_data_final$sex_of_sps)
-class(ssp_predictor_data_final$missing_ssp)
-
-
-table(ssp_predictor_data_final$sex)
-table(ssp_predictor_data_final$age)
-table(ssp_predictor_data_final$so_new)
-table(ssp_predictor_data_final$year)
-
-
-
-# logistic regression model predicting missing_ssp
-logistic_model <- glm(missing_ssp ~ sex + age + so_new + year, 
-                      data = ssp_predictor_data_final, 
-                      family = binomial)
-
-# Summarize the model
-summary(logistic_model)
-
-
-# Calculate odds ratios and 95% CIs
-odds_ratios <- exp(coef(logistic_model))
-
-conf_int <- confint(logistic_model)
-conf_int_odds_ratios <- exp(conf_int)
-
-odds_ratios_df <- data.frame(
-  Estimate = odds_ratios,
-  Lower_95_CI = conf_int_odds_ratios[, 1],
-  Upper_95_CI = conf_int_odds_ratios[, 2]
-)
-
-print(odds_ratios_df)
-
-
-############################################################################################
-#Table S2: Proportion of respondents by sex of sex partners (SSP) over the lifetime, 
-#Youth Risk Behavior Survey (YRBS), 2015-2021	
-
-#frequency of each SSP by year, by sex (includes 1_never)
-
-#Females
-print(df_proportions_fem)
-
-# Males
-print(df_proportions_mal)
-
-#frequency of each SSP by year, by sex (does not includes 1_never)
-
-# Females
-print(df_proportions_fem2)
-
-# Males
-print(df_proportions_mal2)
-
-############################################################################################
-#Table S3: Proportion of respondents by self-reported sexual identity (SI), 
-#Youth Risk Behavior Survey (YRBS), 2015-2021	
-
-#frequency of sexual identity across years, by sex
-
-df_proportions_fem_so <- yrbs_female %>%
-  group_by(year) %>%
-  summarise(
-    straight_prop = sum(so_new == "1_straight") / n() * 100,
-    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
-    bi_prop = sum(so_new == "3_bi") / n() * 100,
-    dko_prop = sum(so_new == "4_dko") / n() * 100,
-    ref_prop = sum(so_new == "5_ref") / n() * 100
-  )
-
-# Print the resulting data frame with proportions
-print(df_proportions_fem_so)
-
-
-df_proportions_mal_so <- yrbs_male %>%
-  group_by(year) %>%
-  summarise(
-    straight_prop = sum(so_new == "1_straight") / n() * 100,
-    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
-    bi_prop = sum(so_new == "3_bi") / n() * 100,
-    dko_prop = sum(so_new == "4_dko") / n() * 100,
-    ref_prop = sum(so_new == "5_ref") / n() * 100
-  )
-
-# Print the resulting data frame with proportions
-print(df_proportions_mal_so)
-
-#Females
-print(df_proportions_fem_so)
-
-# Males
-print(df_proportions_mal_so)
-
-############################################################################################
-#Table S4: Sensitivity analysis on trend tests for sexual identity (SI), 
-#Youth Risk Behavior Survey (YRBS), 2015-2021, with alternative definition for 
-#“not sure” in 2021
-#################################################################################
-
-##Sensitivity analysis##
-
-#redo the analysis in Figure 2/ Table S2 in two ways for sens analysis:
-
-#Table S2: Proportion of respondents by self-reported sexual identity (SI), 
-#Youth Risk Behavior Survey (YRBS), 2015-2021	
-
-#frequency of sexual identity across years, by sex
-
-yrbs_sens_subset1 <- subset(yrbs_final, so_21 != "7_somethingelse" | is.na(so_21))
-
-yrbs_sens_subset2 <- subset(yrbs_sens_subset1, so_21 != "6_dkwtm" | is.na(so_21))
-
-table(yrbs_merge_new$so_21)
-table(yrbs_sens_subset1$so_21)
-table(yrbs_sens_subset2$so_21)
-
-
-yrbs_sens_subset1_fem <- subset(yrbs_sens_subset1, sex == "Female")
-yrbs_sens_subset1_mal <- subset(yrbs_sens_subset1, sex == "Male")
-yrbs_sens_subset2_fem <- subset(yrbs_sens_subset2, sex == "Female")
-yrbs_sens_subset2_mal <- subset(yrbs_sens_subset2, sex == "Male")
-
-#Sensitivity analysis 1- Take the people who responded “I describe my sexual 
-#identity some other way” in 2021, and remove them altogether
-
-
-df_proportions_fem_so_sens1 <- yrbs_sens_subset1_fem %>%
-  group_by(year) %>%
-  summarise(
-    N = n(),
-    straight_prop = sum(so_new == "1_straight") / n() * 100,
-    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
-    bi_prop = sum(so_new == "3_bi") / n() * 100,
-    dko_prop = sum(so_new == "4_dko") / n() * 100,
-    ref_prop = sum(so_new == "5_ref") / n() * 100
-  )
-
-# Print the resulting data frame with proportions
-print(df_proportions_fem_so_sens1)
-
-
-szabo_table_fem_sens1 <- table(yrbs_sens_subset1_fem$so_new, yrbs_sens_subset1_fem$year)
-prop.table(szabo_table_fem_sens1)
-
-## using formula interface
-multiCA_szabo_tbl_fem_sens1 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset1_fem)
-print(multiCA_szabo_tbl_fem_sens1)
-
-
-
-df_proportions_mal_so_sens1 <- yrbs_sens_subset1_mal %>%
-  group_by(year) %>%
-  summarise(
-    N = n(),
-    straight_prop = sum(so_new == "1_straight") / n() * 100,
-    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
-    bi_prop = sum(so_new == "3_bi") / n() * 100,
-    dko_prop = sum(so_new == "4_dko") / n() * 100,
-    ref_prop = sum(so_new == "5_ref") / n() * 100
-  )
-
-# Print the resulting data frame with proportions
-print(df_proportions_mal_so_sens1)
-
-
-szabo_table_mal_sens1 <- table(yrbs_sens_subset1_mal$so_new, yrbs_sens_subset1_mal$year)
-prop.table(szabo_table_mal_sens1)
-
-## using formula interface
-multiCA_szabo_tbl_mal_sens1 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset1_mal)
-print(multiCA_szabo_tbl_mal_sens1)
-
-
-
-#2.  Take the people who responded “I describe my sexual identity some other way” 
-#or “I do not know what this question is asking” in 2021, and remove them.
-
-df_proportions_fem_so_sens2 <- yrbs_sens_subset2_fem %>%
-  group_by(year) %>%
-  summarise(
-    straight_prop = sum(so_new == "1_straight") / n() * 100,
-    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
-    bi_prop = sum(so_new == "3_bi") / n() * 100,
-    dko_prop = sum(so_new == "4_dko") / n() * 100,
-    ref_prop = sum(so_new == "5_ref") / n() * 100
-  )
-
-# Print the resulting data frame with proportions
-print(df_proportions_fem_so_sens2)
-
-
-szabo_table_fem_sens2 <- table(yrbs_sens_subset2_fem$so_new, yrbs_sens_subset2_fem$year)
-
-## using formula interface
-multiCA_szabo_tbl_fem_sens2 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset2_fem)
-print(multiCA_szabo_tbl_fem_sens2)
-
-
-
-df_proportions_mal_so_sens2 <- yrbs_sens_subset2_mal %>%
-  group_by(year) %>%
-  summarise(
-    straight_prop = sum(so_new == "1_straight") / n() * 100,
-    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
-    bi_prop = sum(so_new == "3_bi") / n() * 100,
-    dko_prop = sum(so_new == "4_dko") / n() * 100,
-    ref_prop = sum(so_new == "5_ref") / n() * 100
-  )
-
-# Print the resulting data frame with proportions
-print(df_proportions_mal_so_sens2)
-
-
-szabo_table_mal_sens2 <- table(yrbs_sens_subset2_mal$so_new, yrbs_sens_subset2_mal$year)
-
-## using formula interface
-multiCA_szabo_tbl_mal_sens2 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset2_mal)
-print(multiCA_szabo_tbl_mal_sens2)
-
-
-##############################################################################################
-#Table S5: Proportion of respondents by sex of sex of sex of sex partners (SSP) over the lifetime, 
-#by reported sexual identity (SI), including those with no prior sexual contact, Youth Risk 
-#Behavior Survey (YRBS), 2015-2021	
-
-##(frequency by year by sexual identity, unconditional)
-
-#straight female
-print(df_proportions_strfem_unc)
-print(multiCA_szabo_tbl_strfem_unc)
-
-#lesbian female
-print(df_proportions_lesfem_unc)
-print(multiCA_szabo_tbl_lesfem_unc)
-
-#bisexual female
-print(df_proportions_bifem_unc)
-print(multiCA_szabo_tbl_bifem_unc)
-
-#don't know female
-print(df_proportions_dkofem_unc)
-print(multiCA_szabo_tbl_dkofem_unc)
-
-#refused female
-print(df_proportions_reffem_unc)
-print(multiCA_szabo_tbl_reffem_unc)
-
-
-#straight male
-print(df_proportions_strmal_unc)
-print(multiCA_szabo_tbl_strmal_unc)
-
-#gay male
-print(df_proportions_gaymal_unc)
-print(multiCA_szabo_tbl_gaymal_unc)
-
-#bisexual male
-print(df_proportions_bimal_unc)
-print(multiCA_szabo_tbl_bimal_unc)
-
-#don't know male
-print(df_proportions_dkomal_unc)
-print(multiCA_szabo_tbl_dkomal_unc)
-
-#refused male
-print(df_proportions_refmal_unc)
-print(multiCA_szabo_tbl_refmal_unc)
-
-##############################################################################################
-#Table S6: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
-#by reported sexual identity (SI), among those who have ever had sex, Youth Risk Behavior 
-#Survey (YRBS), 2015-2021	
-
-##(frequency by year by sexual identity, conditional)
-
-#straight female
-print(df_proportions_strfem)
-print(multiCA_szabo_tbl_strfem)
-
-#lesbian female
-print(df_proportions_lesfem)
-print(multiCA_szabo_tbl_lesfem)
-
-#bisexual female
-print(df_proportions_bifem)
-print(multiCA_szabo_tbl_bifem)
-
-#dont know female
-print(df_proportions_dkofem)
-print(multiCA_szabo_tbl_dkofem)
-
-#declined female
-print(df_proportions_reffem)
-print(multiCA_szabo_tbl_reffem)
-
-#straight male
-print(df_proportions_strmal)
-print(multiCA_szabo_tbl_strmal)
-
-
-#gay male
-print(df_proportions_gaymal)
-print(multiCA_szabo_tbl_gaymal)
-
-#bisexual male
-print(df_proportions_bimal)
-print(multiCA_szabo_tbl_bimal)
-
-#don't know male
-print(df_proportions_dkomal)
-print(multiCA_szabo_tbl_dkomal)
-
-#declined to answer male
-print(df_proportions_refmal)
-print(multiCA_szabo_tbl_refmal)
-
-################################################################################################
-#Table S7: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
-#by age, including those with no prior sexual contact, Youth Risk Behavior Survey 
-#(YRBS), 2015-2021
-
-#14yo female
-print(df_proportions_14yoF_unc)
-
-#15yo female
-print(df_proportions_15yoF_unc)
-
-#16yo female
-print(df_proportions_16yoF_unc)
-
-#17yo female
-print(df_proportions_17yoF_unc)
-
-#18yo female
-print(df_proportions_18yoF_unc)
-
-
-#14yo male
-print(df_proportions_14yoM_unc)
-
-#15yo male
-print(df_proportions_15yoM_unc)
-
-#16yo male
-print(df_proportions_16yoM_unc)
-
-#17yo male
-print(df_proportions_17yoM_unc)
-
-#18yo male
-print(df_proportions_18yoM_unc)
-
-###########################################################################################
-#Table S8: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
-#by age, among those who have ever had sex, Youth Risk Behavior Survey (YRBS), 2015-2021	
-## Frequency of SSP by age, split by year and by sex
-
-#14yo female
-print(df_proportions_14yoF)
-print(multiCA_szabo_tbl_14yoF)
-
-#15yo female
-print(df_proportions_15yoF)
-print(multiCA_szabo_tbl_15yoF)
-
-#16yo female
-print(df_proportions_16yoF)
-print(multiCA_szabo_tbl_16yoF)
-
-#17yo female
-print(df_proportions_17yoF)
-print(multiCA_szabo_tbl_17yoF)
-
-#18yo female
-print(df_proportions_18yoF)
-print(multiCA_szabo_tbl_18yoF)
-
-
-#14yo male
-print(df_proportions_14yoM)
-print(multiCA_szabo_tbl_14yoM)
-
-#15yo male
-print(df_proportions_15yoM)
-print(multiCA_szabo_tbl_15yoM)
-
-#16yo male
-print(df_proportions_16yoM)
-print(multiCA_szabo_tbl_16yoM)
-
-#17yo male
-print(df_proportions_17yoM)
-print(multiCA_szabo_tbl_17yoM)
-
-#18yo male
-print(df_proportions_18yoM)
-print(multiCA_szabo_tbl_18yoM)
-
-##############################################################################################
-#######################################
 ########  PLOTS #######################
 #######################################
 ##############################################################################################
@@ -1540,8 +1121,435 @@ png("plots/SoSP/SSP_by_age_and_year_cond_panel.png",
 
 dev.off()
 
-################################################################################
-################################################################################
-##########################  END OF PLOTS  ######################################
-################################################################################
+##############################################################################################
+#######################################
+######## TABLES #######################
+#######################################
+##############################################################################################
+
+#Table S1: Predictors of missingness in sex of sex partners (SoSP) over the lifetime, 
+# Youth Risk Behavior Survey (YRBS), 2015-2021. 5
+
+
+#Logistic regression predicting missing SSP from sex, age,
+#sexual identity, and year of survey
+
+#each set as a categorical variable
+#reference cats = female, 14, hetero, 2015
+
+class(ssp_predictor_data_final$sex)
+class(ssp_predictor_data_final$age)
+class(ssp_predictor_data_final$so_new)
+class(ssp_predictor_data_final$year)
+class(ssp_predictor_data_final$sex_of_sps)
+class(ssp_predictor_data_final$missing_ssp)
+
+
+table(ssp_predictor_data_final$sex)
+table(ssp_predictor_data_final$age)
+table(ssp_predictor_data_final$so_new)
+table(ssp_predictor_data_final$year)
+
+
+
+# logistic regression model predicting missing_ssp
+logistic_model <- glm(missing_ssp ~ sex + age + so_new + year, 
+                      data = ssp_predictor_data_final, 
+                      family = binomial)
+
+# Summarize the model
+summary(logistic_model)
+
+
+# Calculate odds ratios and 95% CIs
+odds_ratios <- exp(coef(logistic_model))
+
+conf_int <- confint(logistic_model)
+conf_int_odds_ratios <- exp(conf_int)
+
+odds_ratios_df <- data.frame(
+  Estimate = odds_ratios,
+  Lower_95_CI = conf_int_odds_ratios[, 1],
+  Upper_95_CI = conf_int_odds_ratios[, 2]
+)
+
+print(odds_ratios_df)
+
+
+############################################################################################
+#Table S2: Proportion of respondents by sex of sex partners (SSP) over the lifetime, 
+#Youth Risk Behavior Survey (YRBS), 2015-2021	
+
+#frequency of each SSP by year, by sex (includes 1_never)
+
+#Females
+print(df_proportions_fem)
+
+# Males
+print(df_proportions_mal)
+
+#frequency of each SSP by year, by sex (does not includes 1_never)
+
+# Females
+print(df_proportions_fem2)
+
+# Males
+print(df_proportions_mal2)
+
+############################################################################################
+#Table S3: Proportion of respondents by self-reported sexual identity (SI), 
+#Youth Risk Behavior Survey (YRBS), 2015-2021	
+
+#frequency of sexual identity across years, by sex
+
+#Females
+df_proportions_fem_so <- yrbs_female %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_fem_so)
+
+#p values
+multiCA_so_fem_year <- multiCA.test(so_new ~ year, data=yrbs_female)
+multiCA_so_fem_year
+
+#Males
+df_proportions_mal_so <- yrbs_male %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_mal_so)
+
+#p values
+multiCA_so_mal_year <- multiCA.test(so_new ~ year, data=yrbs_male)
+multiCA_so_mal_year
+############################################################################################
+#Table S4: Sensitivity analysis on trend tests for sexual identity (SI), 
+#Youth Risk Behavior Survey (YRBS), 2015-2021, with alternative definition for 
+#“not sure” in 2021
+#################################################################################
+
+##Sensitivity analysis##
+
+#redo the analysis in Figure 2/ Table S2 in two ways for sens analysis:
+
+#Table S2: Proportion of respondents by self-reported sexual identity (SI), 
+#Youth Risk Behavior Survey (YRBS), 2015-2021	
+
+#frequency of sexual identity across years, by sex
+
+yrbs_sens_subset1 <- subset(yrbs_final, so_21 != "7_somethingelse" | is.na(so_21))
+
+yrbs_sens_subset2 <- subset(yrbs_sens_subset1, so_21 != "6_dkwtm" | is.na(so_21))
+
+table(yrbs_merge_new$so_21)
+table(yrbs_sens_subset1$so_21)
+table(yrbs_sens_subset2$so_21)
+
+
+yrbs_sens_subset1_fem <- subset(yrbs_sens_subset1, sex == "Female")
+yrbs_sens_subset1_mal <- subset(yrbs_sens_subset1, sex == "Male")
+yrbs_sens_subset2_fem <- subset(yrbs_sens_subset2, sex == "Female")
+yrbs_sens_subset2_mal <- subset(yrbs_sens_subset2, sex == "Male")
+
+#Sensitivity analysis 1- Take the people who responded “I describe my sexual 
+#identity some other way” in 2021, and remove them altogether
+
+
+df_proportions_fem_so_sens1 <- yrbs_sens_subset1_fem %>%
+  group_by(year) %>%
+  summarise(
+    N = n(),
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_fem_so_sens1)
+
+
+szabo_table_fem_sens1 <- table(yrbs_sens_subset1_fem$so_new, yrbs_sens_subset1_fem$year)
+prop.table(szabo_table_fem_sens1)
+
+## using formula interface
+multiCA_szabo_tbl_fem_sens1 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset1_fem)
+print(multiCA_szabo_tbl_fem_sens1)
+
+
+
+df_proportions_mal_so_sens1 <- yrbs_sens_subset1_mal %>%
+  group_by(year) %>%
+  summarise(
+    N = n(),
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_mal_so_sens1)
+
+
+szabo_table_mal_sens1 <- table(yrbs_sens_subset1_mal$so_new, yrbs_sens_subset1_mal$year)
+prop.table(szabo_table_mal_sens1)
+
+## using formula interface
+multiCA_szabo_tbl_mal_sens1 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset1_mal)
+print(multiCA_szabo_tbl_mal_sens1)
+
+
+
+#2.  Take the people who responded “I describe my sexual identity some other way” 
+#or “I do not know what this question is asking” in 2021, and remove them.
+
+df_proportions_fem_so_sens2 <- yrbs_sens_subset2_fem %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_fem_so_sens2)
+
+
+szabo_table_fem_sens2 <- table(yrbs_sens_subset2_fem$so_new, yrbs_sens_subset2_fem$year)
+
+## using formula interface
+multiCA_szabo_tbl_fem_sens2 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset2_fem)
+print(multiCA_szabo_tbl_fem_sens2)
+
+
+
+df_proportions_mal_so_sens2 <- yrbs_sens_subset2_mal %>%
+  group_by(year) %>%
+  summarise(
+    straight_prop = sum(so_new == "1_straight") / n() * 100,
+    lesgay_prop = sum(so_new == "2_lesgay") / n() * 100,
+    bi_prop = sum(so_new == "3_bi") / n() * 100,
+    dko_prop = sum(so_new == "4_dko") / n() * 100,
+    ref_prop = sum(so_new == "5_ref") / n() * 100
+  )
+
+# Print the resulting data frame with proportions
+print(df_proportions_mal_so_sens2)
+
+
+szabo_table_mal_sens2 <- table(yrbs_sens_subset2_mal$so_new, yrbs_sens_subset2_mal$year)
+
+## using formula interface
+multiCA_szabo_tbl_mal_sens2 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset2_mal)
+print(multiCA_szabo_tbl_mal_sens2)
+
+
+##############################################################################################
+#Table S5: Proportion of respondents by sex of sex of sex of sex partners (SSP) over the lifetime, 
+#by reported sexual identity (SI), including those with no prior sexual contact, Youth Risk 
+#Behavior Survey (YRBS), 2015-2021	
+
+##(frequency by year by sexual identity, unconditional)
+
+#straight female
+print(df_proportions_strfem_unc)
+print(multiCA_szabo_tbl_strfem_unc)
+
+#lesbian female
+print(df_proportions_lesfem_unc)
+print(multiCA_szabo_tbl_lesfem_unc)
+
+#bisexual female
+print(df_proportions_bifem_unc)
+print(multiCA_szabo_tbl_bifem_unc)
+
+#don't know female
+print(df_proportions_dkofem_unc)
+print(multiCA_szabo_tbl_dkofem_unc)
+
+#refused female
+print(df_proportions_reffem_unc)
+print(multiCA_szabo_tbl_reffem_unc)
+
+
+#straight male
+print(df_proportions_strmal_unc)
+print(multiCA_szabo_tbl_strmal_unc)
+
+#gay male
+print(df_proportions_gaymal_unc)
+print(multiCA_szabo_tbl_gaymal_unc)
+
+#bisexual male
+print(df_proportions_bimal_unc)
+print(multiCA_szabo_tbl_bimal_unc)
+
+#don't know male
+print(df_proportions_dkomal_unc)
+print(multiCA_szabo_tbl_dkomal_unc)
+
+#refused male
+print(df_proportions_refmal_unc)
+print(multiCA_szabo_tbl_refmal_unc)
+
+##############################################################################################
+#Table S6: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
+#by reported sexual identity (SI), among those who have ever had sex, Youth Risk Behavior 
+#Survey (YRBS), 2015-2021	
+
+##(frequency by year by sexual identity, conditional)
+
+#straight female
+print(df_proportions_strfem)
+print(multiCA_szabo_tbl_strfem)
+
+#lesbian female
+print(df_proportions_lesfem)
+print(multiCA_szabo_tbl_lesfem)
+
+#bisexual female
+print(df_proportions_bifem)
+print(multiCA_szabo_tbl_bifem)
+
+#dont know female
+print(df_proportions_dkofem)
+print(multiCA_szabo_tbl_dkofem)
+
+#declined female
+print(df_proportions_reffem)
+print(multiCA_szabo_tbl_reffem)
+
+#straight male
+print(df_proportions_strmal)
+print(multiCA_szabo_tbl_strmal)
+
+
+#gay male
+print(df_proportions_gaymal)
+print(multiCA_szabo_tbl_gaymal)
+
+#bisexual male
+print(df_proportions_bimal)
+print(multiCA_szabo_tbl_bimal)
+
+#don't know male
+print(df_proportions_dkomal)
+print(multiCA_szabo_tbl_dkomal)
+
+#declined to answer male
+print(df_proportions_refmal)
+print(multiCA_szabo_tbl_refmal)
+
+################################################################################################
+#Table S7: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
+#by age, including those with no prior sexual contact, Youth Risk Behavior Survey 
+#(YRBS), 2015-2021
+
+#14yo female
+print(df_proportions_14yoF_unc)
+multiCA_szabo_tbl_14yoF_unc
+
+#15yo female
+print(df_proportions_15yoF_unc)
+multiCA_szabo_tbl_15yoF_unc
+
+#16yo female
+print(df_proportions_16yoF_unc)
+multiCA_szabo_tbl_16yoF_unc
+
+#17yo female
+print(df_proportions_17yoF_unc)
+multiCA_szabo_tbl_17yoF_unc
+
+#18yo female
+print(df_proportions_18yoF_unc)
+multiCA_szabo_tbl_18yoF_unc
+
+
+#14yo male
+print(df_proportions_14yoM_unc)
+multiCA_szabo_tbl_14yoM_unc
+
+#15yo male
+print(df_proportions_15yoM_unc)
+multiCA_szabo_tbl_15yoM_unc
+
+#16yo male
+print(df_proportions_16yoM_unc)
+multiCA_szabo_tbl_16yoM_unc
+
+#17yo male
+print(df_proportions_17yoM_unc)
+multiCA_szabo_tbl_17yoM_unc
+
+#18yo male
+print(df_proportions_18yoM_unc)
+multiCA_szabo_tbl_18yoM_unc
+
+###########################################################################################
+#Table S8: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
+#by age, among those who have ever had sex, Youth Risk Behavior Survey (YRBS), 2015-2021	
+## Frequency of SSP by age, split by year and by sex
+
+#14yo female
+print(df_proportions_14yoF)
+print(multiCA_szabo_tbl_14yoF)
+
+#15yo female
+print(df_proportions_15yoF)
+print(multiCA_szabo_tbl_15yoF)
+
+#16yo female
+print(df_proportions_16yoF)
+print(multiCA_szabo_tbl_16yoF)
+
+#17yo female
+print(df_proportions_17yoF)
+print(multiCA_szabo_tbl_17yoF)
+
+#18yo female
+print(df_proportions_18yoF)
+print(multiCA_szabo_tbl_18yoF)
+
+
+#14yo male
+print(df_proportions_14yoM)
+print(multiCA_szabo_tbl_14yoM)
+
+#15yo male
+print(df_proportions_15yoM)
+print(multiCA_szabo_tbl_15yoM)
+
+#16yo male
+print(df_proportions_16yoM)
+print(multiCA_szabo_tbl_16yoM)
+
+#17yo male
+print(df_proportions_17yoM)
+print(multiCA_szabo_tbl_17yoM)
+
+#18yo male
+print(df_proportions_18yoM)
+print(multiCA_szabo_tbl_18yoM)
+
 

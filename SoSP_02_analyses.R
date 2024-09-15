@@ -1,6 +1,6 @@
 ### Script for SoSP analysis
 
-# This script's code uses the YRBS dataset, previously prepared in script "SoSP_01_prepare"
+### This script's code uses the YRBS dataset, previously prepared in script "SoSP_01_prepare"
 ### to conduct SSP-related analyses
 
 ### Prepare workspace ----- 
@@ -32,20 +32,20 @@ if(!dir.exists("plots/SoSP")){
 ### SUBSETS FOR ANALYSES 
 #########################################################
 
-#Filter by year 
+#Subset by year 
 yrbs_2015 <- yrbs_final[yrbs_final$year == "2015",]
 yrbs_2017 <- yrbs_final[yrbs_final$year == "2017",]
 yrbs_2019 <- yrbs_final[yrbs_final$year == "2019",]
 yrbs_2021 <- yrbs_final[yrbs_final$year == "2021",]
 
 ##Subset by sexual identity
-#Filter by year 
 yrbs_straight <- yrbs_final[yrbs_final$so_new == "1_straight",]
 yrbs_lesgay <- yrbs_final[yrbs_final$so_new == "2_lesgay",]
 yrbs_bi <- yrbs_final[yrbs_final$so_new == "3_bi",]
 yrbs_dko <- yrbs_final[yrbs_final$so_new == "4_dko",]
 yrbs_ref <- yrbs_final[yrbs_final$so_new == "5_ref",]
 
+##Subset by sexual identity and sex
 yrbs_strfem <- yrbs_straight[yrbs_straight$sex == "Female", ]
 yrbs_lesfem <- yrbs_lesgay[yrbs_lesgay$sex == "Female", ]
 yrbs_bifem <- yrbs_bi[yrbs_bi$sex == "Female", ]
@@ -58,19 +58,14 @@ yrbs_bimal <- yrbs_bi[yrbs_bi$sex == "Male", ]
 yrbs_dkomal <- yrbs_dko[yrbs_dko$sex == "Male", ]
 yrbs_refmal <- yrbs_ref[yrbs_ref$sex == "Male", ]
 
-
-
-#########################################################
-### SUBSET YRBS_FINAL BY SEX 
-#########################################################
-
+#Subset by sex only 
 # Create a subset for only female participants
 yrbs_female <- yrbs_final[yrbs_final$sex == "Female", ]
 
 # Create a subset for only male participants
 yrbs_male <- yrbs_final[yrbs_final$sex == "Male", ]
 
-
+#Subset by sex and year 
 yrbs_female15 <- yrbs_2015[yrbs_2015$sex == "Female", ]
 yrbs_female17 <- yrbs_2017[yrbs_2017$sex == "Female", ]
 yrbs_female19 <- yrbs_2019[yrbs_2019$sex == "Female", ]
@@ -80,6 +75,18 @@ yrbs_male15 <- yrbs_2015[yrbs_2015$sex == "Male", ]
 yrbs_male17 <- yrbs_2017[yrbs_2017$sex == "Male", ]
 yrbs_male19 <- yrbs_2019[yrbs_2019$sex == "Male", ]
 yrbs_male21 <- yrbs_2021[yrbs_2021$sex == "Male", ]
+
+#Subset conditional on ever having had sex 
+yrbs_sex <- yrbs_final[yrbs_final$sex_of_sps != "1_never",]
+table(yrbs_sex$sex_of_sps)
+
+table(yrbs_sex$sex, yrbs_sex$sex_of_sp)
+
+#Subset those who have had sex by year
+yrbs_sex_2015 <- yrbs_sex[yrbs_sex$year == "2015",]
+yrbs_sex_2017 <- yrbs_sex[yrbs_sex$year == "2017",]
+yrbs_sex_2019 <- yrbs_sex[yrbs_sex$year == "2019",]
+yrbs_sex_2021 <- yrbs_sex[yrbs_sex$year == "2021",]
 
 
 #########################################################
@@ -105,30 +112,18 @@ table(yrbs_2021$sex, yrbs_2021$sex_of_sp)
 round(100* prop.table(table(yrbs_2021$sex, yrbs_2021$sex_of_sp)))
 
 
-#Conditional on ever having had sex 
-yrbs_sex <- yrbs_final[yrbs_final$sex_of_sps != "1_never",]
-table(yrbs_sex$sex_of_sps)
-
-table(yrbs_sex$sex, yrbs_sex$sex_of_sp)
-
-yrbs_sex_2015 <- yrbs_sex[yrbs_sex$year == "2015",]
-yrbs_sex_2017 <- yrbs_sex[yrbs_sex$year == "2017",]
-yrbs_sex_2019 <- yrbs_sex[yrbs_sex$year == "2019",]
-yrbs_sex_2021 <- yrbs_sex[yrbs_sex$year == "2021",]
-
 ##################################################################
 ### CODE TO CONDUCT MULTINOMIAL OUTCOME TREND TEST- SZABO (2016)
 ##################################################################
 
-#frequency of each SSP by year, by sex (includes 1_never)
+#Assessing SoSP trends by sex, including those with no prior sexual experience
+###############################################################################
+
+#Females
 szabo_table_F <- table(yrbs_female$sex_of_sps, yrbs_female$year)
 prop.table(szabo_table_F)
 
-## using formula interface
-multiCA_szabo_tbl_F <- multiCA.test(sex_of_sps ~ year, data=yrbs_female)
-
-
-#frequency of each SSP by year, by sex (cond on EHHS; include 1_never)
+#frequency of each SSP by year, by sex (include 1_never)
 df_proportions_fem <- yrbs_female %>%
   group_by(year) %>%
   summarise(
@@ -141,16 +136,16 @@ df_proportions_fem <- yrbs_female %>%
 # Print the resulting data frame with proportions
 print(df_proportions_fem)
 
+## using formula interface
+multiCA_szabo_tbl_F <- multiCA.test(sex_of_sps ~ year, data=yrbs_female)
+print(multiCA_szabo_tbl_F)
 
 
+#Males
 szabo_table_M <- table(yrbs_male$sex_of_sps, yrbs_male$year)
 prop.table(szabo_table_M)
 
-## using formula interface
-multiCA_szabo_tbl_M <- multiCA.test(sex_of_sps ~ year, data=yrbs_male)
-
-
-#frequency of each SSP by year, by sex (cond on EHHS; does include 1_never)
+#frequency of each SSP by year, by sex (include 1_never)
 df_proportions_mal <- yrbs_male %>%
   group_by(year) %>%
   summarise(
@@ -163,15 +158,17 @@ df_proportions_mal <- yrbs_male %>%
 # Print the resulting data frame with proportions
 print(df_proportions_mal)
 
+## using formula interface
+multiCA_szabo_tbl_M <- multiCA.test(sex_of_sps ~ year, data=yrbs_male)
+print(multiCA_szabo_tbl_M)
+###################################
 
+#Assessing SoSP trends by sex, excluding those with no prior sexual experience
+###############################################################################
 
-#frequency of each SSP by year, by sex (does not includes 1_never)
+#Females
 szabo_table_F2 <- table(yrbs_female$ever_sex_sps, yrbs_female$year)
 prop.table(szabo_table_F2)
-
-## using formula interface
-multiCA_szabo_tbl_F2 <-multiCA.test(ever_sex_sps ~ year, data=yrbs_female)
-print(multiCA_szabo_tbl_F2)
 
 #frequency of each SSP by year, by sex (does not includes 1_never)
 df_proportions_fem2 <- yrbs_female %>%
@@ -185,14 +182,15 @@ df_proportions_fem2 <- yrbs_female %>%
 # Print the resulting data frame with proportions
 print(df_proportions_fem2)
 
+## using formula interface
+multiCA_szabo_tbl_F2 <-multiCA.test(ever_sex_sps ~ year, data=yrbs_female)
+print(multiCA_szabo_tbl_F2)
 
 
+
+#Males
 szabo_table_M2 <- table(yrbs_male$ever_sex_sps, yrbs_male$year)
 prop.table(szabo_table_M2)
-
-## using formula interface
-multiCA_szabo_tbl_M2 <- multiCA.test(ever_sex_sps ~ year, data=yrbs_male)
-
 
 #frequency of each SSP by year, by sex (does not includes 1_never)
 df_proportions_mal2 <- yrbs_male %>%
@@ -206,382 +204,14 @@ df_proportions_mal2 <- yrbs_male %>%
 # Print the resulting data frame with proportions
 print(df_proportions_mal2)
 
-
-
-#################################
-## Frequency of SSP by age, split by sex
-
-#FEMALE
-szabo_table_F3 <- table(yrbs_female$ever_sex_sps, yrbs_female$age)
-prop.table(szabo_table_F3)
-
 ## using formula interface
-multiCA_szabo_tbl_F3 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female)
-
-df_proportions_fem3 <- yrbs_female %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_fem3)
-
-
-#MALE
-szabo_table_M3 <- table(yrbs_male$ever_sex_sps, yrbs_male$age)
-prop.table(szabo_table_M3)
-
-## using formula interface
-multiCA_szabo_tbl_M3 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male)
-
-df_proportions_mal3 <- yrbs_male %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_mal3)
-
-
-#################################
-## Frequency of SSP by age, split by year and by sex
-
-
-#FEMALE 2015
-szabo_table_F4 <- table(yrbs_female15$ever_sex_sps, yrbs_female15$age)
-prop.table(szabo_table_F4)
-
-## using formula interface
-multiCA_szabo_tbl_F4 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female15)
-
-df_proportions_fem4 <- yrbs_female15 %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_fem4)
-
-
-#FEMALE 2017
-szabo_table_F5 <- table(yrbs_female17$ever_sex_sps, yrbs_female17$age)
-prop.table(szabo_table_F5)
-
-## using formula interface
-multiCA_szabo_tbl_F5 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female17)
-
-df_proportions_fem5 <- yrbs_female17 %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_fem5)
-
-
-#FEMALE 2019
-szabo_table_F6 <- table(yrbs_female19$ever_sex_sps, yrbs_female19$age)
-prop.table(szabo_table_F6)
-
-## using formula interface
-multiCA_szabo_tbl_F6 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female19)
-
-df_proportions_fem6 <- yrbs_female19 %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_fem6)
-
-
-#FEMALE 2021
-szabo_table_F7 <- table(yrbs_female21$ever_sex_sps, yrbs_female21$age)
-prop.table(szabo_table_F7)
-
-## using formula interface
-multiCA_szabo_tbl_F7 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_female21)
-
-df_proportions_fem7 <- yrbs_female21 %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_fem7)
-
-
-#MALE 2015
-szabo_table_M4 <- table(yrbs_male15$ever_sex_sps, yrbs_male15$age)
-prop.table(szabo_table_M4)
-
-## using formula interface
-multiCA_szabo_tbl_M4 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male15)
-
-df_proportions_mal4 <- yrbs_male15 %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_mal4)
-
-
-#MALE 2017
-szabo_table_M5 <- table(yrbs_male17$ever_sex_sps, yrbs_male17$age)
-prop.table(szabo_table_M5)
-
-## using formula interface
-multiCA_szabo_tbl_M5 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male17)
-
-df_proportions_mal5 <- yrbs_male17 %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_mal5)
-
-
-#MALE 2019
-szabo_table_M6 <- table(yrbs_male19$ever_sex_sps, yrbs_male19$age)
-prop.table(szabo_table_M6)
-
-## using formula interface
-multiCA_szabo_tbl_M6 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male19)
-print(multiCA_szabo_tbl_M6)
-
-df_proportions_mal6 <- yrbs_male19 %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_mal6)
-
-#MALE 2021
-szabo_table_M7 <- table(yrbs_male21$ever_sex_sps, yrbs_male21$age)
-prop.table(szabo_table_M7)
-
-## using formula interface
-multiCA_szabo_tbl_M7 <- multiCA.test(ever_sex_sps ~ age, data=yrbs_male21)
-
-df_proportions_mal7 <- yrbs_male21 %>%
-  group_by(age) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_mal7)
-
-##############################################
-##FREQUENCY BY YEAR BY SEXUAL identity
-
-#straight female
-szabo_table_strfem <- table(yrbs_strfem$ever_sex_sps, yrbs_strfem$year)
-prop.table(szabo_table_strfem)
-
-## using formula interface
-multiCA_szabo_tbl_strfem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_strfem)
-print(multiCA_szabo_tbl_strfem)
-
-df_proportions_strfem <- yrbs_strfem %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_strfem)
-
-
-#lesbian female
-szabo_table_lesfem <- table(yrbs_lesfem$ever_sex_sps, yrbs_lesfem$year)
-prop.table(szabo_table_lesfem)
-
-## using formula interface
-multiCA_szabo_tbl_lesfem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_lesfem)
-
-df_proportions_lesfem <- yrbs_lesfem %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_lesfem)
-
-
-#bisexual female
-szabo_table_bifem <- table(yrbs_bifem$ever_sex_sps, yrbs_bifem$year)
-prop.table(szabo_table_bifem)
-
-## using formula interface
-multiCA_szabo_tbl_bifem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_bifem)
-
-df_proportions_bifem <- yrbs_bifem %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_bifem)
-
-
-
-#dont know female
-szabo_table_dkofem <- table(yrbs_dkofem$ever_sex_sps, yrbs_dkofem$year)
-prop.table(szabo_table_dkofem)
-
-## using formula interface
-multiCA_szabo_tbl_dkofem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_dkofem)
-print(multiCA_szabo_tbl_dkofem)
-
-df_proportions_dkofem <- yrbs_dkofem %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_dkofem)
-
-
-#declined female
-szabo_table_reffem <- table(yrbs_reffem$ever_sex_sps, yrbs_reffem$year)
-prop.table(szabo_table_reffem)
-
-## using formula interface
-multiCA_szabo_tbl_reffem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_reffem)
-
-df_proportions_reffem <- yrbs_reffem %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_reffem)
-
-#straight male
-szabo_table_strmal <- table(yrbs_strmal$ever_sex_sps, yrbs_strmal$year)
-prop.table(szabo_table_strmal)
-
-## using formula interface
-multiCA_szabo_tbl_strmal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_strmal)
-
-df_proportions_strmal <- yrbs_strmal %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_strmal)
-
-
-#gay male
-szabo_table_gaymal <- table(yrbs_gaymal$ever_sex_sps, yrbs_gaymal$year)
-prop.table(szabo_table_gaymal)
-
-## using formula interface
-multiCA_szabo_tbl_gaymal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_gaymal)
-
-df_proportions_gaymal <- yrbs_gaymal %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_gaymal)
-
-
-
-#bisexual male
-szabo_table_bimal <- table(yrbs_bimal$ever_sex_sps, yrbs_bimal$year)
-prop.table(szabo_table_bimal)
-
-## using formula interface
-multiCA_szabo_tbl_bimal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_bimal)
-
-df_proportions_bimal <- yrbs_bimal %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_bimal)
-
-
-
-#don't know male
-szabo_table_dkomal <- table(yrbs_dkomal$ever_sex_sps, yrbs_dkomal$year)
-prop.table(szabo_table_dkomal)
-
-## using formula interface
-multiCA_szabo_tbl_dkomal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_dkomal)
-
-df_proportions_dkomal <- yrbs_dkomal %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_dkomal)
-
-
-#declined to answer male
-szabo_table_refmal <- table(yrbs_refmal$ever_sex_sps, yrbs_refmal$year)
-prop.table(szabo_table_refmal)
-
-## using formula interface
-multiCA_szabo_tbl_refmal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_refmal)
-
-df_proportions_refmal <- yrbs_refmal %>%
-  group_by(year) %>%
-  summarise(
-    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
-    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
-  )
-
-print(df_proportions_refmal)
-
-######################################################
-#frequency of sexual identity across years, by sex
+multiCA_szabo_tbl_M2 <- multiCA.test(ever_sex_sps ~ year, data=yrbs_male)
+print(multiCA_szabo_tbl_M2)
+###################################
+
+#Assessing frequency of sexual identity across years by sex, without 
+#considering SoSP
+#####################################################################
 
 df_proportions_fem_so <- yrbs_female %>%
   group_by(year) %>%
@@ -596,6 +226,10 @@ df_proportions_fem_so <- yrbs_female %>%
 # Print the resulting data frame with proportions
 print(df_proportions_fem_so)
 
+#p values
+multiCA_so_fem_year <- multiCA.test(so_new ~ year, data=yrbs_female)
+print(multiCA_so_fem_year)
+
 
 df_proportions_mal_so <- yrbs_male %>%
   group_by(year) %>%
@@ -609,10 +243,424 @@ df_proportions_mal_so <- yrbs_male %>%
 
 # Print the resulting data frame with proportions
 print(df_proportions_mal_so)
-################################################################################
 
-#################################
-## Frequency of SSP by year, split by age and by sex
+#p values
+multiCA_so_mal_year <- multiCA.test(so_new ~ year, data=yrbs_male)
+print(multiCA_so_mal_year)
+###################################
+
+#Assessing SoSP trends by sexual identity and year, 
+#including those with no prior sexual experience
+####################################################
+
+
+#straight female
+szabo_table_strfem_unc <- table(yrbs_strfem$sex_of_sps, yrbs_strfem$year)
+prop.table(szabo_table_strfem_unc)
+
+df_proportions_strfem_unc <- yrbs_strfem %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_strfem_unc)
+
+## using formula interface
+multiCA_szabo_tbl_strfem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_strfem)
+print(multiCA_szabo_tbl_strfem_unc)
+
+
+#lesbian female
+szabo_table_lesfem_unc <- table(yrbs_lesfem$sex_of_sps, yrbs_lesfem$year)
+prop.table(szabo_table_lesfem_unc)
+
+df_proportions_lesfem_unc <- yrbs_lesfem %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_lesfem_unc)
+
+## using formula interface
+multiCA_szabo_tbl_lesfem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_lesfem)
+print(multiCA_szabo_tbl_lesfem_unc)
+
+
+
+#bisexual female
+szabo_table_bifem_unc <- table(yrbs_bifem$sex_of_sps, yrbs_bifem$year)
+prop.table(szabo_table_bifem_unc)
+
+df_proportions_bifem_unc <- yrbs_bifem %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_bifem_unc)
+
+## using formula interface
+multiCA_szabo_tbl_bifem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_bifem)
+print(multiCA_szabo_tbl_bifem_unc)
+
+
+#don't know female
+szabo_table_dkofem_unc <- table(yrbs_dkofem$sex_of_sps, yrbs_dkofem$year)
+prop.table(szabo_table_dkofem_unc)
+
+
+df_proportions_dkofem_unc <- yrbs_dkofem %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_dkofem_unc)
+
+## using formula interface
+multiCA_szabo_tbl_dkofem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_dkofem)
+print(multiCA_szabo_tbl_dkofem_unc)
+
+
+#refused female
+szabo_table_reffem_unc <- table(yrbs_reffem$sex_of_sps, yrbs_reffem$year)
+prop.table(szabo_table_reffem_unc)
+
+df_proportions_reffem_unc <- yrbs_reffem %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_reffem_unc)
+
+## using formula interface
+multiCA_szabo_tbl_reffem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_reffem)
+print(multiCA_szabo_tbl_reffem_unc)
+
+
+#straight male
+szabo_table_strmal_unc <- table(yrbs_strmal$sex_of_sps, yrbs_strmal$year)
+prop.table(szabo_table_strmal_unc)
+
+df_proportions_strmal_unc <- yrbs_strmal %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_strmal_unc)
+
+## using formula interface
+multiCA_szabo_tbl_strmal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_strmal)
+print(multiCA_szabo_tbl_strmal_unc)
+
+
+#gay male
+szabo_table_gaymal_unc <- table(yrbs_gaymal$sex_of_sps, yrbs_gaymal$year)
+prop.table(szabo_table_gaymal_unc)
+
+df_proportions_gaymal_unc <- yrbs_gaymal %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_gaymal_unc)
+
+## using formula interface
+multiCA_szabo_tbl_gaymal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_gaymal)
+print(multiCA_szabo_tbl_gaymal_unc)
+
+
+
+#bisexual male
+szabo_table_bimal_unc <- table(yrbs_bimal$sex_of_sps, yrbs_bimal$year)
+prop.table(szabo_table_bimal_unc)
+
+df_proportions_bimal_unc <- yrbs_bimal %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_bimal_unc)
+
+## using formula interface
+multiCA_szabo_tbl_bimal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_bimal)
+print(multiCA_szabo_tbl_bimal_unc)
+
+
+#don't know male
+szabo_table_dkomal_unc <- table(yrbs_dkomal$sex_of_sps, yrbs_dkomal$year)
+prop.table(szabo_table_dkomal_unc)
+
+df_proportions_dkomal_unc <- yrbs_dkomal %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_dkomal_unc)
+
+## using formula interface
+multiCA_szabo_tbl_dkomal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_dkomal)
+print(multiCA_szabo_tbl_dkomal_unc)
+
+
+#refused male
+szabo_table_refmal_unc <- table(yrbs_refmal$sex_of_sps, yrbs_refmal$year)
+prop.table(szabo_table_refmal_unc)
+
+df_proportions_refmal_unc <- yrbs_refmal %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_refmal_unc)
+
+## using formula interface
+multiCA_szabo_tbl_refmal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_refmal)
+print(multiCA_szabo_tbl_refmal_unc)
+
+
+###################################
+
+#Assessing SoSP trends by sexual identity and year, excluding those with no 
+#prior sexual experience
+############################################################################
+
+#straight female
+szabo_table_strfem <- table(yrbs_strfem$ever_sex_sps, yrbs_strfem$year)
+prop.table(szabo_table_strfem)
+
+df_proportions_strfem <- yrbs_strfem %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_strfem)
+
+## using formula interface
+multiCA_szabo_tbl_strfem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_strfem)
+print(multiCA_szabo_tbl_strfem)
+
+
+
+#lesbian female
+szabo_table_lesfem <- table(yrbs_lesfem$ever_sex_sps, yrbs_lesfem$year)
+prop.table(szabo_table_lesfem)
+
+df_proportions_lesfem <- yrbs_lesfem %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_lesfem)
+
+## using formula interface
+multiCA_szabo_tbl_lesfem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_lesfem)
+print(multiCA_szabo_tbl_lesfem)
+
+
+#bisexual female
+szabo_table_bifem <- table(yrbs_bifem$ever_sex_sps, yrbs_bifem$year)
+prop.table(szabo_table_bifem)
+
+df_proportions_bifem <- yrbs_bifem %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_bifem)
+
+## using formula interface
+multiCA_szabo_tbl_bifem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_bifem)
+print(multiCA_szabo_tbl_bifem)
+
+
+#dont know female
+szabo_table_dkofem <- table(yrbs_dkofem$ever_sex_sps, yrbs_dkofem$year)
+prop.table(szabo_table_dkofem)
+
+df_proportions_dkofem <- yrbs_dkofem %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_dkofem)
+
+## using formula interface
+multiCA_szabo_tbl_dkofem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_dkofem)
+print(multiCA_szabo_tbl_dkofem)
+
+
+#declined female
+szabo_table_reffem <- table(yrbs_reffem$ever_sex_sps, yrbs_reffem$year)
+prop.table(szabo_table_reffem)
+
+df_proportions_reffem <- yrbs_reffem %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_reffem)
+
+## using formula interface
+multiCA_szabo_tbl_reffem <- multiCA.test(ever_sex_sps ~ year, data=yrbs_reffem)
+print(multiCA_szabo_tbl_reffem)
+
+
+#straight male
+szabo_table_strmal <- table(yrbs_strmal$ever_sex_sps, yrbs_strmal$year)
+prop.table(szabo_table_strmal)
+
+df_proportions_strmal <- yrbs_strmal %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_strmal)
+
+## using formula interface
+multiCA_szabo_tbl_strmal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_strmal)
+print(multiCA_szabo_tbl_strmal)
+
+
+
+#gay male
+szabo_table_gaymal <- table(yrbs_gaymal$ever_sex_sps, yrbs_gaymal$year)
+prop.table(szabo_table_gaymal)
+
+df_proportions_gaymal <- yrbs_gaymal %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_gaymal)
+
+## using formula interface
+multiCA_szabo_tbl_gaymal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_gaymal)
+print(multiCA_szabo_tbl_gaymal)
+
+
+
+#bisexual male
+szabo_table_bimal <- table(yrbs_bimal$ever_sex_sps, yrbs_bimal$year)
+prop.table(szabo_table_bimal)
+
+df_proportions_bimal <- yrbs_bimal %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_bimal)
+
+## using formula interface
+multiCA_szabo_tbl_bimal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_bimal)
+print(multiCA_szabo_tbl_bimal)
+
+
+
+#don't know male
+szabo_table_dkomal <- table(yrbs_dkomal$ever_sex_sps, yrbs_dkomal$year)
+prop.table(szabo_table_dkomal)
+
+df_proportions_dkomal <- yrbs_dkomal %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_dkomal)
+
+## using formula interface
+multiCA_szabo_tbl_dkomal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_dkomal)
+print(multiCA_szabo_tbl_dkomal)
+
+
+#declined to answer male
+szabo_table_refmal <- table(yrbs_refmal$ever_sex_sps, yrbs_refmal$year)
+prop.table(szabo_table_refmal)
+
+df_proportions_refmal <- yrbs_refmal %>%
+  group_by(year) %>%
+  summarise(
+    females_prop = sum(ever_sex_sps == "2_female", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    males_prop = sum(ever_sex_sps == "3_male", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100,
+    both_prop = sum(ever_sex_sps == "4_fem+mal", na.rm = T) / sum(!is.na(ever_sex_sps)) * 100
+  )
+
+print(df_proportions_refmal)
+
+## using formula interface
+multiCA_szabo_tbl_refmal <- multiCA.test(ever_sex_sps ~ year, data=yrbs_refmal)
+print(multiCA_szabo_tbl_refmal)
+
+##############
+
+#Assessing SoSP trends by age and year, 
+#including those with no prior sexual experience.
+####################################################
 
 # Create a subset for only female participants by age
 yrbs_14yoF <- yrbs_female[yrbs_female$age == 14, ]
@@ -628,13 +676,224 @@ yrbs_16yoM <- yrbs_male[yrbs_male$age == 16, ]
 yrbs_17yoM <- yrbs_male[yrbs_male$age == 17, ]
 yrbs_18yoM <- yrbs_male[yrbs_male$age == 18, ]
 
+##assessing trends in sexual identity by age including everyone who has never had sex 
+#################################################################################
+
+#14yo female
+szabo_table_14yoF_unc <- table(yrbs_14yoF$sex_of_sps, yrbs_14yoF$year)
+prop.table(szabo_table_14yoF_unc)
+
+
+df_proportions_14yoF_unc <- yrbs_14yoF %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_14yoF_unc)
+
+## using formula interface
+multiCA_szabo_tbl_14yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_14yoF)
+print(multiCA_szabo_tbl_14yoF_unc)
+
+
+#15yo female
+szabo_table_15yoF_unc <- table(yrbs_15yoF$sex_of_sps, yrbs_15yoF$year)
+prop.table(szabo_table_15yoF_unc)
+
+
+df_proportions_15yoF_unc <- yrbs_15yoF %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_15yoF_unc)
+
+## using formula interface
+multiCA_szabo_tbl_15yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_15yoF)
+print(multiCA_szabo_tbl_15yoF_unc)
+
+
+
+#16yo female
+szabo_table_16yoF_unc <- table(yrbs_16yoF$sex_of_sps, yrbs_16yoF$year)
+prop.table(szabo_table_16yoF_unc)
+
+df_proportions_16yoF_unc <- yrbs_16yoF %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_16yoF_unc)
+
+## using formula interface
+multiCA_szabo_tbl_16yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_16yoF)
+print(multiCA_szabo_tbl_16yoF_unc)
+
+
+#17yo female
+szabo_table_17yoF_unc <- table(yrbs_17yoF$sex_of_sps, yrbs_17yoF$year)
+prop.table(szabo_table_17yoF_unc)
+
+
+df_proportions_17yoF_unc <- yrbs_17yoF %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_17yoF_unc)
+
+## using formula interface
+multiCA_szabo_tbl_17yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_17yoF)
+print(multiCA_szabo_tbl_17yoF_unc)
+
+
+
+#18yo female
+szabo_table_18yoF_unc <- table(yrbs_18yoF$sex_of_sps, yrbs_18yoF$year)
+prop.table(szabo_table_18yoF_unc)
+
+df_proportions_18yoF_unc <- yrbs_18yoF %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_18yoF_unc)
+
+## using formula interface
+multiCA_szabo_tbl_18yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_18yoF)
+print(multiCA_szabo_tbl_18yoF_unc)
+
+
+
+#14yo male
+szabo_table_14yoM_unc <- table(yrbs_14yoM$sex_of_sps, yrbs_14yoM$year)
+prop.table(szabo_table_14yoM_unc)
+
+df_proportions_14yoM_unc <- yrbs_14yoM %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_14yoM_unc)
+
+## using formula interface
+multiCA_szabo_tbl_14yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_14yoM)
+print(multiCA_szabo_tbl_14yoM_unc)
+
+
+
+#15yo male
+szabo_table_15yoM_unc <- table(yrbs_15yoM$sex_of_sps, yrbs_15yoM$year)
+prop.table(szabo_table_15yoM_unc)
+
+df_proportions_15yoM_unc <- yrbs_15yoM %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_15yoM_unc)
+
+## using formula interface
+multiCA_szabo_tbl_15yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_15yoM)
+print(multiCA_szabo_tbl_15yoM_unc)
+
+
+#16yo male
+szabo_table_16yoM_unc <- table(yrbs_16yoM$sex_of_sps, yrbs_16yoM$year)
+prop.table(szabo_table_16yoM_unc)
+
+df_proportions_16yoM_unc <- yrbs_16yoM %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_16yoM_unc)
+
+## using formula interface
+multiCA_szabo_tbl_16yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_16yoM)
+print(multiCA_szabo_tbl_16yoM_unc)
+
+
+#17yo male
+szabo_table_17yoM_unc <- table(yrbs_17yoM$sex_of_sps, yrbs_17yoM$year)
+prop.table(szabo_table_17yoM_unc)
+
+df_proportions_17yoM_unc <- yrbs_17yoM %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_17yoM_unc)
+
+## using formula interface
+multiCA_szabo_tbl_17yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_17yoM)
+print(multiCA_szabo_tbl_17yoM_unc)
+
+
+#18yo male
+szabo_table_18yoM_unc <- table(yrbs_18yoM$sex_of_sps, yrbs_18yoM$year)
+prop.table(szabo_table_18yoM_unc)
+
+df_proportions_18yoM_unc <- yrbs_18yoM %>%
+  group_by(year) %>%
+  summarise(
+    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
+    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
+  )
+
+print(df_proportions_18yoM_unc)
+
+## using formula interface
+multiCA_szabo_tbl_18yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_18yoM)
+print(multiCA_szabo_tbl_18yoM_unc)
+
+####################################################################
+
+##assessing trends in sexual identity by age excluding everyone who has never had sex 
+######################################################################################
+
 
 #14 year old female
 szabo_table_14yoF <- table(yrbs_14yoF$ever_sex_sps, yrbs_14yoF$year)
 prop.table(szabo_table_14yoF)
-
-## using formula interface
-multiCA_szabo_tbl_14yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_14yoF)
 
 df_proportions_14yoF <- yrbs_14yoF %>%
   group_by(year) %>%
@@ -646,13 +905,15 @@ df_proportions_14yoF <- yrbs_14yoF %>%
 
 print(df_proportions_14yoF)
 
+## using formula interface
+multiCA_szabo_tbl_14yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_14yoF)
+print(multiCA_szabo_tbl_14yoF)
+
 
 #15 year old female
 szabo_table_15yoF <- table(yrbs_15yoF$ever_sex_sps, yrbs_15yoF$year)
 prop.table(szabo_table_15yoF)
 
-## using formula interface
-multiCA_szabo_tbl_15yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_15yoF)
 
 df_proportions_15yoF <- yrbs_15yoF %>%
   group_by(year) %>%
@@ -664,13 +925,14 @@ df_proportions_15yoF <- yrbs_15yoF %>%
 
 print(df_proportions_15yoF)
 
+## using formula interface
+multiCA_szabo_tbl_15yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_15yoF)
+print(multiCA_szabo_tbl_15yoF)
+
 
 #16 year old female
 szabo_table_16yoF <- table(yrbs_16yoF$ever_sex_sps, yrbs_16yoF$year)
 prop.table(szabo_table_16yoF)
-
-## using formula interface
-multiCA_szabo_tbl_16yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_16yoF)
 
 df_proportions_16yoF <- yrbs_16yoF %>%
   group_by(year) %>%
@@ -682,13 +944,14 @@ df_proportions_16yoF <- yrbs_16yoF %>%
 
 print(df_proportions_16yoF)
 
+## using formula interface
+multiCA_szabo_tbl_16yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_16yoF)
+print(multiCA_szabo_tbl_16yoF)
+
 
 #17 year old female
 szabo_table_17yoF <- table(yrbs_17yoF$ever_sex_sps, yrbs_17yoF$year)
 prop.table(szabo_table_17yoF)
-
-## using formula interface
-multiCA_szabo_tbl_17yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_17yoF)
 
 df_proportions_17yoF <- yrbs_17yoF %>%
   group_by(year) %>%
@@ -700,13 +963,14 @@ df_proportions_17yoF <- yrbs_17yoF %>%
 
 print(df_proportions_17yoF)
 
+## using formula interface
+multiCA_szabo_tbl_17yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_17yoF)
+print(multiCA_szabo_tbl_17yoF)
+
 
 #18 year old female
 szabo_table_18yoF <- table(yrbs_18yoF$ever_sex_sps, yrbs_18yoF$year)
 prop.table(szabo_table_18yoF)
-
-## using formula interface
-multiCA_szabo_tbl_18yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_18yoF)
 
 df_proportions_18yoF <- yrbs_18yoF %>%
   group_by(year) %>%
@@ -718,13 +982,15 @@ df_proportions_18yoF <- yrbs_18yoF %>%
 
 print(df_proportions_18yoF)
 
+## using formula interface
+multiCA_szabo_tbl_18yoF <- multiCA.test(ever_sex_sps ~ year, data=yrbs_18yoF)
+print(multiCA_szabo_tbl_18yoF)
+
+
 
 #14 year old male
 szabo_table_14yoM <- table(yrbs_14yoM$ever_sex_sps, yrbs_14yoM$year)
 prop.table(szabo_table_14yoM)
-
-## using formula interface
-multiCA_szabo_tbl_14yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_14yoM)
 
 df_proportions_14yoM <- yrbs_14yoM %>%
   group_by(year) %>%
@@ -736,13 +1002,15 @@ df_proportions_14yoM <- yrbs_14yoM %>%
 
 print(df_proportions_14yoM)
 
+## using formula interface
+multiCA_szabo_tbl_14yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_14yoM)
+print(multiCA_szabo_tbl_14yoM)
+
+
 
 #15 year old male
 szabo_table_15yoM <- table(yrbs_15yoM$ever_sex_sps, yrbs_15yoM$year)
 prop.table(szabo_table_15yoM)
-
-## using formula interface
-multiCA_szabo_tbl_15yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_15yoM)
 
 df_proportions_15yoM <- yrbs_15yoM %>%
   group_by(year) %>%
@@ -754,14 +1022,15 @@ df_proportions_15yoM <- yrbs_15yoM %>%
 
 print(df_proportions_15yoM)
 
+## using formula interface
+multiCA_szabo_tbl_15yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_15yoM)
+print(multiCA_szabo_tbl_15yoM)
+
 
 
 #16 year old male
 szabo_table_16yoM <- table(yrbs_16yoM$ever_sex_sps, yrbs_16yoM$year)
 prop.table(szabo_table_16yoM)
-
-## using formula interface
-multiCA_szabo_tbl_16yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_16yoM)
 
 df_proportions_16yoM <- yrbs_16yoM %>%
   group_by(year) %>%
@@ -773,14 +1042,14 @@ df_proportions_16yoM <- yrbs_16yoM %>%
 
 print(df_proportions_16yoM)
 
+## using formula interface
+multiCA_szabo_tbl_16yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_16yoM)
+print(multiCA_szabo_tbl_16yoM)
 
 
 #17 year old male
 szabo_table_17yoM <- table(yrbs_17yoM$ever_sex_sps, yrbs_17yoM$year)
 prop.table(szabo_table_17yoM)
-
-## using formula interface
-multiCA_szabo_tbl_17yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_17yoM)
 
 df_proportions_17yoM <- yrbs_17yoM %>%
   group_by(year) %>%
@@ -792,13 +1061,15 @@ df_proportions_17yoM <- yrbs_17yoM %>%
 
 print(df_proportions_17yoM)
 
+## using formula interface
+multiCA_szabo_tbl_17yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_17yoM)
+print(multiCA_szabo_tbl_17yoM)
+
 
 #18 year old male
 szabo_table_18yoM <- table(yrbs_18yoM$ever_sex_sps, yrbs_18yoM$year)
 prop.table(szabo_table_18yoM)
 
-## using formula interface
-multiCA_szabo_tbl_18yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_18yoM)
 
 df_proportions_18yoM <- yrbs_18yoM %>%
   group_by(year) %>%
@@ -810,1152 +1081,12 @@ df_proportions_18yoM <- yrbs_18yoM %>%
 
 print(df_proportions_18yoM)
 
-#####################################
-#####################################
-##COMPARING METHODS: SZABO VS STANDARD MULTINOMIAL LOGISTIC REGRESSION
-
-#frequency of each SSP by year, by sex (includes 1_never)
-##Szabo method 
-
-szabo_table_F <- table(yrbs_female$sex_of_sps, yrbs_female$year)
-prop.table(szabo_table_F)
-
 ## using formula interface
-multiCA_szabo_tbl_F <- multiCA.test(sex_of_sps ~ year, data=yrbs_female)
-
-multiCA_szabo_tbl_F
-
-#frequency of each SSP by year, by sex (cond on EHHS; include 1_never)
-
-df_proportions_fem <- yrbs_female %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-# Print the resulting data frame with proportions
-print(df_proportions_fem)
-
-
-#Standard multinomial logistic regression 
-
-# Fit the multinomial logistic regression model
-model <- multinom(sex_of_sps ~ year, data = yrbs_female)
-
-# Summarize the model to see the coefficients and their standard errors
-summary(model)
-
-# Conduct the Wald test for the predictor
-anova_results <- Anova(model, type = "II", test = "Wald")
-print(anova_results)
-
-p_value <- anova_results$"Pr(>Chisq)"[1]
-if (!is.na(p_value)) {
-  if (p_value < 0.05) {
-    cat("There is a significant trend in the data (p-value =", p_value, ").\n")
-  } else {
-    cat("There is no significant trend in the data (p-value =", p_value, ").\n")
-  }
-} else {
-  cat("The p-value is NA. Check the model and data.\n")
-}
-
-##############################################################################################
-##################################################################
-##DIFFERENT METHOD 
-
-# Fit the multinomial logistic regression model
-fem_model1 <- multinom(sex_of_sps ~ so_new + age, data = yrbs_female)
-
-# Summarize the model to see the coefficients and their standard errors
-summary(fem_model1)
-
-
-# Fit the multinomial logistic regression model
-fem_model2 <- multinom(sex_of_sps ~ so_new + depression, data = yrbs_female)
-
-# Summarize the model to see the coefficients and their standard errors
-summary(fem_model2)
-
-# If p-values are not directly provided, you can compute them
-z_values <- summary(fem_model2)$coefficients / summary(fem_model2)$standard.errors
-p_values <- 2 * (1 - pnorm(abs(z_values)))
-
-# Print z-values and p-values
-print(z_values)
-print(p_values)
-##############################################################################################
-
-## WEIGHTED CHI SQUARE TESTS 
-###########
-
-##Depression
-
-##Lesbian females 
-yrbs_les_sex <- yrbs_lesfem %>%
-  filter(sex_of_sps != "1_never")
-
-table(yrbs_les_sex$discord_1)
-table(yrbs_les_sex$discord_2)
-
-les_fem_tbl1 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$depression)
-print(les_fem_tbl1)
-
-#discord_1
-les_fem_chi1 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$depression, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi1)
-
-#discord_2
-les_fem_chi2 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$depression, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi2)
-
-
-
-
-##gay males 
-yrbs_gay_sex <- yrbs_gaymal %>%
-  filter(sex_of_sps != "1_never")
-
-table(yrbs_gay_sex$discord_1)
-table(yrbs_gay_sex$discord_2)
-
-gay_mal_tbl1 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$depression)
-print(gay_mal_tbl1)
-
-
-#discord_1
-gay_mal_chi1 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$depression, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi1)
-
-#discord_2
-gay_mal_chi2 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$depression, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi2)
-
-
-##str males 
-yrbs_strM_sex <- yrbs_strmal %>%
-  filter(sex_of_sps != "1_never")
-
-table(yrbs_strM_sex$discord_1)
-table(yrbs_strM_sex$discord_2)
-
-str_mal_tbl1 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$depression)
-print(str_mal_tbl1)
-
-#discord_1
-str_mal_chi1 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$depression, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi1)
-
-#discord_2
-str_mal_chi2 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$depression, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi2)
-
-
-
-
-##str females 
-yrbs_strF_sex <- yrbs_strfem %>%
-  filter(sex_of_sps != "1_never")
-
-table(yrbs_strF_sex$discord_1)
-table(yrbs_strF_sex$discord_2)
-
-str_fem_tbl1 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$depression)
-print(str_fem_tbl1)
-
-#discord_1
-str_fem_chi1 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$depression, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi1)
-
-#discord_2
-str_fem_chi2 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$depression, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi2)
-
-
-
-
-##suic_idea
-
-##Lesbian females 
-les_fem_tbl3 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$suic_idea)
-print(les_fem_tbl3)
-
-#discord_1
-les_fem_chi3 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$suic_idea, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi3)
-
-#discord_2
-les_fem_chi4 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$suic_idea, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi4)
-
-
-
-##gay males 
-gay_mal_tbl2 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$suic_idea)
-print(gay_mal_tbl2)
-
-#discord_1
-gay_mal_chi3 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$suic_idea, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi3)
-
-#discord_2
-gay_mal_chi4 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$suic_idea, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi4)
-
-
-##str males 
-str_mal_tbl2 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$suic_idea)
-print(str_mal_tbl2)
-
-#discord_1
-str_mal_chi3 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$suic_idea, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi3)
-
-#discord_2
-str_mal_chi4 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$suic_idea, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi4)
-
-
-##str females 
-str_fem_tbl2 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$suic_idea)
-print(str_fem_tbl2)
-
-#discord_1
-str_fem_chi3 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$suic_idea, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi3)
-
-#discord_2
-str_fem_chi4 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$suic_idea, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi4)
-
-
-##smoke_vape
-
-##Lesbian females 
-les_fem_tbl5 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$smoke_vape)
-print(les_fem_tbl5)
-
-#discord_1
-les_fem_chi5 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$smoke_vape, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi5)
-
-#discord_2
-les_fem_chi6 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$smoke_vape, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi6)
-
-
-
-
-##gay males 
-gay_mal_tbl5 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$smoke_vape)
-print(gay_mal_tbl5)
-
-#discord_1
-gay_mal_chi5 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$smoke_vape, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi5)
-
-#discord_2
-gay_mal_chi6 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$smoke_vape, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi6)
-
-
-##str males 
-str_mal_tbl5 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$smoke_vape)
-print(str_mal_tbl5)
-
-#discord_1
-str_mal_chi5 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$smoke_vape, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi5)
-
-#discord_2
-str_mal_chi6 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$smoke_vape, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi6)
-
-
-
-
-##str females 
-str_fem_tbl5 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$smoke_vape)
-print(str_fem_tbl5)
-
-#discord_1
-str_fem_chi5 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$smoke_vape, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi5)
-
-#discord_2
-str_fem_chi6 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$smoke_vape, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi6)
-
-
-##ever_weed_D
-
-##Lesbian females 
-les_fem_tbl6 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$ever_weed_D)
-print(les_fem_tbl6)
-
-#discord_1
-les_fem_chi7 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$ever_weed_D, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi7)
-
-#discord_2
-les_fem_chi8 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$ever_weed_D, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi8)
-
-
-
-
-##gay males 
-gay_mal_tbl6 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_weed_D)
-print(gay_mal_tbl6)
-
-#discord_1
-gay_mal_chi7 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_weed_D, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi7)
-
-#discord_2
-gay_mal_chi8 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$ever_weed_D, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi8)
-
-
-##str males 
-str_mal_tbl6 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_weed_D)
-print(str_mal_tbl6)
-
-#discord_1
-str_mal_chi7 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_weed_D, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi7)
-
-#discord_2
-str_mal_chi8 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$ever_weed_D, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi8)
-
-
-
-
-##str females 
-str_fem_tbl6 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_weed_D)
-print(str_fem_tbl6)
-
-#discord_1
-str_fem_chi7 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_weed_D, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi7)
-
-#discord_2
-str_fem_chi8 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$ever_weed_D, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                           drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi8)
-
-
-
-##ever_drink_D
-
-##Lesbian females 
-les_fem_tbl8 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$ever_drink_D)
-print(les_fem_tbl8)
-
-#discord_1
-les_fem_chi11 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$ever_drink_D, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi11)
-
-#discord_2
-les_fem_chi12 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$ever_drink_D, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi12)
-
-
-
-
-##gay males 
-gay_mal_tbl8 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_drink_D)
-print(gay_mal_tbl8)
-
-#discord_1
-gay_mal_chi11 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_drink_D, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi11)
-
-#discord_2
-gay_mal_chi12 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$ever_drink_D, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi12)
-
-
-##str males 
-str_mal_tbl8 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_drink_D)
-print(str_mal_tbl8)
-
-#discord_1
-str_mal_chi11 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_drink_D, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi11)
-
-#discord_2
-str_mal_chi12 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$ever_drink_D, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi12)
-
-
-
-
-##str females 
-str_fem_tbl8 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_drink_D)
-print(str_fem_tbl8)
-
-#discord_1
-str_fem_chi11 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_drink_D, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi11)
-
-#discord_2
-str_fem_chi12 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$ever_drink_D, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi12)
-
-
-##suic_attempt_D
-
-##Lesbian females 
-les_fem_tbl9 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$suic_attempt_D)
-print(les_fem_tbl9)
-
-#discord_1
-les_fem_chi13 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$suic_attempt_D, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi13)
-
-#discord_2
-les_fem_chi14 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$suic_attempt_D, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi14)
-
-
-
-
-##gay males 
-
-gay_mal_tbl9 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$suic_attempt_D)
-print(gay_mal_tbl9)
-
-#discord_1
-gay_mal_chi13 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$suic_attempt_D, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi13)
-
-#discord_2
-gay_mal_chi14 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$suic_attempt_D, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi14)
-
-
-##str males 
-str_mal_tbl9 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$suic_attempt_D)
-print(str_mal_tbl9)
-
-#discord_1
-str_mal_chi13 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$suic_attempt_D, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi13)
-
-#discord_2
-str_mal_chi14 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$suic_attempt_D, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi14)
-
-
-
-
-##str females 
-str_fem_tbl9 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$suic_attempt_D)
-print(str_fem_tbl9)
-
-#discord_1
-str_fem_chi13 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$suic_attempt_D, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi13)
-
-#discord_2
-str_fem_chi14 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$suic_attempt_D, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi14)
-
-
-##ever_forced_sex
-
-##Lesbian females 
-les_fem_tbl10 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$ever_forced_sex)
-print(les_fem_tbl10)
-
-#discord_1
-les_fem_chi15 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$ever_forced_sex, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi15)
-
-#discord_2
-les_fem_chi16 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$ever_forced_sex, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi16)
-
-
-
-
-##gay males 
-gay_mal_tbl10 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_forced_sex)
-print(gay_mal_tbl10)
-
-#discord_1
-gay_mal_chi15 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$ever_forced_sex, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi15)
-
-#discord_2
-gay_mal_chi16 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$ever_forced_sex, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi16)
-
-
-##str males 
-str_mal_tbl10 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_forced_sex)
-print(str_mal_tbl10)
-
-#discord_1
-str_mal_chi15 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$ever_forced_sex, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi15)
-
-#discord_2
-str_mal_chi16 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$ever_forced_sex, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi16)
-
-
-
-
-##str females 
-str_fem_tbl10 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_forced_sex)
-print(str_fem_tbl10)
-
-#discord_1
-str_fem_chi15 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$ever_forced_sex, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi15)
-
-#discord_2
-str_fem_chi16 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$ever_forced_sex, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi16)
-
-
-##any_bully
-
-##Lesbian females 
-les_fem_tbl11 <- table(yrbs_les_sex$discord_1, yrbs_les_sex$any_bully)
-print(les_fem_tbl11)
-
-#discord_1
-les_fem_chi17 <- wtd.chi.sq(yrbs_les_sex$discord_1, yrbs_les_sex$any_bully, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi17)
-
-#discord_2
-les_fem_chi18 <- wtd.chi.sq(yrbs_les_sex$discord_2, yrbs_les_sex$any_bully, var3=NULL, weight= yrbs_les_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(les_fem_chi18)
-
-
-
-
-##gay males 
-gay_mal_tbl11 <- table(yrbs_gay_sex$discord_1, yrbs_gay_sex$any_bully)
-print(gay_mal_tbl11)
-
-#discord_1
-gay_mal_chi17 <- wtd.chi.sq(yrbs_gay_sex$discord_1, yrbs_gay_sex$any_bully, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi17)
-
-#discord_2
-gay_mal_chi18 <- wtd.chi.sq(yrbs_gay_sex$discord_2, yrbs_gay_sex$any_bully, var3=NULL, weight= yrbs_gay_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(gay_mal_chi18)
-
-
-
-
-##str males 
-str_mal_tbl11 <- table(yrbs_strM_sex$discord_1, yrbs_strM_sex$any_bully)
-print(str_mal_tbl11)
-
-#discord_1
-str_mal_chi17 <- wtd.chi.sq(yrbs_strM_sex$discord_1, yrbs_strM_sex$any_bully, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi17)
-
-#discord_2
-str_mal_chi18 <- wtd.chi.sq(yrbs_strM_sex$discord_2, yrbs_strM_sex$any_bully, var3=NULL, weight= yrbs_strM_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_mal_chi18)
-
-
-
-
-##str females 
-str_fem_tbl11 <- table(yrbs_strF_sex$discord_1, yrbs_strF_sex$any_bully)
-print(str_fem_tbl11)
-
-#discord_1
-str_fem_chi17 <- wtd.chi.sq(yrbs_strF_sex$discord_1, yrbs_strF_sex$any_bully, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi17)
-
-#discord_2
-str_fem_chi18 <- wtd.chi.sq(yrbs_strF_sex$discord_2, yrbs_strF_sex$any_bully, var3=NULL, weight= yrbs_strF_sex$weight, na.rm=TRUE,
-                            drop.missing.levels=TRUE, mean1=TRUE)
-print(str_fem_chi18)
-
-##############################################################################################
-
-## Expected counts for chi squares 
-
-calc.exp.cells <- function(x, y) {
-  temp <- table(x$discord_2, x[,y])
-  temp_tot <- addmargins(temp)
-  temp_row_totals <- margin.table(temp, 1)
-  temp_col_totals <- margin.table(temp, 2)
-  temp_grand_total <- sum(temp)
-  temp_exp <- outer(temp_row_totals, temp_col_totals) / temp_grand_total
-  return(temp_exp)
-}
-
-
-mymatrices <- list(yrbs_les_sex, yrbs_gay_sex, yrbs_strF_sex, yrbs_strM_sex)
-mypredictors <- c("depression", "suic_idea", "smoke_vape", "ever_weed_D", "unsafe_schl_D", 
-                  "any_dating_violence", "suic_attempt_D", "any_bully", "ever_drink_D", 
-                  "ever_hard_drugs", "ever_forced_sex"
-                  )
-
-mins <- matrix(NA, nrow=length(mymatrices), ncol=length(mypredictors))
-
-for(i in 1:length(mymatrices)) {
-  for( j in 1:length(mypredictors)) {
-    mins[i,j] <- min(calc.exp.cells(mymatrices[[i]], mypredictors[j]))
-  }
-}
-mins
-
-#Lesbian depression
-les_fem_depression <- table(yrbs_les_sex$discord_2, yrbs_les_sex$depression)
-les_fem_depression_tot <- addmargins(les_fem_depression)
-print(les_fem_depression_tot)
-
-les_fem_depress_row_totals <- margin.table(les_fem_depression, 1)
-les_fem_depress_col_totals <- margin.table(les_fem_depression, 2)
-les_fem_depress_grand_total <- sum(les_fem_depression)
-
-
-les_fem_depression_exp <- outer(les_fem_depress_row_totals, les_fem_depress_col_totals) / les_fem_depress_grand_total
-print(les_fem_depression_exp)
-
-
-#Lesbian hard drug use
-les_fem_drugs <- table(yrbs_les_sex$discord_2, yrbs_les_sex$ever_hard_drugs)
-les_fem_drugs_tot <- addmargins(les_fem_drugs)
-print(les_fem_drugs_tot)
-
-les_fem_drugs_row_totals <- margin.table(les_fem_drugs, 1)
-les_fem_drugs_col_totals <- margin.table(les_fem_drugs, 2)
-les_fem_drugs_grand_total <- sum(les_fem_drugs)
-
-
-les_fem_drugs_exp <- outer(les_fem_drugs_row_totals, les_fem_drugs_col_totals) / les_fem_drugs_grand_total
-print(les_fem_drugs_exp)
-
-
-#Lesbian suicide
-les_fem_suicide <- table(yrbs_les_sex$discord_2, yrbs_les_sex$suic_attempt_D)
-les_fem_suicide_tot <- addmargins(les_fem_suicide)
-print(les_fem_suicide_tot)
-
-les_fem_suicide_row_totals <- margin.table(les_fem_suicide, 1)
-les_fem_suicide_col_totals <- margin.table(les_fem_suicide, 2)
-les_fem_suicide_grand_total <- sum(les_fem_suicide)
-
-
-les_fem_suicide_exp <- outer(les_fem_suicide_row_totals, les_fem_suicide_col_totals) / les_fem_suicide_grand_total
-print(les_fem_suicide_exp)
+multiCA_szabo_tbl_18yoM <- multiCA.test(ever_sex_sps ~ year, data=yrbs_18yoM)
+print(multiCA_szabo_tbl_18yoM)
 
 
 ##############################################################################################
-#Calculating ORs for the significant chi square tests
-
-###lesbian females###
-
-
-
-#Depression
-yrbs_les_sex$discord_2 <- factor(yrbs_les_sex$discord_2, levels = c(1, 0))
-yrbs_les_sex$suic_attempt_D <- factor(yrbs_les_sex$suic_attempt_D, levels = c(1, 0))
-yrbs_les_sex$ever_weed_D <- factor(yrbs_les_sex$ever_weed_D, levels = c(1, 0))
-yrbs_les_sex$smoke_vape <- factor(yrbs_les_sex$smoke_vape, levels = c(1, 0))
-yrbs_les_sex$ever_forced_sex <- factor(yrbs_les_sex$ever_forced_sex, levels = c(1, 0))
-yrbs_les_sex$any_dating_violence <- factor(yrbs_les_sex$any_dating_violence, levels = c(1, 0))
-yrbs_les_sex$any_bully <- factor(yrbs_les_sex$any_bully, levels = c(1, 0))
-
-
-
-survey_design_lf <- svydesign(ids = ~1, data = yrbs_les_sex, weights = ~weight)
-
-
-#suicide attempt
-# weighted contingency table
-weighted_tbl_lf1 <- svytable(~discord_2 + suic_attempt_D, survey_design_lf)
-print(weighted_tbl_lf1)
-
-# logistic regression model to account for weights
-model_lf1 <- svyglm(suic_attempt_D ~ discord_2, design = survey_design_lf, family = quasibinomial())
-summary(model_lf1)
-
-# OR and 95% CIs
-OR_lf1 <- exp(coef(model_lf1)[2])
-CI_lf1 <- exp(confint(model_lf1)[2, ])
-
-OR_lf1
-CI_lf1
-
-
-
-#smoking and vaping
-weighted_tbl_lf2 <- svytable(~discord_2 + smoke_vape, survey_design_lf)
-print(weighted_tbl_lf2)
-
-# logistic regression model to account for weights
-model_lf2 <- svyglm(smoke_vape ~ discord_2, design = survey_design_lf, family = quasibinomial())
-summary(model_lf2)
-
-# OR and 95% CIs
-OR_lf2 <- exp(coef(model_lf2)[2])
-CI_lf2 <- exp(confint(model_lf2)[2, ])
-
-OR_lf2
-CI_lf2
-
-
-
-#forced sex
-weighted_tbl_lf3 <- svytable(~discord_2 + ever_forced_sex, survey_design_lf)
-print(weighted_tbl_lf3)
-
-# logistic regression model to account for weights
-model_lf3 <- svyglm(ever_forced_sex ~ discord_2, design = survey_design_lf, family = quasibinomial())
-summary(model_lf3)
-
-# OR and 95% CIs
-OR_lf3 <- exp(coef(model_lf3)[2])
-CI_lf3 <- exp(confint(model_lf3)[2, ])
-
-OR_lf3
-CI_lf3
-
-
-#dating violence
-weighted_tbl_lf4 <- svytable(~discord_2 + any_dating_violence, survey_design_lf)
-print(weighted_tbl_lf4)
-
-# logistic regression model to account for weights
-model_lf4 <- svyglm(any_dating_violence ~ discord_2, design = survey_design_lf, family = quasibinomial())
-summary(model_lf4)
-
-# OR and 95% CIs
-OR_lf4 <- exp(coef(model_lf4)[2])
-CI_lf4 <- exp(confint(model_lf4)[2, ])
-
-OR_lf4
-CI_lf4
-
-
-
-#any bullying
-weighted_tbl_lf5 <- svytable(~discord_2 + any_bully, survey_design_lf)
-print(weighted_tbl_lf5)
-
-# logistic regression model to account for weights
-model_lf5 <- svyglm(any_bully~ discord_2, design = survey_design_lf, family = quasibinomial())
-summary(model_lf5)
-
-# OR and 95% CIs
-OR_lf5 <- exp(coef(model_lf5)[2])
-CI_lf5 <- exp(confint(model_lf5)[2, ])
-
-OR_lf5
-CI_lf5
-
-
-
-###gay males###
-
-#Depression
-yrbs_gay_sex$discord_2 <- factor(yrbs_gay_sex$discord_2, levels = c(1, 0))
-yrbs_gay_sex$depression <- factor(yrbs_gay_sex$depression, levels = c(1, 0))
-yrbs_gay_sex$suic_idea <- factor(yrbs_gay_sex$suic_idea, levels = c(1, 0))
-yrbs_gay_sex$suic_attempt_D <- factor(yrbs_gay_sex$suic_attempt_D, levels = c(1, 0))
-yrbs_gay_sex$smoke_vape <- factor(yrbs_gay_sex$smoke_vape, levels = c(1, 0))
-yrbs_gay_sex$ever_weed_D <- factor(yrbs_gay_sex$ever_weed_D, levels = c(1, 0))
-yrbs_gay_sex$ever_hard_drugs <- factor(yrbs_gay_sex$ever_hard_drugs, levels = c(1, 0))
-yrbs_gay_sex$unsafe_schl_D <- factor(yrbs_gay_sex$unsafe_schl_D, levels = c(1, 0))
-
-survey_design_gm <- svydesign(ids = ~1, data = yrbs_gay_sex, weights = ~weight)
-
-# weighted contingency table
-weighted_tbl_gm1 <- svytable(~discord_2 + depression, survey_design_gm)
-print(weighted_tbl_gm1)
-
-# logistic regression model to account for weights
-model_gm1 <- svyglm(depression ~ discord_2, design = survey_design_gm, family = quasibinomial())
-summary(model_gm1)
-
-# OR and 95% CIs
-OR_gm1 <- exp(coef(model_gm1)[2])
-CI_gm1 <- exp(confint(model_gm1)[2, ])
-
-OR_gm1
-CI_gm1
-
-
-
-# weighted contingency table
-
-#suicidal ideation
-weighted_tbl_gm2 <- svytable(~discord_2 + suic_idea, survey_design_gm)
-print(weighted_tbl_gm2)
-
-# logistic regression model to account for weights
-model_gm2 <- svyglm(suic_idea ~ discord_2, design = survey_design_gm, family = quasibinomial())
-summary(model_gm2)
-
-# OR and 95% CIs
-OR_gm2 <- exp(coef(model_gm2)[2])
-CI_gm2 <- exp(confint(model_gm2)[2, ])
-
-OR_gm2
-CI_gm2
-
-
-
-#suicide attempt
-weighted_tbl_gm3 <- svytable(~discord_2 + suic_attempt_D, survey_design_gm)
-print(weighted_tbl_gm3)
-
-# logistic regression model to account for weights
-model_gm3 <- svyglm(suic_attempt_D ~ discord_2, design = survey_design_gm, family = quasibinomial())
-summary(model_gm3)
-
-# OR and 95% CIs
-OR_gm3 <- exp(coef(model_gm3)[2])
-CI_gm3 <- exp(confint(model_gm3)[2, ])
-
-OR_gm3
-CI_gm3
-
-
-
-#smoking and vaping
-weighted_tbl_gm4 <- svytable(~discord_2 + smoke_vape, survey_design_gm)
-print(weighted_tbl_gm4)
-
-# logistic regression model to account for weights
-model_gm4 <- svyglm(smoke_vape ~ discord_2, design = survey_design_gm, family = quasibinomial())
-summary(model_gm4)
-
-# OR and 95% CIs
-OR_gm4 <- exp(coef(model_gm4)[2])
-CI_gm4 <- exp(confint(model_gm4)[2, ])
-
-OR_gm4
-CI_gm4
-
-
-
-#marijuana use
-weighted_tbl_gm5 <- svytable(~discord_2 + ever_weed_D, survey_design_gm)
-print(weighted_tbl_gm5)
-
-# logistic regression model to account for weights
-model_gm5 <- svyglm(ever_weed_D ~ discord_2, design = survey_design_gm, family = quasibinomial())
-summary(model_gm5)
-
-# OR and 95% CIs
-OR_gm5 <- exp(coef(model_gm5)[2])
-CI_gm5 <- exp(confint(model_gm5)[2, ])
-
-OR_gm5
-CI_gm5
-
-
-#hard drug use
-weighted_tbl_gm6 <- svytable(~discord_2 + ever_hard_drugs, survey_design_gm)
-print(weighted_tbl_gm6)
-
-# logistic regression model to account for weights
-model_gm6 <- svyglm(ever_hard_drugs ~ discord_2, design = survey_design_gm, family = quasibinomial())
-summary(model_gm6)
-
-# OR and 95% CIs
-OR_gm6 <- exp(coef(model_gm6)[2])
-CI_gm6 <- exp(confint(model_gm6)[2, ])
-
-OR_gm6
-CI_gm6
-
-
-
-#feeling unsafe at school
-weighted_tbl_gm7 <- svytable(~discord_2 + unsafe_schl_D, survey_design_gm)
-print(weighted_tbl_gm7)
-
-# logistic regression model to account for weights
-model_gm7 <- svyglm(unsafe_schl_D ~ discord_2, design = survey_design_gm, family = quasibinomial())
-summary(model_gm7)
-
-# OR and 95% CIs
-OR_gm7 <- exp(coef(model_gm7)[2])
-CI_gm7 <- exp(confint(model_gm7)[2, ])
-
-OR_gm7
-CI_gm7
-
-
-
-###straight females###
-
-
-
-#Depression
-yrbs_strF_sex$discord_2 <- factor(yrbs_strF_sex$discord_2, levels = c(1, 0))
-yrbs_strF_sex$suic_idea <- factor(yrbs_strF_sex$suic_idea, levels = c(1, 0))
-yrbs_strF_sex$suic_attempt_D <- factor(yrbs_strF_sex$suic_attempt_D, levels = c(1, 0))
-yrbs_strF_sex$ever_hard_drugs <- factor(yrbs_strF_sex$ever_hard_drugs, levels = c(1, 0))
-yrbs_strF_sex$ever_forced_sex <- factor(yrbs_strF_sex$ever_forced_sex, levels = c(1, 0))
-yrbs_strF_sex$unsafe_schl_D <- factor(yrbs_strF_sex$unsafe_schl_D, levels = c(1, 0))
-
-
-
-survey_design_sf <- svydesign(ids = ~1, data = yrbs_strF_sex, weights = ~weight)
-
-
-#suicidial ideation
-# weighted contingency table
-weighted_tbl_sf1 <- svytable(~discord_2 + suic_idea, survey_design_sf)
-print(weighted_tbl_sf1)
-
-# logistic regression model to account for weights
-model_sf1 <- svyglm(suic_idea ~ discord_2, design = survey_design_sf, family = quasibinomial())
-summary(model_sf1)
-
-# OR and 95% CIs
-OR_sf1 <- exp(coef(model_sf1)[2])
-CI_sf1 <- exp(confint(model_sf1)[2, ])
-
-OR_sf1
-CI_sf1
-
-
-#suicide attempt
-weighted_tbl_sf2 <- svytable(~discord_2 + suic_attempt_D, survey_design_sf)
-print(weighted_tbl_sf2)
-
-# logistic regression model to account for weights
-model_sf2 <- svyglm(suic_attempt_D ~ discord_2, design = survey_design_sf, family = quasibinomial())
-summary(model_sf2)
-
-# OR and 95% CIs
-OR_sf2 <- exp(coef(model_sf2)[2])
-CI_sf2 <- exp(confint(model_sf2)[2, ])
-
-OR_sf2
-CI_sf2
-
-
-#hard drug use
-weighted_tbl_sf3 <- svytable(~discord_2 + ever_hard_drugs, survey_design_sf)
-print(weighted_tbl_sf3)
-
-# logistic regression model to account for weights
-model_sf3 <- svyglm(ever_hard_drugs ~ discord_2, design = survey_design_sf, family = quasibinomial())
-summary(model_sf3)
-
-# OR and 95% CIs
-OR_sf3 <- exp(coef(model_sf3)[2])
-CI_sf3 <- exp(confint(model_sf3)[2, ])
-
-OR_sf3
-CI_sf3
-
-
-#forced sex
-weighted_tbl_sf4 <- svytable(~discord_2 + ever_forced_sex, survey_design_sf)
-print(weighted_tbl_sf4)
-
-# logistic regression model to account for weights
-model_sf4 <- svyglm(ever_forced_sex ~ discord_2, design = survey_design_sf, family = quasibinomial())
-summary(model_sf4)
-
-# OR and 95% CIs
-OR_sf4 <- exp(coef(model_sf4)[2])
-CI_sf4 <- exp(confint(model_sf4)[2, ])
-
-OR_sf4
-CI_sf4
-
-
-
-#feeling unsafe at school
-weighted_tbl_sf5 <- svytable(~discord_2 + unsafe_schl_D, survey_design_sf)
-print(weighted_tbl_sf5)
-
-# logistic regression model to account for weights
-model_sf5 <- svyglm(unsafe_schl_D~ discord_2, design = survey_design_sf, family = quasibinomial())
-summary(model_sf5)
-
-# OR and 95% CIs
-OR_sf5 <- exp(coef(model_sf5)[2])
-CI_sf5 <- exp(confint(model_sf5)[2, ])
-
-OR_sf5
-CI_sf5
-
-
-
-###straight males###
-
-
-
-#Depression
-yrbs_strM_sex$discord_2 <- factor(yrbs_strM_sex$discord_2, levels = c(1, 0))
-yrbs_strM_sex$ever_drink_D <- factor(yrbs_strM_sex$ever_drink_D, levels = c(1, 0))
-yrbs_strM_sex$ever_forced_sex <- factor(yrbs_strM_sex$ever_forced_sex, levels = c(1, 0))
-yrbs_strM_sex$any_bully <- factor(yrbs_strM_sex$any_bully, levels = c(1, 0))
-
-
-survey_design_sm <- svydesign(ids = ~1, data = yrbs_strM_sex, weights = ~weight)
-
-
-#alcohol use
-# weighted contingency table
-weighted_tbl_sm1 <- svytable(~discord_2 + ever_drink_D, survey_design_sm)
-print(weighted_tbl_sm1)
-
-# logistic regression model to account for weights
-model_sm1 <- svyglm(ever_drink_D ~ discord_2, design = survey_design_sm, family = quasibinomial())
-summary(model_sm1)
-
-# OR and 95% CIs
-OR_sm1 <- exp(coef(model_sm1)[2])
-CI_sm1 <- exp(confint(model_sm1)[2, ])
-
-OR_sm1
-CI_sm1
-
-
-#forced sex
-weighted_tbl_sm2 <- svytable(~discord_2 + ever_forced_sex, survey_design_sm)
-print(weighted_tbl_sm2)
-
-# logistic regression model to account for weights
-model_sm2 <- svyglm(ever_forced_sex ~ discord_2, design = survey_design_sm, family = quasibinomial())
-summary(model_sm2)
-
-# OR and 95% CIs
-OR_sm2 <- exp(coef(model_sm2)[2])
-CI_sm2 <- exp(confint(model_sm2)[2, ])
-
-OR_sm2
-CI_sm2
-
-
-#any bullying
-weighted_tbl_sm3 <- svytable(~discord_2 + any_bully, survey_design_sm)
-print(weighted_tbl_sm3)
-
-# logistic regression model to account for weights
-model_sm3 <- svyglm(any_bully ~ discord_2, design = survey_design_sm, family = quasibinomial())
-summary(model_sm3)
-
-# OR and 95% CIs
-OR_sm3 <- exp(coef(model_sm3)[2])
-CI_sm3 <- exp(confint(model_sm3)[2, ])
-
-OR_sm3
-CI_sm3
-
-
-#forced sex
-weighted_tbl_sm4 <- svytable(~discord_2 + ever_forced_sex, survey_design_sm)
-print(weighted_tbl_sm4)
-
-# logistic regression model to account for weights
-model_sm4 <- svyglm(ever_forced_sex ~ discord_2, design = survey_design_sm, family = quasibinomial())
-summary(model_sm4)
-
-# OR and 95% CIs
-OR_sm4 <- exp(coef(model_sm4)[2])
-CI_sm4 <- exp(confint(model_sm4)[2, ])
-
-OR_sm4
-CI_sm4
-
-
-
-#feeling unsafe at school
-weighted_tbl_sm5 <- svytable(~discord_2 + unsafe_schl_D, survey_design_sm)
-print(weighted_tbl_sm5)
-
-# logistic regression model to account for weights
-model_sm5 <- svyglm(unsafe_schl_D~ discord_2, design = survey_design_sm, family = quasibinomial())
-summary(model_sm5)
-
-# OR and 95% CIs
-OR_sm5 <- exp(coef(model_sm5)[2])
-CI_sm5 <- exp(confint(model_sm5)[2, ])
-
-OR_sm5
-CI_sm5
-
-##############################################################################################
-
 #post hoc analyses on trend test for males who have sex with males (including those who 
 #have sex with males and females) to see if there is a sig. change over time. 
 #Only include those who have had sex 
@@ -1994,11 +1125,10 @@ print(df_proportions_M_male_sps)
 #yrbs_female 
 
 yrbs_female$ever_sex_sps_D <- ifelse(yrbs_female$ever_sex_sps == "3_male", "only_male",
-                                   ifelse(yrbs_female$ever_sex_sps %in% c("2_female", "4_fem+mal"), "any_female", NA))
+                                     ifelse(yrbs_female$ever_sex_sps %in% c("2_female", "4_fem+mal"), "any_female", NA))
 
 
 table(yrbs_female$ever_sex_sps_D)
-
 
 
 #Trend test for any males with male partners
@@ -2018,638 +1148,4 @@ df_proportions_F_female_sps <- yrbs_female %>%
   )
 
 print(df_proportions_F_female_sps)
-
-
-##Testing trend is overall discordance in the whole sample 
-table(yrbs_final$discord_2)
-
-#Trend test for discordance
-szabo_discord <- table(yrbs_final$discord_2, yrbs_final$year)
-prop.table(szabo_discord)
-
-## using formula interface
-multiCA_szabo_tbl_discord <- multiCA.test(discord_2 ~ year, data=yrbs_final)
-
-multiCA_szabo_tbl_discord
-
-df_proportions_discord <- yrbs_final %>%
-  group_by(year) %>%
-  summarise(
-    discord_prop = sum(discord_2 == 1, na.rm = T) / sum(!is.na(discord_2)) * 100,
-    no_discord_prop = sum(discord_2 == 0, na.rm = T) / sum(!is.na(discord_2)) * 100
-  )
-
-print(df_proportions_discord)
-########################################################################################
-
-##Repeat trend tests for age and SO including everyone who has never had sex 
-
-#AGE
-
-#14yo female
-szabo_table_14yoF_unc <- table(yrbs_14yoF$sex_of_sps, yrbs_14yoF$year)
-prop.table(szabo_table_14yoF_unc)
-
-## using formula interface
-multiCA_szabo_tbl_14yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_14yoF)
-multiCA_szabo_tbl_14yoF_unc
-
-df_proportions_14yoF_unc <- yrbs_14yoF %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_14yoF_unc)
-
-
-#15yo female
-szabo_table_15yoF_unc <- table(yrbs_15yoF$sex_of_sps, yrbs_15yoF$year)
-prop.table(szabo_table_15yoF_unc)
-
-## using formula interface
-multiCA_szabo_tbl_15yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_15yoF)
-multiCA_szabo_tbl_15yoF_unc
-
-df_proportions_15yoF_unc <- yrbs_15yoF %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_15yoF_unc)
-
-
-
-#16yo female
-szabo_table_16yoF_unc <- table(yrbs_16yoF$sex_of_sps, yrbs_16yoF$year)
-prop.table(szabo_table_16yoF_unc)
-
-## using formula interface
-multiCA_szabo_tbl_16yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_16yoF)
-multiCA_szabo_tbl_16yoF_unc
-
-df_proportions_16yoF_unc <- yrbs_16yoF %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_16yoF_unc)
-
-
-#17yo female
-szabo_table_17yoF_unc <- table(yrbs_17yoF$sex_of_sps, yrbs_17yoF$year)
-prop.table(szabo_table_17yoF_unc)
-
-## using formula interface
-multiCA_szabo_tbl_17yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_17yoF)
-multiCA_szabo_tbl_17yoF_unc
-
-df_proportions_17yoF_unc <- yrbs_17yoF %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_17yoF_unc)
-
-
-
-#18yo female
-szabo_table_18yoF_unc <- table(yrbs_18yoF$sex_of_sps, yrbs_18yoF$year)
-prop.table(szabo_table_18yoF_unc)
-
-## using formula interface
-multiCA_szabo_tbl_18yoF_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_18yoF)
-multiCA_szabo_tbl_18yoF_unc
-
-df_proportions_18yoF_unc <- yrbs_18yoF %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_18yoF_unc)
-
-
-
-#14yo male
-szabo_table_14yoM_unc <- table(yrbs_14yoM$sex_of_sps, yrbs_14yoM$year)
-prop.table(szabo_table_14yoM_unc)
-
-## using formula interface
-multiCA_szabo_tbl_14yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_14yoM)
-multiCA_szabo_tbl_14yoM_unc
-
-df_proportions_14yoM_unc <- yrbs_14yoM %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_14yoM_unc)
-
-
-
-#15yo male
-szabo_table_15yoM_unc <- table(yrbs_15yoM$sex_of_sps, yrbs_15yoM$year)
-prop.table(szabo_table_15yoM_unc)
-
-## using formula interface
-multiCA_szabo_tbl_15yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_15yoM)
-multiCA_szabo_tbl_15yoM_unc
-
-df_proportions_15yoM_unc <- yrbs_15yoM %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_15yoM_unc)
-
-
-#16yo male
-szabo_table_16yoM_unc <- table(yrbs_16yoM$sex_of_sps, yrbs_16yoM$year)
-prop.table(szabo_table_16yoM_unc)
-
-## using formula interface
-multiCA_szabo_tbl_16yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_16yoM)
-multiCA_szabo_tbl_16yoM_unc
-
-df_proportions_16yoM_unc <- yrbs_16yoM %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_16yoM_unc)
-
-
-#17yo male
-szabo_table_17yoM_unc <- table(yrbs_17yoM$sex_of_sps, yrbs_17yoM$year)
-prop.table(szabo_table_17yoM_unc)
-
-## using formula interface
-multiCA_szabo_tbl_17yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_17yoM)
-multiCA_szabo_tbl_17yoM_unc
-
-df_proportions_17yoM_unc <- yrbs_17yoM %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_17yoM_unc)
-
-
-#18yo male
-szabo_table_18yoM_unc <- table(yrbs_18yoM$sex_of_sps, yrbs_18yoM$year)
-prop.table(szabo_table_18yoM_unc)
-
-## using formula interface
-multiCA_szabo_tbl_18yoM_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_18yoM)
-multiCA_szabo_tbl_18yoM_unc
-
-df_proportions_18yoM_unc <- yrbs_18yoM %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_18yoM_unc)
-
-
-## SEXUAL identity, UNCONDITIONAL
-
-#straight female
-szabo_table_strfem_unc <- table(yrbs_strfem$sex_of_sps, yrbs_strfem$year)
-prop.table(szabo_table_strfem_unc)
-
-## using formula interface
-multiCA_szabo_tbl_strfem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_strfem)
-multiCA_szabo_tbl_strfem_unc
-
-df_proportions_strfem_unc <- yrbs_strfem %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_strfem_unc)
-
-
-#lesbian female
-szabo_table_lesfem_unc <- table(yrbs_lesfem$sex_of_sps, yrbs_lesfem$year)
-prop.table(szabo_table_lesfem_unc)
-
-## using formula interface
-multiCA_szabo_tbl_lesfem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_lesfem)
-multiCA_szabo_tbl_lesfem_unc
-
-df_proportions_lesfem_unc <- yrbs_lesfem %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_lesfem_unc)
-
-
-
-#bisexual female
-szabo_table_bifem_unc <- table(yrbs_bifem$sex_of_sps, yrbs_bifem$year)
-prop.table(szabo_table_bifem_unc)
-
-## using formula interface
-multiCA_szabo_tbl_bifem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_bifem)
-multiCA_szabo_tbl_bifem_unc
-
-df_proportions_bifem_unc <- yrbs_bifem %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_bifem_unc)
-
-
-#don't know female
-szabo_table_dkofem_unc <- table(yrbs_dkofem$sex_of_sps, yrbs_dkofem$year)
-prop.table(szabo_table_dkofem_unc)
-
-## using formula interface
-multiCA_szabo_tbl_dkofem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_dkofem)
-multiCA_szabo_tbl_dkofem_unc
-
-df_proportions_dkofem_unc <- yrbs_dkofem %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_dkofem_unc)
-
-
-#refused female
-szabo_table_reffem_unc <- table(yrbs_reffem$sex_of_sps, yrbs_reffem$year)
-prop.table(szabo_table_reffem_unc)
-
-## using formula interface
-multiCA_szabo_tbl_reffem_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_reffem)
-multiCA_szabo_tbl_reffem_unc
-
-df_proportions_reffem_unc <- yrbs_reffem %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_reffem_unc)
-
-
-
-#straight male
-szabo_table_strmal_unc <- table(yrbs_strmal$sex_of_sps, yrbs_strmal$year)
-prop.table(szabo_table_strmal_unc)
-
-## using formula interface
-multiCA_szabo_tbl_strmal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_strmal)
-multiCA_szabo_tbl_strmal_unc
-
-df_proportions_strmal_unc <- yrbs_strmal %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_strmal_unc)
-
-
-#gay male
-szabo_table_gaymal_unc <- table(yrbs_gaymal$sex_of_sps, yrbs_gaymal$year)
-prop.table(szabo_table_gaymal_unc)
-
-## using formula interface
-multiCA_szabo_tbl_gaymal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_gaymal)
-multiCA_szabo_tbl_gaymal_unc
-
-df_proportions_gaymal_unc <- yrbs_gaymal %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_gaymal_unc)
-
-
-
-#bisexual male
-szabo_table_bimal_unc <- table(yrbs_bimal$sex_of_sps, yrbs_bimal$year)
-prop.table(szabo_table_bimal_unc)
-
-## using formula interface
-multiCA_szabo_tbl_bimal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_bimal)
-multiCA_szabo_tbl_bimal_unc
-
-df_proportions_bimal_unc <- yrbs_bimal %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_bimal_unc)
-
-
-#don't know male
-szabo_table_dkomal_unc <- table(yrbs_dkomal$sex_of_sps, yrbs_dkomal$year)
-prop.table(szabo_table_dkomal_unc)
-
-## using formula interface
-multiCA_szabo_tbl_dkomal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_dkomal)
-multiCA_szabo_tbl_dkomal_unc
-
-df_proportions_dkomal_unc <- yrbs_dkomal %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_dkomal_unc)
-
-
-#refused male
-szabo_table_refmal_unc <- table(yrbs_refmal$sex_of_sps, yrbs_refmal$year)
-prop.table(szabo_table_refmal_unc)
-
-## using formula interface
-multiCA_szabo_tbl_refmal_unc <- multiCA.test(sex_of_sps ~ year, data=yrbs_refmal)
-multiCA_szabo_tbl_refmal_unc
-
-df_proportions_refmal_unc <- yrbs_refmal %>%
-  group_by(year) %>%
-  summarise(
-    never_prop = sum(sex_of_sps == "1_never", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    females_prop = sum(sex_of_sps == "2_female", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    males_prop = sum(sex_of_sps == "3_male", na.rm = T) / sum(!is.na(sex_of_sps)) * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal", na.rm = T) / sum(!is.na(sex_of_sps)) * 100
-  )
-
-print(df_proportions_refmal_unc)
-##############################################################################################
-##Additional prop tables for the supplemental tables
-
- yrbs_14yoF %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-yrbs_15yoF %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-yrbs_16yoF %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-yrbs_17yoF %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-
-yrbs_18yoF %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-yrbs_14yoM %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-yrbs_15yoM %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-yrbs_16yoM %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-yrbs_17yoM %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-
-yrbs_18yoM %>%
-  group_by(year) %>%
-  summarise(
-    none_prop = sum(sex_of_sps == "1_never") / n() * 100,
-    females_prop = sum(sex_of_sps == "2_female") / n() * 100,
-    males_prop = sum(sex_of_sps == "3_male") / n() * 100,
-    both_prop = sum(sex_of_sps == "4_fem+mal") / n() * 100
-  )
-
-
-#################################################################################
-# New analyses- table S3
-
-##  FEMALES
-multiCA_szabo_tbl_14yoF_unc
-multiCA_szabo_tbl_15yoF_unc
-multiCA_szabo_tbl_16yoF_unc
-multiCA_szabo_tbl_17yoF_unc
-multiCA_szabo_tbl_18yoF_unc
-
-#females in 2015
-round(100*prop.table(table(yrbs_female15$age)),1)
-
-#females in 2017
-round(100*prop.table(table(yrbs_female17$age)),1)
-
-#females in 2019
-round(100*prop.table(table(yrbs_female19$age)),1)
-
-#females in 2021
-round(100*prop.table(table(yrbs_female21$age)),1)
-
-
-## MALES
-multiCA_szabo_tbl_14yoM_unc
-multiCA_szabo_tbl_15yoM_unc
-multiCA_szabo_tbl_16yoM_unc
-multiCA_szabo_tbl_17yoM_unc
-multiCA_szabo_tbl_18yoM_unc
-
-#males in 2015
-round(100*prop.table(table(yrbs_male15$age)),1)
-
-#males in 2017
-round(100*prop.table(table(yrbs_male17$age)),1)
-
-#males in 2019
-round(100*prop.table(table(yrbs_male19$age)),1)
-
-#males in 2021
-round(100*prop.table(table(yrbs_male21$age)),1)
-
-
-#Table S4
-
-round(100*prop.table(table(yrbs_sex_2015$so_new, yrbs_sex_2015$sex), c(2)),1)
-
-round(100*prop.table(table(yrbs_sex_2017$so_new, yrbs_sex_2017$sex), c(2)),1)
-
-round(100*prop.table(table(yrbs_sex_2019$so_new, yrbs_sex_2019$sex), c(2)),1)
-
-round(100*prop.table(table(yrbs_sex_2021$so_new, yrbs_sex_2021$sex), c(2)),1)
-
-
-table(yrbs_sex$sex, yrbs_sex$year)
-
-table(yrbs_female$year)
-
-table(yrbs_male$year)
-
-round(100*prop.table(table(yrbs_female15$so_new)),1)
-round(100*prop.table(table(yrbs_female17$so_new)),1)
-round(100*prop.table(table(yrbs_female19$so_new)),1)
-round(100*prop.table(table(yrbs_female21$so_new)),1)
-
-round(100*prop.table(table(yrbs_male15$so_new)),1)
-round(100*prop.table(table(yrbs_male17$so_new)),1)
-round(100*prop.table(table(yrbs_male19$so_new)),1)
-round(100*prop.table(table(yrbs_male21$so_new)),1)
-
-
-
-
-round(100*prop.table(table(yrbs_sex_2015$age, yrbs_sex_2015$sex), c(2)),1)
-round(100*prop.table(table(yrbs_sex_2017$age, yrbs_sex_2017$sex), c(2)),1)
-round(100*prop.table(table(yrbs_sex_2019$age, yrbs_sex_2019$sex), c(2)),1)
-round(100*prop.table(table(yrbs_sex_2021$age, yrbs_sex_2021$sex), c(2)),1)
-
-
-
-multiCA_szabo_tbl_14yoF
-multiCA_szabo_tbl_15yoF
-multiCA_szabo_tbl_16yoF
-multiCA_szabo_tbl_17yoF
-multiCA_szabo_tbl_18yoF
-
-multiCA_szabo_tbl_14yoM
-multiCA_szabo_tbl_15yoM
-multiCA_szabo_tbl_16yoM
-multiCA_szabo_tbl_17yoM
-multiCA_szabo_tbl_18yoM
-
-#################################################################################
-
 
