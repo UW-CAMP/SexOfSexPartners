@@ -11,13 +11,9 @@ set.seed(1)
 
 # Prepare project files
 source("SoSP_00_packages.R") # call in packages; you may have to open this file and install any new packages 
-#source("SOGI_03_prepare_YRBS_2021.R") 
-#source("SOGI_04_prepare_YRBS_2015-2019.R") 
-#source("SOGI_05_merge_YRBS.R") # run this file to prepare a single file `yrbs_final.rds`
+source("SoSP_01_prepare.R") # prepare objects for SoSP analyses
 
 # SoSP Analyses
-source("SoSP_01_prepare.R") # prepare objects for SoSP analyses
 source("SoSP_02_analyses.R") # SoSP analyses 
-
 source("SoSP_03_tables_figures.R") # SoSP tables and figures 
 
