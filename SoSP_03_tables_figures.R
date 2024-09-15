@@ -1184,17 +1184,25 @@ print(odds_ratios_df)
 
 #Females
 print(df_proportions_fem)
+#p values
+print(multiCA_szabo_tbl_F)
 
 # Males
 print(df_proportions_mal)
+#p values 
+print(multiCA_szabo_tbl_M)
 
 #frequency of each SSP by year, by sex (does not includes 1_never)
 
 # Females
 print(df_proportions_fem2)
+#p values
+print(multiCA_szabo_tbl_F2)
 
 # Males
 print(df_proportions_mal2)
+#p values 
+print(multiCA_szabo_tbl_M2)
 
 ############################################################################################
 #Table S3: Proportion of respondents by self-reported sexual identity (SI), 
@@ -1290,6 +1298,7 @@ prop.table(szabo_table_fem_sens1)
 
 ## using formula interface
 multiCA_szabo_tbl_fem_sens1 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset1_fem)
+#p values
 print(multiCA_szabo_tbl_fem_sens1)
 
 
@@ -1314,6 +1323,7 @@ prop.table(szabo_table_mal_sens1)
 
 ## using formula interface
 multiCA_szabo_tbl_mal_sens1 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset1_mal)
+#p values
 print(multiCA_szabo_tbl_mal_sens1)
 
 
@@ -1339,6 +1349,7 @@ szabo_table_fem_sens2 <- table(yrbs_sens_subset2_fem$so_new, yrbs_sens_subset2_f
 
 ## using formula interface
 multiCA_szabo_tbl_fem_sens2 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset2_fem)
+# p values
 print(multiCA_szabo_tbl_fem_sens2)
 
 
@@ -1361,6 +1372,7 @@ szabo_table_mal_sens2 <- table(yrbs_sens_subset2_mal$so_new, yrbs_sens_subset2_m
 
 ## using formula interface
 multiCA_szabo_tbl_mal_sens2 <- multiCA.test(so_new ~ year, data=yrbs_sens_subset2_mal)
+#p values
 print(multiCA_szabo_tbl_mal_sens2)
 
 
@@ -1373,43 +1385,53 @@ print(multiCA_szabo_tbl_mal_sens2)
 
 #straight female
 print(df_proportions_strfem_unc)
+#p values
 print(multiCA_szabo_tbl_strfem_unc)
 
 #lesbian female
 print(df_proportions_lesfem_unc)
+#p values
 print(multiCA_szabo_tbl_lesfem_unc)
 
 #bisexual female
 print(df_proportions_bifem_unc)
+#p values
 print(multiCA_szabo_tbl_bifem_unc)
 
 #don't know female
 print(df_proportions_dkofem_unc)
+#p values
 print(multiCA_szabo_tbl_dkofem_unc)
 
 #refused female
 print(df_proportions_reffem_unc)
+#p values
 print(multiCA_szabo_tbl_reffem_unc)
 
 
 #straight male
 print(df_proportions_strmal_unc)
+#p values
 print(multiCA_szabo_tbl_strmal_unc)
 
 #gay male
 print(df_proportions_gaymal_unc)
+#p values
 print(multiCA_szabo_tbl_gaymal_unc)
 
 #bisexual male
 print(df_proportions_bimal_unc)
+#p values
 print(multiCA_szabo_tbl_bimal_unc)
 
 #don't know male
 print(df_proportions_dkomal_unc)
+#p values
 print(multiCA_szabo_tbl_dkomal_unc)
 
 #refused male
 print(df_proportions_refmal_unc)
+#p values
 print(multiCA_szabo_tbl_refmal_unc)
 
 ##############################################################################################
@@ -1421,43 +1443,53 @@ print(multiCA_szabo_tbl_refmal_unc)
 
 #straight female
 print(df_proportions_strfem)
+#p values
 print(multiCA_szabo_tbl_strfem)
 
 #lesbian female
 print(df_proportions_lesfem)
+#p values
 print(multiCA_szabo_tbl_lesfem)
 
 #bisexual female
 print(df_proportions_bifem)
+#p values
 print(multiCA_szabo_tbl_bifem)
 
 #dont know female
 print(df_proportions_dkofem)
+#p values
 print(multiCA_szabo_tbl_dkofem)
 
 #declined female
 print(df_proportions_reffem)
+#p values
 print(multiCA_szabo_tbl_reffem)
 
 #straight male
 print(df_proportions_strmal)
+#p values
 print(multiCA_szabo_tbl_strmal)
 
 
 #gay male
 print(df_proportions_gaymal)
+#p values
 print(multiCA_szabo_tbl_gaymal)
 
 #bisexual male
 print(df_proportions_bimal)
+#p values
 print(multiCA_szabo_tbl_bimal)
 
 #don't know male
 print(df_proportions_dkomal)
+#p values
 print(multiCA_szabo_tbl_dkomal)
 
 #declined to answer male
 print(df_proportions_refmal)
+#p values
 print(multiCA_szabo_tbl_refmal)
 
 ################################################################################################
@@ -1467,44 +1499,54 @@ print(multiCA_szabo_tbl_refmal)
 
 #14yo female
 print(df_proportions_14yoF_unc)
-multiCA_szabo_tbl_14yoF_unc
+#p values
+print(multiCA_szabo_tbl_14yoF_unc)
 
 #15yo female
 print(df_proportions_15yoF_unc)
-multiCA_szabo_tbl_15yoF_unc
+#p values
+print(multiCA_szabo_tbl_15yoF_unc)
 
 #16yo female
 print(df_proportions_16yoF_unc)
-multiCA_szabo_tbl_16yoF_unc
+#p values
+print(multiCA_szabo_tbl_16yoF_unc)
 
 #17yo female
 print(df_proportions_17yoF_unc)
-multiCA_szabo_tbl_17yoF_unc
+#p values
+print(multiCA_szabo_tbl_17yoF_unc)
 
 #18yo female
 print(df_proportions_18yoF_unc)
-multiCA_szabo_tbl_18yoF_unc
+#p values
+print(multiCA_szabo_tbl_18yoF_unc)
 
 
 #14yo male
 print(df_proportions_14yoM_unc)
-multiCA_szabo_tbl_14yoM_unc
+#p values
+print(multiCA_szabo_tbl_14yoM_unc)
 
 #15yo male
 print(df_proportions_15yoM_unc)
-multiCA_szabo_tbl_15yoM_unc
+#p values
+print(multiCA_szabo_tbl_15yoM_unc)
 
 #16yo male
 print(df_proportions_16yoM_unc)
-multiCA_szabo_tbl_16yoM_unc
+#p values
+print(multiCA_szabo_tbl_16yoM_unc)
 
 #17yo male
 print(df_proportions_17yoM_unc)
-multiCA_szabo_tbl_17yoM_unc
+#p values
+print(multiCA_szabo_tbl_17yoM_unc)
 
 #18yo male
 print(df_proportions_18yoM_unc)
-multiCA_szabo_tbl_18yoM_unc
+#p values
+print(multiCA_szabo_tbl_18yoM_unc)
 
 ###########################################################################################
 #Table S8: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
@@ -1513,43 +1555,53 @@ multiCA_szabo_tbl_18yoM_unc
 
 #14yo female
 print(df_proportions_14yoF)
+#p values
 print(multiCA_szabo_tbl_14yoF)
 
 #15yo female
 print(df_proportions_15yoF)
+#p values
 print(multiCA_szabo_tbl_15yoF)
 
 #16yo female
 print(df_proportions_16yoF)
+#p values
 print(multiCA_szabo_tbl_16yoF)
 
 #17yo female
 print(df_proportions_17yoF)
+#p values
 print(multiCA_szabo_tbl_17yoF)
 
 #18yo female
 print(df_proportions_18yoF)
+#p values
 print(multiCA_szabo_tbl_18yoF)
 
 
 #14yo male
 print(df_proportions_14yoM)
+#p values
 print(multiCA_szabo_tbl_14yoM)
 
 #15yo male
 print(df_proportions_15yoM)
+#p values
 print(multiCA_szabo_tbl_15yoM)
 
 #16yo male
 print(df_proportions_16yoM)
+#p values
 print(multiCA_szabo_tbl_16yoM)
 
 #17yo male
 print(df_proportions_17yoM)
+#p values
 print(multiCA_szabo_tbl_17yoM)
 
 #18yo male
 print(df_proportions_18yoM)
+#p values
 print(multiCA_szabo_tbl_18yoM)
 
 

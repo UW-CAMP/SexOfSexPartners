@@ -3,7 +3,7 @@
 ### This script's code uses the YRBS dataset, previously prepared in script "SoSP_01_prepare"
 ### to conduct SSP-related analyses
 
-### Prepare workspace ----- 
+### Prepare workspace -----
 
 # packages
 source("SoSP_00_packages.R")
