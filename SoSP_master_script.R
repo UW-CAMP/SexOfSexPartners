@@ -2,6 +2,9 @@
 # Goodreau SM, Barry MP, Lawley KA
 # University of Washington
 
+#Before running this code, please read the README file for instructions on downloading the data 
+
+
 # Abbreviations:
 # SoSP: sex(es) of sex partners
 
