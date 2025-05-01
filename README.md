@@ -27,7 +27,7 @@ There are two different ways you can run the scripts to obtain the analyses.
 **Option 1: Run all files**
 
 ***Single Step: Run the Master Script***
-Run "SoSP master script.R" to generate the necessary data sets and all project files. This will generate a series of plots to accompany the analyses. Before calling in data, ensure that the directory location is correct on line 25 of the “SoSP_01_prepare” file. 
+Run "SoSP master script.R" to generate the necessary data sets and all project files. This will generate a series of plots to accompany the analyses. Before calling in data, ensure that the directory location is correct on line 26 of the “SoSP_01_prepare” file. 
 
 
 **Option 2: Run specified files**
