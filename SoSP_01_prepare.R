@@ -17,7 +17,8 @@ tableNA <- function(x, ...){
 # the `tableNA` function tabulates data as the `table` function, but includes "NA"s by default.
 
 # * call in data ------------
-# Note: before calling in data, ensure that the directory location is correct; you may need to change that used here.
+# Note: before calling in data, ensure that the directory location is correct; you may need to change it from 
+# what is indicated here on line 26. This is referenced in the README file associated with this project. 
 
 #################### Prepare dataset for 2015 to 2019 ####################
 # `yrbs_years` object 
@@ -68,6 +69,10 @@ for (yr in yrbs_years) {
 }
 
 # * keep only variables needed for restriction process (based on missingness investigation) ----
+# The comments indicate the context of each variable. The number of each question is not always 
+# consistent across YRBS years. This is indicated in the number next to each comment.
+
+#Variables from 2015
 yrbs[[15]] <- yrbs[[15]] %>% select(c("year",		
                                       "survyear",		
                                       "weight",		
@@ -157,6 +162,7 @@ yrbs[[15]] <- yrbs[[15]] %>% select(c("year",
                                       "q89"	# grades	89
 ))
 
+#Variables from 2017
 yrbs[[17]] <- yrbs[[17]] %>% select(c("year",		
                                       "survyear",		
                                       "weight",		
@@ -255,6 +261,7 @@ yrbs[[17]] <- yrbs[[17]] %>% select(c("year",
                                       "q89"	# grades	89
 ))
 
+#Variables from 2019
 # Note: in the absence of a data dictionary with answer breakdowns, we assume that 2019 questions were asked in numeric order.
 yrbs[[19]] <- yrbs[[19]] %>% select(-(starts_with("qn")))
 yrbs[[19]] <- yrbs[[19]][,1:105]
@@ -407,7 +414,7 @@ for (year in yrbs_years) {
   yrbs[[year]] <- subset(yrbs[[year]], drop2 != 1)
 }
 
-# * so variable ------
+# * Sexual orientation variable ------
 for (year in yrbs_years) {
   yrbs[[year]]$sexid[is.na(yrbs[[year]]$sexid)] <- 5
   
@@ -434,7 +441,7 @@ for (year in yrbs_years) {
   
 }
 
-# * ever_sex ------
+# * ever_sex variable ------
 for (year in yrbs_years) {
   yrbs[[year]]$ever_sex <- 2-yrbs[[year]]$q58
   
@@ -460,7 +467,7 @@ for (year in yrbs_years) {
   
 }
 
-# * sex_of_sps -----
+# * sex_of_sps variable -----
 for (year in yrbs_years) {
   yrbs[[year]]$sex_of_sps <- factor(yrbs[[year]]$q65,
                                     levels = c(1:4),
@@ -547,7 +554,7 @@ for (year in yrbs_years) {
   yrbs[[year]] <- yrbs[[year]][,varnames]
 }
 
-# * generate a YRBS 2015:2021 dataset to merge with 2021 ------
+# * generate a YRBS 2015:2019 dataset to merge with 2021 ------
 yrbs1519_merge <- rbind(yrbs[[15]],
                         yrbs[[17]],
                         yrbs[[19]])
@@ -568,6 +575,7 @@ write_rds(yrbs1519_merge,
 
 # * call in data ------------
 # Note: before calling in data, ensure that the directory location is correct; you may need to change that used here.
+# This is referenced in the README file associated with this project. 
 yrbs21 <- read.csv("data - raw/yrbs2021.csv")
 
 # * prepare data for cleanup ------
@@ -1552,7 +1560,7 @@ table(ssp_predictor_data1$missing_ssp)
 ###########################################################
 
 
-# * restrict to on variables needed for analysis -----
+# * restrict to only variables needed for analysis -----
 varnames2 <- c("year", "weight", "PSU", "stratum", "age", "sex", "so", "so_new",
                "ever_sex", "sex_of_sps", "so_21", "source",
                "q15", "q19", "q21", "q22", "q23", "q24", "q25", "q26", 
