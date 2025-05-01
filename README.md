@@ -1,6 +1,6 @@
 # YRBS SoSP Project
 
-Full citation: Lawley, KA, Barry MP, Koenig LJ, Suarez NA, Williams AM, Delaney KP, Hoover KW, Hamilton DT, Goodreau SM. Trends in sex of sex partners and sexual identity among US adolescents, 2015-2021. [journal info TBD]. 
+Full citation: Lawley, KA, Barry MP, Koenig LJ, Suarez NA, Williams AM, Delaney KP, Hoover KW, Hamilton DT, Goodreau SM. Trends in sex of sex partners and sexual identity among US adolescents, 2015-2021. Journal of Adolescent Health. 
 
 
 This manuscript uses data from the Youth Risk Behavior Surveillance System (YRBS) years 2015-2021. The following instructions explain how to replicate the data retrieval, cleaning, and analyses used in this manuscript.
