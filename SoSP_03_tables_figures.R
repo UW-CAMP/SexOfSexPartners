@@ -11,6 +11,16 @@
 #######################################
 ##############################################################################################
 
+
+# Create directory for plots 
+
+if(!dir.exists("plots/SoSP")){
+  if(!dir.exists("plots/")){
+    dir.create("plots/")
+  }
+  dir.create("plots/SoSP")
+}
+
 #####
 
 yrs <- seq(2015, 2021, 2)
@@ -745,7 +755,7 @@ dev.off()
 
 ###############################################################################################
 
-# FIGURE S2: PLOTS BY SO AND YEAR FOR MALES (CONDITIONED ON EHHS)
+# FIGURE S2: Plots by SO and year for males conditioned on ever having sex
 # tables 10-14
 #Straight male, gay male, bisexual male, don't know male, declined to answer male
 #+++++++++++++++++++++++++++++++++++++++++
@@ -1127,11 +1137,11 @@ dev.off()
 #######################################
 ##############################################################################################
 
-#Table S1: Predictors of missingness in sex of sex partners (SoSP) over the lifetime, 
+#TABLE S1: Predictors of missingness in sex of sex partners (SoSP) over the lifetime, 
 # Youth Risk Behavior Survey (YRBS), 2015-2021. 5
 
 
-#Logistic regression predicting missing SSP from sex, age,
+#Logistic regression predicting missing SoSP from sex, age,
 #sexual identity, and year of survey
 
 #each set as a categorical variable
@@ -1177,10 +1187,10 @@ print(odds_ratios_df)
 
 
 ############################################################################################
-#Table S2: Proportion of respondents by sex of sex partners (SSP) over the lifetime, 
+#TABLE S2: Proportion of respondents by sex of sex partners (SoSP) over the lifetime, 
 #Youth Risk Behavior Survey (YRBS), 2015-2021	
 
-#frequency of each SSP by year, by sex (includes 1_never)
+#frequency of each SoSP by year, by sex (includes 1_never)
 
 #Females
 print(df_proportions_fem)
@@ -1192,7 +1202,7 @@ print(df_proportions_mal)
 #p values 
 print(multiCA_szabo_tbl_M)
 
-#frequency of each SSP by year, by sex (does not includes 1_never)
+#frequency of each SoSP by year, by sex (does not includes 1_never)
 
 # Females
 print(df_proportions_fem2)
@@ -1205,7 +1215,7 @@ print(df_proportions_mal2)
 print(multiCA_szabo_tbl_M2)
 
 ############################################################################################
-#Table S3: Proportion of respondents by self-reported sexual identity (SI), 
+#TABLE S3: Proportion of respondents by self-reported sexual identity (SI), 
 #Youth Risk Behavior Survey (YRBS), 2015-2021	
 
 #frequency of sexual identity across years, by sex
@@ -1245,15 +1255,16 @@ print(df_proportions_mal_so)
 #p values
 multiCA_so_mal_year <- multiCA.test(so_new ~ year, data=yrbs_male)
 multiCA_so_mal_year
+
 ############################################################################################
-#Table S4: Sensitivity analysis on trend tests for sexual identity (SI), 
+#TABLE S4: Sensitivity analysis on trend tests for sexual identity (SI), 
 #Youth Risk Behavior Survey (YRBS), 2015-2021, with alternative definition for 
 #“not sure” in 2021
 #################################################################################
 
 ##Sensitivity analysis##
 
-#redo the analysis in Figure 2/ Table S2 in two ways for sens analysis:
+#redoing the analysis in Figure 2/ Table S2 in two ways for sensitivity analysis:
 
 #Table S2: Proportion of respondents by self-reported sexual identity (SI), 
 #Youth Risk Behavior Survey (YRBS), 2015-2021	
@@ -1274,8 +1285,8 @@ yrbs_sens_subset1_mal <- subset(yrbs_sens_subset1, sex == "Male")
 yrbs_sens_subset2_fem <- subset(yrbs_sens_subset2, sex == "Female")
 yrbs_sens_subset2_mal <- subset(yrbs_sens_subset2, sex == "Male")
 
-#Sensitivity analysis 1- Take the people who responded “I describe my sexual 
-#identity some other way” in 2021, and remove them altogether
+#Sensitivity analysis 1- Taking the people who responded “I describe my sexual 
+#identity some other way” in 2021, and removing them altogether
 
 
 df_proportions_fem_so_sens1 <- yrbs_sens_subset1_fem %>%
@@ -1328,8 +1339,8 @@ print(multiCA_szabo_tbl_mal_sens1)
 
 
 
-#2.  Take the people who responded “I describe my sexual identity some other way” 
-#or “I do not know what this question is asking” in 2021, and remove them.
+#Sensitivity analysis 2-  Taking the people who responded “I describe my sexual identity some other way” 
+#or “I do not know what this question is asking” in 2021, and removing them.
 
 df_proportions_fem_so_sens2 <- yrbs_sens_subset2_fem %>%
   group_by(year) %>%
@@ -1377,7 +1388,7 @@ print(multiCA_szabo_tbl_mal_sens2)
 
 
 ##############################################################################################
-#Table S5: Proportion of respondents by sex of sex of sex of sex partners (SSP) over the lifetime, 
+#TABLE S5: Proportion of respondents by sex of sex of sex of sex partners (SoSP) over the lifetime, 
 #by reported sexual identity (SI), including those with no prior sexual contact, Youth Risk 
 #Behavior Survey (YRBS), 2015-2021	
 
@@ -1435,7 +1446,7 @@ print(df_proportions_refmal_unc)
 print(multiCA_szabo_tbl_refmal_unc)
 
 ##############################################################################################
-#Table S6: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
+#TABLE S6: Proportion of respondents by sex of sex of sex partners (SoSP) over the lifetime, 
 #by reported sexual identity (SI), among those who have ever had sex, Youth Risk Behavior 
 #Survey (YRBS), 2015-2021	
 
@@ -1493,7 +1504,7 @@ print(df_proportions_refmal)
 print(multiCA_szabo_tbl_refmal)
 
 ################################################################################################
-#Table S7: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
+#TABLE S7: Proportion of respondents by sex of sex of sex partners (SoSP) over the lifetime, 
 #by age, including those with no prior sexual contact, Youth Risk Behavior Survey 
 #(YRBS), 2015-2021
 
@@ -1549,9 +1560,9 @@ print(df_proportions_18yoM_unc)
 print(multiCA_szabo_tbl_18yoM_unc)
 
 ###########################################################################################
-#Table S8: Proportion of respondents by sex of sex of sex partners (SSP) over the lifetime, 
+#TABLE S8: Proportion of respondents by sex of sex of sex partners (SoSP) over the lifetime, 
 #by age, among those who have ever had sex, Youth Risk Behavior Survey (YRBS), 2015-2021	
-## Frequency of SSP by age, split by year and by sex
+## Frequency of SoSP by age, split by year and by sex
 
 #14yo female
 print(df_proportions_14yoF)
