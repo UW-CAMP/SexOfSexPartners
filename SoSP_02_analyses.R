@@ -1,7 +1,7 @@
 ### Script for SoSP analysis
 
 ### This script's code uses the YRBS dataset, previously prepared in script "SoSP_01_prepare"
-### to conduct SSP-related analyses
+### to conduct SoSP-related analyses
 
 ### Prepare workspace -----
 
@@ -15,16 +15,6 @@ tableNA <- function(x, ...){
 
 # call in data
 yrbs_final <- readRDS("data - clean/yrbs_final.rds")
-
-
-# Create directory
-
-if(!dir.exists("plots/SoSP")){
-   if(!dir.exists("plots/")){
-      dir.create("plots/")
-   }
-   dir.create("plots/SoSP")
-}
 
 
 
