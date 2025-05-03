@@ -11,7 +11,7 @@ To run the scripts in this project, you should create folders to store your data
 **Step 1. Obtain data** 
 
 
-The current project uses the YRBS 2021 National Dataset and the 2019 Combined National Dataset. You can find these YRBS datasets and download them here:
+The current project uses the YRBS 2021 National Dataset and the 2019 Combined High School National Dataset. You can find these YRBS datasets and download them here:
 https://www.cdc.gov/yrbs/data/index.html
 
 
