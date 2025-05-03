@@ -10,9 +10,9 @@ To run the scripts in this project, you should create folders to store your data
 
 **Step 1. Obtain data** 
 
-The YRBS National Data Set for 2019 and years prior can be found here: https://www.cdc.gov/healthyyouth/data/yrbs/sadc_2019/sadc_2019_national.dat
 
-The YRBS National Data Set for 2021 can be found here: https://www.cdc.gov/healthyyouth/data/yrbs/files/2021/XXH2021_YRBS_Data.dat
+The current project uses the YRBS 2021 National Dataset and the 2019 Combined National Dataset. You can find these YRBS datasets and download them here:
+https://www.cdc.gov/yrbs/data/index.html
 
 
 Note: Both YRBS data sets are too large to store on GitHub; you must download them locally to reproduce the present analyses. To do this, use the corresponding Format and Input SAS programs, each modified from CDC for the present analysis. These are available in this repository as “YRBS SAS Formats” and “YRBS SAS Input” for the 2019 and prior years file and as "2021 YRBS SAS Formats" and 2021 YRBS SAS Input" for the 2021 data set.
