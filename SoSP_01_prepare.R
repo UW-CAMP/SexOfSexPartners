@@ -16,10 +16,6 @@ tableNA <- function(x, ...){
 }
 # the `tableNA` function tabulates data as the `table` function, but includes "NA"s by default.
 
-# * call in data ------------
-# Note: before calling in data, ensure that the directory location is correct; you may need to change it from 
-# what is indicated here on line 26. This is referenced in the README file associated with this project. 
-
 #################### Prepare dataset for 2015 to 2019 ####################
 # `yrbs_years` object 
 yrbs_years <- seq(15, 19, 2)
@@ -548,9 +544,6 @@ write_rds(yrbs1519_merge,
 
 #################### Prepare dataset for 2021 ####################
 
-# * call in data ------------
-# Note: before calling in data, ensure that the directory location is correct; you may need to change that used here.
-# This is referenced in the README file associated with this project. 
 yrbs21 <- read.csv("data - raw/yrbs2021.csv")
 
 # * prepare data for cleanup ------
@@ -1010,8 +1003,6 @@ write_rds(ssp_predictor_data1,
 
 #################### Prepare dataset for 2021 ####################
 
-# * call in data ------------
-# Note: before calling in data, ensure that the directory location is correct; you may need to change that used here.
 ssp_predictor_data2 <- read.csv("data - raw/yrbs2021.csv")
 
 # * prepare data for cleanup ------
