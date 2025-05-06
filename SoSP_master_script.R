@@ -1,6 +1,4 @@
 ### This code runs the entire YRBS sex-of-sex-partners analysis.
-# Goodreau SM, Barry MP, Lawley KA
-# University of Washington
 
 #Before running this code, please read the README file for instructions on downloading the data 
 
