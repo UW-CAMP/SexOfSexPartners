@@ -1,6 +1,6 @@
 #### **Replication code for manuscript:**
 
-##### Lawley KA, Barry MP, Koenig LJ, Suarez NA, Williams AM, Delaney KP, Hoover KW, Hamilton DT, Goodreau SM. 2025. "Trends in sex of sex partners and sexual identity among US adolescents, 2015-2021". *Journal of Adolescent Health*, 772(2): 316-323. DOI: 10.1016/j.jadohealth.2025.04.011. PMC12313302.
+##### Lawley KA, Barry MP, Koenig LJ, Suarez NA, Williams AM, Delaney KP, Hoover KW, Hamilton DT, Goodreau SM. 2025. "Trends in sex of sex partners and sexual identity among US adolescents, 2015-2021". *Journal of Adolescent Health*, 772(2): 316-323. DOI: [10.1016/j.jadohealth.2025.04.011](https://doi.org/10.1016/j.jadohealth.2025.04.011). PMC12313302.
 
 
 ---
